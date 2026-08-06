@@ -10,33 +10,483 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as AuthenticatedAiAssistantRouteImport } from './routes/_authenticated/ai-assistant'
+import { Route as AuthenticatedApiDocsRouteImport } from './routes/_authenticated/api-docs'
+import { Route as AuthenticatedAssetsRouteImport } from './routes/_authenticated/assets'
+import { Route as AuthenticatedAssignmentsRouteImport } from './routes/_authenticated/assignments'
+import { Route as AuthenticatedAuditLogRouteImport } from './routes/_authenticated/audit-log'
+import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedDepartmentsRouteImport } from './routes/_authenticated/departments'
+import { Route as AuthenticatedDistributionRouteImport } from './routes/_authenticated/distribution'
+import { Route as AuthenticatedFloorPlanRouteImport } from './routes/_authenticated/floor-plan'
+import { Route as AuthenticatedMaintenanceRouteImport } from './routes/_authenticated/maintenance'
+import { Route as AuthenticatedMaintenanceCalendarRouteImport } from './routes/_authenticated/maintenance-calendar'
+import { Route as AuthenticatedNetworkRouteImport } from './routes/_authenticated/network'
+import { Route as AuthenticatedOrganizationsRouteImport } from './routes/_authenticated/organizations'
+import { Route as AuthenticatedPeopleSearchRouteImport } from './routes/_authenticated/people-search'
+import { Route as AuthenticatedReportsRouteImport } from './routes/_authenticated/reports'
+import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
+import { Route as AuthenticatedSoftwareRouteImport } from './routes/_authenticated/software'
+import { Route as AuthenticatedSuperAdminRouteImport } from './routes/_authenticated/super-admin'
+import { Route as AuthenticatedTechnicianPortalRouteImport } from './routes/_authenticated/technician-portal'
+import { Route as AuthenticatedUsersManagementRouteImport } from './routes/_authenticated/users-management'
+import { Route as AuthenticatedVehiclesRouteImport } from './routes/_authenticated/vehicles'
+import { Route as AuthenticatedVendorsRouteImport } from './routes/_authenticated/vendors'
+import { Route as AuthenticatedWarrantiesRouteImport } from './routes/_authenticated/warranties'
+import { Route as AuthenticatedRfidAlertsRouteImport } from './routes/_authenticated/rfid.alerts'
+import { Route as AuthenticatedRfidAssetsRouteImport } from './routes/_authenticated/rfid.assets'
+import { Route as AuthenticatedRfidDashboardRouteImport } from './routes/_authenticated/rfid.dashboard'
+import { Route as AuthenticatedRfidLiveRouteImport } from './routes/_authenticated/rfid.live'
+import { Route as AuthenticatedRfidMovementRouteImport } from './routes/_authenticated/rfid.movement'
+import { Route as AuthenticatedRfidOnboardingRouteImport } from './routes/_authenticated/rfid.onboarding'
+import { Route as AuthenticatedRfidReadersRouteImport } from './routes/_authenticated/rfid.readers'
+import { Route as AuthenticatedRfidReportsRouteImport } from './routes/_authenticated/rfid.reports'
+import { Route as AuthenticatedRfidSettingsRouteImport } from './routes/_authenticated/rfid.settings'
+import { Route as AuthenticatedRfidZonesRouteImport } from './routes/_authenticated/rfid.zones'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedAiAssistantRoute =
+  AuthenticatedAiAssistantRouteImport.update({
+    id: '/ai-assistant',
+    path: '/ai-assistant',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedApiDocsRoute = AuthenticatedApiDocsRouteImport.update({
+  id: '/api-docs',
+  path: '/api-docs',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedAssetsRoute = AuthenticatedAssetsRouteImport.update({
+  id: '/assets',
+  path: '/assets',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedAssignmentsRoute =
+  AuthenticatedAssignmentsRouteImport.update({
+    id: '/assignments',
+    path: '/assignments',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedAuditLogRoute = AuthenticatedAuditLogRouteImport.update({
+  id: '/audit-log',
+  path: '/audit-log',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedDepartmentsRoute =
+  AuthenticatedDepartmentsRouteImport.update({
+    id: '/departments',
+    path: '/departments',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedDistributionRoute =
+  AuthenticatedDistributionRouteImport.update({
+    id: '/distribution',
+    path: '/distribution',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedFloorPlanRoute = AuthenticatedFloorPlanRouteImport.update({
+  id: '/floor-plan',
+  path: '/floor-plan',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedMaintenanceRoute =
+  AuthenticatedMaintenanceRouteImport.update({
+    id: '/maintenance',
+    path: '/maintenance',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedMaintenanceCalendarRoute =
+  AuthenticatedMaintenanceCalendarRouteImport.update({
+    id: '/maintenance-calendar',
+    path: '/maintenance-calendar',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedNetworkRoute = AuthenticatedNetworkRouteImport.update({
+  id: '/network',
+  path: '/network',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedOrganizationsRoute =
+  AuthenticatedOrganizationsRouteImport.update({
+    id: '/organizations',
+    path: '/organizations',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedPeopleSearchRoute =
+  AuthenticatedPeopleSearchRouteImport.update({
+    id: '/people-search',
+    path: '/people-search',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedReportsRoute = AuthenticatedReportsRouteImport.update({
+  id: '/reports',
+  path: '/reports',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedSoftwareRoute = AuthenticatedSoftwareRouteImport.update({
+  id: '/software',
+  path: '/software',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedSuperAdminRoute = AuthenticatedSuperAdminRouteImport.update({
+  id: '/super-admin',
+  path: '/super-admin',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedTechnicianPortalRoute =
+  AuthenticatedTechnicianPortalRouteImport.update({
+    id: '/technician-portal',
+    path: '/technician-portal',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedUsersManagementRoute =
+  AuthenticatedUsersManagementRouteImport.update({
+    id: '/users-management',
+    path: '/users-management',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedVehiclesRoute = AuthenticatedVehiclesRouteImport.update({
+  id: '/vehicles',
+  path: '/vehicles',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedVendorsRoute = AuthenticatedVendorsRouteImport.update({
+  id: '/vendors',
+  path: '/vendors',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedWarrantiesRoute = AuthenticatedWarrantiesRouteImport.update({
+  id: '/warranties',
+  path: '/warranties',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedRfidAlertsRoute = AuthenticatedRfidAlertsRouteImport.update({
+  id: '/rfid/alerts',
+  path: '/rfid/alerts',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedRfidAssetsRoute = AuthenticatedRfidAssetsRouteImport.update({
+  id: '/rfid/assets',
+  path: '/rfid/assets',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedRfidDashboardRoute =
+  AuthenticatedRfidDashboardRouteImport.update({
+    id: '/rfid/dashboard',
+    path: '/rfid/dashboard',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedRfidLiveRoute = AuthenticatedRfidLiveRouteImport.update({
+  id: '/rfid/live',
+  path: '/rfid/live',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedRfidMovementRoute =
+  AuthenticatedRfidMovementRouteImport.update({
+    id: '/rfid/movement',
+    path: '/rfid/movement',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedRfidOnboardingRoute =
+  AuthenticatedRfidOnboardingRouteImport.update({
+    id: '/rfid/onboarding',
+    path: '/rfid/onboarding',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedRfidReadersRoute =
+  AuthenticatedRfidReadersRouteImport.update({
+    id: '/rfid/readers',
+    path: '/rfid/readers',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedRfidReportsRoute =
+  AuthenticatedRfidReportsRouteImport.update({
+    id: '/rfid/reports',
+    path: '/rfid/reports',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedRfidSettingsRoute =
+  AuthenticatedRfidSettingsRouteImport.update({
+    id: '/rfid/settings',
+    path: '/rfid/settings',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedRfidZonesRoute = AuthenticatedRfidZonesRouteImport.update({
+  id: '/rfid/zones',
+  path: '/rfid/zones',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/ai-assistant': typeof AuthenticatedAiAssistantRoute
+  '/api-docs': typeof AuthenticatedApiDocsRoute
+  '/assets': typeof AuthenticatedAssetsRoute
+  '/assignments': typeof AuthenticatedAssignmentsRoute
+  '/audit-log': typeof AuthenticatedAuditLogRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
+  '/departments': typeof AuthenticatedDepartmentsRoute
+  '/distribution': typeof AuthenticatedDistributionRoute
+  '/floor-plan': typeof AuthenticatedFloorPlanRoute
+  '/maintenance': typeof AuthenticatedMaintenanceRoute
+  '/maintenance-calendar': typeof AuthenticatedMaintenanceCalendarRoute
+  '/network': typeof AuthenticatedNetworkRoute
+  '/organizations': typeof AuthenticatedOrganizationsRoute
+  '/people-search': typeof AuthenticatedPeopleSearchRoute
+  '/reports': typeof AuthenticatedReportsRoute
+  '/settings': typeof AuthenticatedSettingsRoute
+  '/software': typeof AuthenticatedSoftwareRoute
+  '/super-admin': typeof AuthenticatedSuperAdminRoute
+  '/technician-portal': typeof AuthenticatedTechnicianPortalRoute
+  '/users-management': typeof AuthenticatedUsersManagementRoute
+  '/vehicles': typeof AuthenticatedVehiclesRoute
+  '/vendors': typeof AuthenticatedVendorsRoute
+  '/warranties': typeof AuthenticatedWarrantiesRoute
+  '/rfid/alerts': typeof AuthenticatedRfidAlertsRoute
+  '/rfid/assets': typeof AuthenticatedRfidAssetsRoute
+  '/rfid/dashboard': typeof AuthenticatedRfidDashboardRoute
+  '/rfid/live': typeof AuthenticatedRfidLiveRoute
+  '/rfid/movement': typeof AuthenticatedRfidMovementRoute
+  '/rfid/onboarding': typeof AuthenticatedRfidOnboardingRoute
+  '/rfid/readers': typeof AuthenticatedRfidReadersRoute
+  '/rfid/reports': typeof AuthenticatedRfidReportsRoute
+  '/rfid/settings': typeof AuthenticatedRfidSettingsRoute
+  '/rfid/zones': typeof AuthenticatedRfidZonesRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/ai-assistant': typeof AuthenticatedAiAssistantRoute
+  '/api-docs': typeof AuthenticatedApiDocsRoute
+  '/assets': typeof AuthenticatedAssetsRoute
+  '/assignments': typeof AuthenticatedAssignmentsRoute
+  '/audit-log': typeof AuthenticatedAuditLogRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
+  '/departments': typeof AuthenticatedDepartmentsRoute
+  '/distribution': typeof AuthenticatedDistributionRoute
+  '/floor-plan': typeof AuthenticatedFloorPlanRoute
+  '/maintenance': typeof AuthenticatedMaintenanceRoute
+  '/maintenance-calendar': typeof AuthenticatedMaintenanceCalendarRoute
+  '/network': typeof AuthenticatedNetworkRoute
+  '/organizations': typeof AuthenticatedOrganizationsRoute
+  '/people-search': typeof AuthenticatedPeopleSearchRoute
+  '/reports': typeof AuthenticatedReportsRoute
+  '/settings': typeof AuthenticatedSettingsRoute
+  '/software': typeof AuthenticatedSoftwareRoute
+  '/super-admin': typeof AuthenticatedSuperAdminRoute
+  '/technician-portal': typeof AuthenticatedTechnicianPortalRoute
+  '/users-management': typeof AuthenticatedUsersManagementRoute
+  '/vehicles': typeof AuthenticatedVehiclesRoute
+  '/vendors': typeof AuthenticatedVendorsRoute
+  '/warranties': typeof AuthenticatedWarrantiesRoute
+  '/rfid/alerts': typeof AuthenticatedRfidAlertsRoute
+  '/rfid/assets': typeof AuthenticatedRfidAssetsRoute
+  '/rfid/dashboard': typeof AuthenticatedRfidDashboardRoute
+  '/rfid/live': typeof AuthenticatedRfidLiveRoute
+  '/rfid/movement': typeof AuthenticatedRfidMovementRoute
+  '/rfid/onboarding': typeof AuthenticatedRfidOnboardingRoute
+  '/rfid/readers': typeof AuthenticatedRfidReadersRoute
+  '/rfid/reports': typeof AuthenticatedRfidReportsRoute
+  '/rfid/settings': typeof AuthenticatedRfidSettingsRoute
+  '/rfid/zones': typeof AuthenticatedRfidZonesRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/auth': typeof AuthRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/_authenticated/ai-assistant': typeof AuthenticatedAiAssistantRoute
+  '/_authenticated/api-docs': typeof AuthenticatedApiDocsRoute
+  '/_authenticated/assets': typeof AuthenticatedAssetsRoute
+  '/_authenticated/assignments': typeof AuthenticatedAssignmentsRoute
+  '/_authenticated/audit-log': typeof AuthenticatedAuditLogRoute
+  '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/departments': typeof AuthenticatedDepartmentsRoute
+  '/_authenticated/distribution': typeof AuthenticatedDistributionRoute
+  '/_authenticated/floor-plan': typeof AuthenticatedFloorPlanRoute
+  '/_authenticated/maintenance': typeof AuthenticatedMaintenanceRoute
+  '/_authenticated/maintenance-calendar': typeof AuthenticatedMaintenanceCalendarRoute
+  '/_authenticated/network': typeof AuthenticatedNetworkRoute
+  '/_authenticated/organizations': typeof AuthenticatedOrganizationsRoute
+  '/_authenticated/people-search': typeof AuthenticatedPeopleSearchRoute
+  '/_authenticated/reports': typeof AuthenticatedReportsRoute
+  '/_authenticated/settings': typeof AuthenticatedSettingsRoute
+  '/_authenticated/software': typeof AuthenticatedSoftwareRoute
+  '/_authenticated/super-admin': typeof AuthenticatedSuperAdminRoute
+  '/_authenticated/technician-portal': typeof AuthenticatedTechnicianPortalRoute
+  '/_authenticated/users-management': typeof AuthenticatedUsersManagementRoute
+  '/_authenticated/vehicles': typeof AuthenticatedVehiclesRoute
+  '/_authenticated/vendors': typeof AuthenticatedVendorsRoute
+  '/_authenticated/warranties': typeof AuthenticatedWarrantiesRoute
+  '/_authenticated/rfid/alerts': typeof AuthenticatedRfidAlertsRoute
+  '/_authenticated/rfid/assets': typeof AuthenticatedRfidAssetsRoute
+  '/_authenticated/rfid/dashboard': typeof AuthenticatedRfidDashboardRoute
+  '/_authenticated/rfid/live': typeof AuthenticatedRfidLiveRoute
+  '/_authenticated/rfid/movement': typeof AuthenticatedRfidMovementRoute
+  '/_authenticated/rfid/onboarding': typeof AuthenticatedRfidOnboardingRoute
+  '/_authenticated/rfid/readers': typeof AuthenticatedRfidReadersRoute
+  '/_authenticated/rfid/reports': typeof AuthenticatedRfidReportsRoute
+  '/_authenticated/rfid/settings': typeof AuthenticatedRfidSettingsRoute
+  '/_authenticated/rfid/zones': typeof AuthenticatedRfidZonesRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/reset-password'
+    | '/ai-assistant'
+    | '/api-docs'
+    | '/assets'
+    | '/assignments'
+    | '/audit-log'
+    | '/dashboard'
+    | '/departments'
+    | '/distribution'
+    | '/floor-plan'
+    | '/maintenance'
+    | '/maintenance-calendar'
+    | '/network'
+    | '/organizations'
+    | '/people-search'
+    | '/reports'
+    | '/settings'
+    | '/software'
+    | '/super-admin'
+    | '/technician-portal'
+    | '/users-management'
+    | '/vehicles'
+    | '/vendors'
+    | '/warranties'
+    | '/rfid/alerts'
+    | '/rfid/assets'
+    | '/rfid/dashboard'
+    | '/rfid/live'
+    | '/rfid/movement'
+    | '/rfid/onboarding'
+    | '/rfid/readers'
+    | '/rfid/reports'
+    | '/rfid/settings'
+    | '/rfid/zones'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/auth'
+    | '/reset-password'
+    | '/ai-assistant'
+    | '/api-docs'
+    | '/assets'
+    | '/assignments'
+    | '/audit-log'
+    | '/dashboard'
+    | '/departments'
+    | '/distribution'
+    | '/floor-plan'
+    | '/maintenance'
+    | '/maintenance-calendar'
+    | '/network'
+    | '/organizations'
+    | '/people-search'
+    | '/reports'
+    | '/settings'
+    | '/software'
+    | '/super-admin'
+    | '/technician-portal'
+    | '/users-management'
+    | '/vehicles'
+    | '/vendors'
+    | '/warranties'
+    | '/rfid/alerts'
+    | '/rfid/assets'
+    | '/rfid/dashboard'
+    | '/rfid/live'
+    | '/rfid/movement'
+    | '/rfid/onboarding'
+    | '/rfid/readers'
+    | '/rfid/reports'
+    | '/rfid/settings'
+    | '/rfid/zones'
+  id:
+    | '__root__'
+    | '/'
+    | '/_authenticated'
+    | '/auth'
+    | '/reset-password'
+    | '/_authenticated/ai-assistant'
+    | '/_authenticated/api-docs'
+    | '/_authenticated/assets'
+    | '/_authenticated/assignments'
+    | '/_authenticated/audit-log'
+    | '/_authenticated/dashboard'
+    | '/_authenticated/departments'
+    | '/_authenticated/distribution'
+    | '/_authenticated/floor-plan'
+    | '/_authenticated/maintenance'
+    | '/_authenticated/maintenance-calendar'
+    | '/_authenticated/network'
+    | '/_authenticated/organizations'
+    | '/_authenticated/people-search'
+    | '/_authenticated/reports'
+    | '/_authenticated/settings'
+    | '/_authenticated/software'
+    | '/_authenticated/super-admin'
+    | '/_authenticated/technician-portal'
+    | '/_authenticated/users-management'
+    | '/_authenticated/vehicles'
+    | '/_authenticated/vendors'
+    | '/_authenticated/warranties'
+    | '/_authenticated/rfid/alerts'
+    | '/_authenticated/rfid/assets'
+    | '/_authenticated/rfid/dashboard'
+    | '/_authenticated/rfid/live'
+    | '/_authenticated/rfid/movement'
+    | '/_authenticated/rfid/onboarding'
+    | '/_authenticated/rfid/readers'
+    | '/_authenticated/rfid/reports'
+    | '/_authenticated/rfid/settings'
+    | '/_authenticated/rfid/zones'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  AuthRoute: typeof AuthRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,22 +498,342 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/ai-assistant': {
+      id: '/_authenticated/ai-assistant'
+      path: '/ai-assistant'
+      fullPath: '/ai-assistant'
+      preLoaderRoute: typeof AuthenticatedAiAssistantRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/api-docs': {
+      id: '/_authenticated/api-docs'
+      path: '/api-docs'
+      fullPath: '/api-docs'
+      preLoaderRoute: typeof AuthenticatedApiDocsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/assets': {
+      id: '/_authenticated/assets'
+      path: '/assets'
+      fullPath: '/assets'
+      preLoaderRoute: typeof AuthenticatedAssetsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/assignments': {
+      id: '/_authenticated/assignments'
+      path: '/assignments'
+      fullPath: '/assignments'
+      preLoaderRoute: typeof AuthenticatedAssignmentsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/audit-log': {
+      id: '/_authenticated/audit-log'
+      path: '/audit-log'
+      fullPath: '/audit-log'
+      preLoaderRoute: typeof AuthenticatedAuditLogRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/dashboard': {
+      id: '/_authenticated/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AuthenticatedDashboardRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/departments': {
+      id: '/_authenticated/departments'
+      path: '/departments'
+      fullPath: '/departments'
+      preLoaderRoute: typeof AuthenticatedDepartmentsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/distribution': {
+      id: '/_authenticated/distribution'
+      path: '/distribution'
+      fullPath: '/distribution'
+      preLoaderRoute: typeof AuthenticatedDistributionRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/floor-plan': {
+      id: '/_authenticated/floor-plan'
+      path: '/floor-plan'
+      fullPath: '/floor-plan'
+      preLoaderRoute: typeof AuthenticatedFloorPlanRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/maintenance': {
+      id: '/_authenticated/maintenance'
+      path: '/maintenance'
+      fullPath: '/maintenance'
+      preLoaderRoute: typeof AuthenticatedMaintenanceRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/maintenance-calendar': {
+      id: '/_authenticated/maintenance-calendar'
+      path: '/maintenance-calendar'
+      fullPath: '/maintenance-calendar'
+      preLoaderRoute: typeof AuthenticatedMaintenanceCalendarRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/network': {
+      id: '/_authenticated/network'
+      path: '/network'
+      fullPath: '/network'
+      preLoaderRoute: typeof AuthenticatedNetworkRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/organizations': {
+      id: '/_authenticated/organizations'
+      path: '/organizations'
+      fullPath: '/organizations'
+      preLoaderRoute: typeof AuthenticatedOrganizationsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/people-search': {
+      id: '/_authenticated/people-search'
+      path: '/people-search'
+      fullPath: '/people-search'
+      preLoaderRoute: typeof AuthenticatedPeopleSearchRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/reports': {
+      id: '/_authenticated/reports'
+      path: '/reports'
+      fullPath: '/reports'
+      preLoaderRoute: typeof AuthenticatedReportsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/settings': {
+      id: '/_authenticated/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof AuthenticatedSettingsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/software': {
+      id: '/_authenticated/software'
+      path: '/software'
+      fullPath: '/software'
+      preLoaderRoute: typeof AuthenticatedSoftwareRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/super-admin': {
+      id: '/_authenticated/super-admin'
+      path: '/super-admin'
+      fullPath: '/super-admin'
+      preLoaderRoute: typeof AuthenticatedSuperAdminRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/technician-portal': {
+      id: '/_authenticated/technician-portal'
+      path: '/technician-portal'
+      fullPath: '/technician-portal'
+      preLoaderRoute: typeof AuthenticatedTechnicianPortalRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/users-management': {
+      id: '/_authenticated/users-management'
+      path: '/users-management'
+      fullPath: '/users-management'
+      preLoaderRoute: typeof AuthenticatedUsersManagementRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/vehicles': {
+      id: '/_authenticated/vehicles'
+      path: '/vehicles'
+      fullPath: '/vehicles'
+      preLoaderRoute: typeof AuthenticatedVehiclesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/vendors': {
+      id: '/_authenticated/vendors'
+      path: '/vendors'
+      fullPath: '/vendors'
+      preLoaderRoute: typeof AuthenticatedVendorsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/warranties': {
+      id: '/_authenticated/warranties'
+      path: '/warranties'
+      fullPath: '/warranties'
+      preLoaderRoute: typeof AuthenticatedWarrantiesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/rfid/alerts': {
+      id: '/_authenticated/rfid/alerts'
+      path: '/rfid/alerts'
+      fullPath: '/rfid/alerts'
+      preLoaderRoute: typeof AuthenticatedRfidAlertsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/rfid/assets': {
+      id: '/_authenticated/rfid/assets'
+      path: '/rfid/assets'
+      fullPath: '/rfid/assets'
+      preLoaderRoute: typeof AuthenticatedRfidAssetsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/rfid/dashboard': {
+      id: '/_authenticated/rfid/dashboard'
+      path: '/rfid/dashboard'
+      fullPath: '/rfid/dashboard'
+      preLoaderRoute: typeof AuthenticatedRfidDashboardRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/rfid/live': {
+      id: '/_authenticated/rfid/live'
+      path: '/rfid/live'
+      fullPath: '/rfid/live'
+      preLoaderRoute: typeof AuthenticatedRfidLiveRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/rfid/movement': {
+      id: '/_authenticated/rfid/movement'
+      path: '/rfid/movement'
+      fullPath: '/rfid/movement'
+      preLoaderRoute: typeof AuthenticatedRfidMovementRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/rfid/onboarding': {
+      id: '/_authenticated/rfid/onboarding'
+      path: '/rfid/onboarding'
+      fullPath: '/rfid/onboarding'
+      preLoaderRoute: typeof AuthenticatedRfidOnboardingRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/rfid/readers': {
+      id: '/_authenticated/rfid/readers'
+      path: '/rfid/readers'
+      fullPath: '/rfid/readers'
+      preLoaderRoute: typeof AuthenticatedRfidReadersRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/rfid/reports': {
+      id: '/_authenticated/rfid/reports'
+      path: '/rfid/reports'
+      fullPath: '/rfid/reports'
+      preLoaderRoute: typeof AuthenticatedRfidReportsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/rfid/settings': {
+      id: '/_authenticated/rfid/settings'
+      path: '/rfid/settings'
+      fullPath: '/rfid/settings'
+      preLoaderRoute: typeof AuthenticatedRfidSettingsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/rfid/zones': {
+      id: '/_authenticated/rfid/zones'
+      path: '/rfid/zones'
+      fullPath: '/rfid/zones'
+      preLoaderRoute: typeof AuthenticatedRfidZonesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAiAssistantRoute: typeof AuthenticatedAiAssistantRoute
+  AuthenticatedApiDocsRoute: typeof AuthenticatedApiDocsRoute
+  AuthenticatedAssetsRoute: typeof AuthenticatedAssetsRoute
+  AuthenticatedAssignmentsRoute: typeof AuthenticatedAssignmentsRoute
+  AuthenticatedAuditLogRoute: typeof AuthenticatedAuditLogRoute
+  AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedDepartmentsRoute: typeof AuthenticatedDepartmentsRoute
+  AuthenticatedDistributionRoute: typeof AuthenticatedDistributionRoute
+  AuthenticatedFloorPlanRoute: typeof AuthenticatedFloorPlanRoute
+  AuthenticatedMaintenanceRoute: typeof AuthenticatedMaintenanceRoute
+  AuthenticatedMaintenanceCalendarRoute: typeof AuthenticatedMaintenanceCalendarRoute
+  AuthenticatedNetworkRoute: typeof AuthenticatedNetworkRoute
+  AuthenticatedOrganizationsRoute: typeof AuthenticatedOrganizationsRoute
+  AuthenticatedPeopleSearchRoute: typeof AuthenticatedPeopleSearchRoute
+  AuthenticatedReportsRoute: typeof AuthenticatedReportsRoute
+  AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
+  AuthenticatedSoftwareRoute: typeof AuthenticatedSoftwareRoute
+  AuthenticatedSuperAdminRoute: typeof AuthenticatedSuperAdminRoute
+  AuthenticatedTechnicianPortalRoute: typeof AuthenticatedTechnicianPortalRoute
+  AuthenticatedUsersManagementRoute: typeof AuthenticatedUsersManagementRoute
+  AuthenticatedVehiclesRoute: typeof AuthenticatedVehiclesRoute
+  AuthenticatedVendorsRoute: typeof AuthenticatedVendorsRoute
+  AuthenticatedWarrantiesRoute: typeof AuthenticatedWarrantiesRoute
+  AuthenticatedRfidAlertsRoute: typeof AuthenticatedRfidAlertsRoute
+  AuthenticatedRfidAssetsRoute: typeof AuthenticatedRfidAssetsRoute
+  AuthenticatedRfidDashboardRoute: typeof AuthenticatedRfidDashboardRoute
+  AuthenticatedRfidLiveRoute: typeof AuthenticatedRfidLiveRoute
+  AuthenticatedRfidMovementRoute: typeof AuthenticatedRfidMovementRoute
+  AuthenticatedRfidOnboardingRoute: typeof AuthenticatedRfidOnboardingRoute
+  AuthenticatedRfidReadersRoute: typeof AuthenticatedRfidReadersRoute
+  AuthenticatedRfidReportsRoute: typeof AuthenticatedRfidReportsRoute
+  AuthenticatedRfidSettingsRoute: typeof AuthenticatedRfidSettingsRoute
+  AuthenticatedRfidZonesRoute: typeof AuthenticatedRfidZonesRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAiAssistantRoute: AuthenticatedAiAssistantRoute,
+  AuthenticatedApiDocsRoute: AuthenticatedApiDocsRoute,
+  AuthenticatedAssetsRoute: AuthenticatedAssetsRoute,
+  AuthenticatedAssignmentsRoute: AuthenticatedAssignmentsRoute,
+  AuthenticatedAuditLogRoute: AuthenticatedAuditLogRoute,
+  AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedDepartmentsRoute: AuthenticatedDepartmentsRoute,
+  AuthenticatedDistributionRoute: AuthenticatedDistributionRoute,
+  AuthenticatedFloorPlanRoute: AuthenticatedFloorPlanRoute,
+  AuthenticatedMaintenanceRoute: AuthenticatedMaintenanceRoute,
+  AuthenticatedMaintenanceCalendarRoute: AuthenticatedMaintenanceCalendarRoute,
+  AuthenticatedNetworkRoute: AuthenticatedNetworkRoute,
+  AuthenticatedOrganizationsRoute: AuthenticatedOrganizationsRoute,
+  AuthenticatedPeopleSearchRoute: AuthenticatedPeopleSearchRoute,
+  AuthenticatedReportsRoute: AuthenticatedReportsRoute,
+  AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
+  AuthenticatedSoftwareRoute: AuthenticatedSoftwareRoute,
+  AuthenticatedSuperAdminRoute: AuthenticatedSuperAdminRoute,
+  AuthenticatedTechnicianPortalRoute: AuthenticatedTechnicianPortalRoute,
+  AuthenticatedUsersManagementRoute: AuthenticatedUsersManagementRoute,
+  AuthenticatedVehiclesRoute: AuthenticatedVehiclesRoute,
+  AuthenticatedVendorsRoute: AuthenticatedVendorsRoute,
+  AuthenticatedWarrantiesRoute: AuthenticatedWarrantiesRoute,
+  AuthenticatedRfidAlertsRoute: AuthenticatedRfidAlertsRoute,
+  AuthenticatedRfidAssetsRoute: AuthenticatedRfidAssetsRoute,
+  AuthenticatedRfidDashboardRoute: AuthenticatedRfidDashboardRoute,
+  AuthenticatedRfidLiveRoute: AuthenticatedRfidLiveRoute,
+  AuthenticatedRfidMovementRoute: AuthenticatedRfidMovementRoute,
+  AuthenticatedRfidOnboardingRoute: AuthenticatedRfidOnboardingRoute,
+  AuthenticatedRfidReadersRoute: AuthenticatedRfidReadersRoute,
+  AuthenticatedRfidReportsRoute: AuthenticatedRfidReportsRoute,
+  AuthenticatedRfidSettingsRoute: AuthenticatedRfidSettingsRoute,
+  AuthenticatedRfidZonesRoute: AuthenticatedRfidZonesRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  AuthRoute: AuthRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
