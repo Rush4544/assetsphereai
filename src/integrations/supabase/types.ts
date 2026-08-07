@@ -1898,6 +1898,13 @@ export type Database = {
       is_operator: { Args: never; Returns: boolean }
       is_org_admin: { Args: never; Returns: boolean }
       is_super_admin: { Args: never; Returns: boolean }
+      list_organizations: {
+        Args: never
+        Returns: {
+          id: string
+          name: string
+        }[]
+      }
     }
     Enums: {
       app_role: "super_admin" | "admin" | "technician" | "user"

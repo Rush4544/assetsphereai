@@ -1,5 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Loader2, Radio } from "lucide-react";
 import { toast } from "sonner";
 
@@ -9,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
@@ -43,8 +45,26 @@ function AuthPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
+  const [orgMode, setOrgMode] = useState<"join" | "create">("join");
+  const [orgId, setOrgId] = useState("");
+  const [newOrgName, setNewOrgName] = useState("");
   const [busy, setBusy] = useState(false);
   const [sent, setSent] = useState(false);
+
+  const orgs = useQuery({
+    queryKey: ["public-organizations"],
+    queryFn: async () => {
+      const { data, error } = await (supabase as unknown as {
+        rpc: (fn: string) => Promise<{ data: Array<{ id: string; name: string }> | null; error: unknown }>;
+      }).rpc("list_organizations");
+      if (error) throw error;
+      return data ?? [];
+    },
+    staleTime: 60_000,
+  });
+
+  const noOrgs = (orgs.data?.length ?? 0) === 0;
+  const mustCreate = orgMode === "create" || (noOrgs && !orgs.isLoading);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
@@ -66,13 +86,24 @@ function AuthPage() {
 
   async function signUp(e: React.FormEvent) {
     e.preventDefault();
+    if (mustCreate) {
+      if (!newOrgName.trim()) {
+        toast.error("Enter a company name.");
+        return;
+      }
+    } else if (!orgId) {
+      toast.error("Choose the company you belong to.");
+      return;
+    }
     setBusy(true);
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
         emailRedirectTo: window.location.origin,
-        data: { full_name: fullName },
+        data: mustCreate
+          ? { full_name: fullName, new_organization_name: newOrgName.trim() }
+          : { full_name: fullName, organization_id: orgId },
       },
     });
     setBusy(false);
@@ -196,12 +227,68 @@ function AuthPage() {
               <TabsContent value="signup" className="mt-6">
                 <h1 className="text-xl font-semibold">Create your account</h1>
                 <p className="mt-1 text-sm text-muted-foreground">
-                  New accounts start as pending until an administrator approves them.
+                  {mustCreate
+                    ? "You will become the administrator of the company you create."
+                    : "Joining an existing company keeps your account pending until an administrator approves it."}
                 </p>
                 <form className="mt-6 space-y-4" onSubmit={signUp}>
                   <div className="space-y-2">
                     <Label htmlFor="name">Full name</Label>
                     <Input id="name" required value={fullName} onChange={(e) => setFullName(e.target.value)} />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="company">Company</Label>
+                    {noOrgs && !orgs.isLoading ? (
+                      <>
+                        <Input
+                          id="company"
+                          placeholder="Your company name"
+                          value={newOrgName}
+                          onChange={(e) => setNewOrgName(e.target.value)}
+                        />
+                        <p className="text-xs text-muted-foreground">
+                          No companies exist yet — the first account creates one.
+                        </p>
+                      </>
+                    ) : orgMode === "join" ? (
+                      <>
+                        <Select value={orgId} onValueChange={setOrgId}>
+                          <SelectTrigger id="company">
+                            <SelectValue placeholder={orgs.isLoading ? "Loading companies…" : "Select your company"} />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {(orgs.data ?? []).map((o) => (
+                              <SelectItem key={o.id} value={o.id}>
+                                {o.name}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <button
+                          type="button"
+                          className="text-xs text-primary hover:underline"
+                          onClick={() => setOrgMode("create")}
+                        >
+                          My company isn&apos;t listed — create a new one
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <Input
+                          id="company"
+                          placeholder="New company name"
+                          value={newOrgName}
+                          onChange={(e) => setNewOrgName(e.target.value)}
+                        />
+                        <button
+                          type="button"
+                          className="text-xs text-primary hover:underline"
+                          onClick={() => setOrgMode("join")}
+                        >
+                          Join an existing company instead
+                        </button>
+                      </>
+                    )}
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="signup-email">Work email</Label>

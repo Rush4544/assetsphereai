@@ -1,0 +1,1 @@
+DROP TRIGGER IF EXISTS set_updated_at_rfid_detections ON public.rfid_detections;

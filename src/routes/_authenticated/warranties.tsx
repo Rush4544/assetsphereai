@@ -1,18 +1,22 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { ComingSoon } from "@/components/app/ComingSoon";
+
+import { ResourcePage } from "@/components/app/ResourcePage";
+import { warrantiesConfig } from "@/lib/resources";
 
 export const Route = createFileRoute("/_authenticated/warranties")({
   head: () => ({
     meta: [
       { title: "Warranties — AssetSphere AI" },
-      { name: "description", content: "Warranty coverage and expiry tracking." },
+      { name: "description", content: "Warranty coverage windows and upcoming expiries across the estate." },
       { property: "og:title", content: "Warranties — AssetSphere AI" },
-      { property: "og:description", content: "Warranty coverage and expiry tracking." },
+      { property: "og:description", content: "Warranty coverage windows and upcoming expiries across the estate." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: WarrantiesPage,
 });
 
 function WarrantiesPage() {
-  return <ComingSoon title="Warranties" description="Warranty coverage and expiry tracking." icon="ShieldCheck" />;
+  return <ResourcePage config={warrantiesConfig} />;
 }
