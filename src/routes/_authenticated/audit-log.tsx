@@ -1,18 +1,22 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { ComingSoon } from "@/components/app/ComingSoon";
+
+import { ResourcePage } from "@/components/app/ResourcePage";
+import { auditLogConfig } from "@/lib/resources";
 
 export const Route = createFileRoute("/_authenticated/audit-log")({
   head: () => ({
     meta: [
       { title: "Audit Log — AssetSphere AI" },
-      { name: "description", content: "Immutable record of every change made in your organization." },
+      { name: "description", content: "Immutable trail of everything that happened in your organization." },
       { property: "og:title", content: "Audit Log — AssetSphere AI" },
-      { property: "og:description", content: "Immutable record of every change made in your organization." },
+      { property: "og:description", content: "Immutable trail of everything that happened in your organization." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: AuditLogPage,
 });
 
 function AuditLogPage() {
-  return <ComingSoon title="Audit Log" description="Immutable record of every change made in your organization." icon="ScrollText" />;
+  return <ResourcePage config={auditLogConfig} />;
 }

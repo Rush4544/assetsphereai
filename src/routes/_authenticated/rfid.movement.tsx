@@ -1,18 +1,22 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { ComingSoon } from "@/components/app/ComingSoon";
+
+import { ResourcePage } from "@/components/app/ResourcePage";
+import { rfidDetectionsConfig } from "@/lib/resources";
 
 export const Route = createFileRoute("/_authenticated/rfid/movement")({
   head: () => ({
     meta: [
-      { title: "RFID Movement History — AssetSphere AI" },
-      { name: "description", content: "Detection log with entry, exit and transit events." },
-      { property: "og:title", content: "RFID Movement History — AssetSphere AI" },
-      { property: "og:description", content: "Detection log with entry, exit and transit events." },
+      { title: "Movement History — AssetSphere AI" },
+      { name: "description", content: "Every tag read, with direction of travel and zone transitions." },
+      { property: "og:title", content: "Movement History — AssetSphere AI" },
+      { property: "og:description", content: "Every tag read, with direction of travel and zone transitions." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: RfidMovementPage,
 });
 
 function RfidMovementPage() {
-  return <ComingSoon title="RFID Movement History" description="Detection log with entry, exit and transit events." icon="History" />;
+  return <ResourcePage config={rfidDetectionsConfig} />;
 }

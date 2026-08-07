@@ -1,18 +1,22 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { ComingSoon } from "@/components/app/ComingSoon";
+
+import { ResourcePage } from "@/components/app/ResourcePage";
+import { vehiclesConfig } from "@/lib/resources";
 
 export const Route = createFileRoute("/_authenticated/vehicles")({
   head: () => ({
     meta: [
       { title: "Vehicles — AssetSphere AI" },
-      { name: "description", content: "Fleet management with live GPS, geofences and service scheduling." },
+      { name: "description", content: "Fleet register with drivers, telemetry, geofencing and service dates." },
       { property: "og:title", content: "Vehicles — AssetSphere AI" },
-      { property: "og:description", content: "Fleet management with live GPS, geofences and service scheduling." },
+      { property: "og:description", content: "Fleet register with drivers, telemetry, geofencing and service dates." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: VehiclesPage,
 });
 
 function VehiclesPage() {
-  return <ComingSoon title="Vehicles" description="Fleet management with live GPS, geofences and service scheduling." icon="Truck" />;
+  return <ResourcePage config={vehiclesConfig} />;
 }
