@@ -5,7 +5,7 @@ import { humanize, toneFor } from "@/lib/resource";
 const TONE = {
   success: "border-transparent bg-success/12 text-success",
   danger: "border-transparent bg-destructive/12 text-destructive",
-  warning: "border-transparent bg-warning/15 text-warning-foreground",
+  warning: "border-transparent bg-warning/15 text-warning",
   muted: "border-transparent bg-muted text-muted-foreground",
 } as const;
 
