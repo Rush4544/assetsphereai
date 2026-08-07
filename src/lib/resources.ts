@@ -142,7 +142,7 @@ export const vehiclesConfig: ResourceConfig = {
   description: "Fleet register with drivers, telemetry, geofencing and service dates.",
   icon: "Truck",
   statusField: "status",
-  statusOptions: ["active", "maintenance", "inactive", "retired"],
+  statusOptions: ["active", "in_maintenance", "retired", "stolen"],
   searchFields: ["name", "license_plate", "make", "model", "vin", "driver_name"],
   columns: [
     { name: "name", label: "Vehicle", className: "font-medium" },
@@ -171,9 +171,9 @@ export const vehiclesConfig: ResourceConfig = {
     { name: "model", label: "Model", group: "Vehicle" },
     { name: "year", label: "Year", type: "number", group: "Vehicle" },
     { name: "vin", label: "VIN", group: "Vehicle" },
-    { name: "vehicle_type", label: "Vehicle type", type: "select", options: ["car", "van", "truck", "bus", "trailer", "equipment"], group: "Vehicle" },
+    { name: "vehicle_type", label: "Vehicle type", type: "select", options: ["car", "van", "truck", "suv", "motorcycle", "heavy_equipment", "other"], group: "Vehicle" },
     { name: "color", label: "Colour", group: "Vehicle" },
-    { name: "status", label: "Status", type: "select", options: ["active", "maintenance", "inactive", "retired"], group: "Vehicle" },
+    { name: "status", label: "Status", type: "select", options: ["active", "in_maintenance", "retired", "stolen"], group: "Vehicle" },
     { name: "notes", label: "Notes", type: "textarea", group: "Vehicle" },
 
     { name: "driver_name", label: "Driver", group: "Driver" },
