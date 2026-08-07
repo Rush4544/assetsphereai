@@ -1,6 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 import { ResourcePage } from "@/components/app/ResourcePage";
+import { FleetMap } from "@/components/app/FleetMap";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { vehiclesConfig } from "@/lib/resources";
 
 export const Route = createFileRoute("/_authenticated/vehicles")({
@@ -18,5 +20,18 @@ export const Route = createFileRoute("/_authenticated/vehicles")({
 });
 
 function VehiclesPage() {
-  return <ResourcePage config={vehiclesConfig} />;
+  return (
+    <Tabs defaultValue="table" className="space-y-6">
+      <TabsList>
+        <TabsTrigger value="table">Fleet register</TabsTrigger>
+        <TabsTrigger value="map">Live map</TabsTrigger>
+      </TabsList>
+      <TabsContent value="table" className="mt-0">
+        <ResourcePage config={vehiclesConfig} />
+      </TabsContent>
+      <TabsContent value="map" className="mt-0">
+        <FleetMap />
+      </TabsContent>
+    </Tabs>
+  );
 }
