@@ -1,18 +1,22 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { ComingSoon } from "@/components/app/ComingSoon";
+
+import { ResourcePage } from "@/components/app/ResourcePage";
+import { rfidAlertsConfig } from "@/lib/resources";
 
 export const Route = createFileRoute("/_authenticated/rfid/alerts")({
   head: () => ({
     meta: [
       { title: "RFID Alerts — AssetSphere AI" },
-      { name: "description", content: "Unauthorised movement, offline readers and low batteries." },
+      { name: "description", content: "Unauthorised movement, zone breaches and tag health alerts." },
       { property: "og:title", content: "RFID Alerts — AssetSphere AI" },
-      { property: "og:description", content: "Unauthorised movement, offline readers and low batteries." },
+      { property: "og:description", content: "Unauthorised movement, zone breaches and tag health alerts." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: RfidAlertsPage,
 });
 
 function RfidAlertsPage() {
-  return <ComingSoon title="RFID Alerts" description="Unauthorised movement, offline readers and low batteries." icon="BellRing" />;
+  return <ResourcePage config={rfidAlertsConfig} />;
 }

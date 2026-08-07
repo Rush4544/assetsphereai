@@ -1,5 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { ComingSoon } from "@/components/app/ComingSoon";
+
+import { ResourcePage } from "@/components/app/ResourcePage";
+import { departmentsConfig } from "@/lib/resources";
 
 export const Route = createFileRoute("/_authenticated/departments")({
   head: () => ({
@@ -8,11 +10,13 @@ export const Route = createFileRoute("/_authenticated/departments")({
       { name: "description", content: "Departments, cost centres and reporting lines." },
       { property: "og:title", content: "Departments — AssetSphere AI" },
       { property: "og:description", content: "Departments, cost centres and reporting lines." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: DepartmentsPage,
 });
 
 function DepartmentsPage() {
-  return <ComingSoon title="Departments" description="Departments, cost centres and reporting lines." icon="Building2" />;
+  return <ResourcePage config={departmentsConfig} />;
 }

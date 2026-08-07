@@ -1,18 +1,22 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { ComingSoon } from "@/components/app/ComingSoon";
+
+import { ResourcePage } from "@/components/app/ResourcePage";
+import { rfidZonesConfig } from "@/lib/resources";
 
 export const Route = createFileRoute("/_authenticated/rfid/zones")({
   head: () => ({
     meta: [
       { title: "RFID Zones — AssetSphere AI" },
-      { name: "description", content: "Zones, restrictions and authorised areas." },
+      { name: "description", content: "Logical zones that group readers and control restricted areas." },
       { property: "og:title", content: "RFID Zones — AssetSphere AI" },
-      { property: "og:description", content: "Zones, restrictions and authorised areas." },
+      { property: "og:description", content: "Logical zones that group readers and control restricted areas." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: RfidZonesPage,
 });
 
 function RfidZonesPage() {
-  return <ComingSoon title="RFID Zones" description="Zones, restrictions and authorised areas." icon="LayoutGrid" />;
+  return <ResourcePage config={rfidZonesConfig} />;
 }

@@ -1,18 +1,22 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { ComingSoon } from "@/components/app/ComingSoon";
+
+import { ResourcePage } from "@/components/app/ResourcePage";
+import { distributionConfig } from "@/lib/resources";
 
 export const Route = createFileRoute("/_authenticated/distribution")({
   head: () => ({
     meta: [
-      { title: "Asset Distribution — AssetSphere AI" },
-      { name: "description", content: "Request, approve, distribute and return equipment." },
-      { property: "og:title", content: "Asset Distribution — AssetSphere AI" },
-      { property: "og:description", content: "Request, approve, distribute and return equipment." },
+      { title: "Distribution — AssetSphere AI" },
+      { name: "description", content: "Equipment requests, approvals and fulfilment." },
+      { property: "og:title", content: "Distribution — AssetSphere AI" },
+      { property: "og:description", content: "Equipment requests, approvals and fulfilment." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: DistributionPage,
 });
 
 function DistributionPage() {
-  return <ComingSoon title="Asset Distribution" description="Request, approve, distribute and return equipment." icon="PackageCheck" />;
+  return <ResourcePage config={distributionConfig} />;
 }
