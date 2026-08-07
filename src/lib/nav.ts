@@ -14,6 +14,8 @@ export const mainNav: NavItem[] = [
   { key: "network", label: "Network Discovery", url: "/network", icon: "Network", roles: ["technician", "admin", "super_admin"] },
   { key: "floor-plan", label: "Floor Plan", url: "/floor-plan", icon: "Map", roles: ["technician", "admin", "super_admin"] },
   { key: "vehicles", label: "Vehicles", url: "/vehicles", icon: "Truck", roles: ["technician", "admin", "super_admin"] },
+  { key: "vehicle-service", label: "Vehicle Service", url: "/vehicle-service", icon: "Wrench", roles: ["technician", "admin", "super_admin"] },
+  { key: "geofences", label: "Geofences", url: "/geofences", icon: "MapPinned", roles: ["technician", "admin", "super_admin"] },
   { key: "maintenance", label: "Maintenance", url: "/maintenance", icon: "Wrench", roles: ["technician", "admin", "super_admin"] },
   { key: "maintenance-calendar", label: "Maintenance Calendar", url: "/maintenance-calendar", icon: "CalendarDays", roles: ["technician", "admin", "super_admin"] },
   { key: "distribution", label: "Distribution", url: "/distribution", icon: "PackageCheck", roles: ["technician", "admin", "super_admin"] },
@@ -28,6 +30,7 @@ export const rfidNav: NavItem[] = [
   { key: "rfid-assets", label: "Tagged Assets", url: "/rfid/assets", icon: "Tags", roles: ["technician", "admin", "super_admin"] },
   { key: "rfid-readers", label: "Readers", url: "/rfid/readers", icon: "ScanLine", roles: ["technician", "admin", "super_admin"] },
   { key: "rfid-zones", label: "Zones", url: "/rfid/zones", icon: "LayoutGrid", roles: ["technician", "admin", "super_admin"] },
+  { key: "rfid-gateways", label: "Gateways", url: "/rfid/gateways", icon: "Router", roles: ["technician", "admin", "super_admin"] },
   { key: "rfid-live", label: "Live Tracking", url: "/rfid/live", icon: "Activity", roles: ["technician", "admin", "super_admin"] },
   { key: "rfid-movement", label: "Movement History", url: "/rfid/movement", icon: "History", roles: ["technician", "admin", "super_admin"] },
   { key: "rfid-alerts", label: "Alerts", url: "/rfid/alerts", icon: "BellRing", roles: ["technician", "admin", "super_admin"] },
@@ -45,6 +48,9 @@ export const toolsNav: NavItem[] = [
 
 export const adminNav: NavItem[] = [
   { key: "departments", label: "Departments", url: "/departments", icon: "Building2", roles: ["admin", "super_admin"] },
+  { key: "buildings", label: "Buildings", url: "/buildings", icon: "Building", roles: ["admin", "super_admin"] },
+  { key: "rooms", label: "Rooms", url: "/rooms", icon: "DoorOpen", roles: ["admin", "super_admin"] },
+  { key: "asset-categories", label: "Asset Categories", url: "/asset-categories", icon: "FolderTree", roles: ["admin", "super_admin"] },
   { key: "vendors", label: "Vendors", url: "/vendors", icon: "Handshake", roles: ["admin", "super_admin"] },
   { key: "users-management", label: "Users", url: "/users-management", icon: "Users", roles: ["admin", "super_admin"] },
   { key: "audit-log", label: "Audit Log", url: "/audit-log", icon: "ScrollText", roles: ["admin", "super_admin"] },
@@ -53,6 +59,7 @@ export const adminNav: NavItem[] = [
 
 export const superAdminNav: NavItem[] = [
   { key: "organizations", label: "Organizations", url: "/organizations", icon: "Landmark", roles: ["super_admin"] },
+  { key: "invoices", label: "Invoices", url: "/invoices", icon: "Receipt", roles: ["super_admin"] },
   { key: "super-admin", label: "Super Admin Portal", url: "/super-admin", icon: "Crown", roles: ["super_admin"] },
 ];
 
