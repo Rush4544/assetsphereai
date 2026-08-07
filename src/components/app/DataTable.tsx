@@ -47,8 +47,8 @@ export function DataTable({
 }: {
   columns: Column[];
   rows: Row[];
-  onRowClick?: (row: Row) => void;
-  emptyMessage?: string;
+  onRowClick?: ((row: Row) => void) | undefined;
+  emptyMessage?: string | undefined;
 }) {
   return (
     <div className="glass-card overflow-x-auto">

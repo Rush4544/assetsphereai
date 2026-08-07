@@ -74,10 +74,10 @@ export function RecordDialog({
   open: boolean;
   onOpenChange: (v: boolean) => void;
   title: string;
-  description?: string;
+  description?: string | undefined;
   fields: Field[];
-  initial?: Row | null;
-  saving?: boolean;
+  initial?: Row | null | undefined;
+  saving?: boolean | undefined;
   onSubmit: (values: Row) => void;
 }) {
   const [values, setValues] = useState<Row>({});

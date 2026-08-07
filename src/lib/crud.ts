@@ -12,7 +12,10 @@ const db = supabase as unknown as {
 
 export function useRows(
   table: string,
-  opts?: { orderBy?: { column: string; ascending?: boolean }; limit?: number },
+  opts?: {
+    orderBy?: { column: string; ascending?: boolean } | undefined;
+    limit?: number | undefined;
+  },
 ) {
   return useQuery({
     queryKey: ["rows", table, opts?.orderBy?.column ?? null, opts?.limit ?? null],
