@@ -71,7 +71,12 @@ export const updateUserAccess = createServerFn({ method: "POST" })
     }
 
     if (Object.keys(patch).length > 0) {
-      const { error } = await supabaseAdmin.from("profiles").update(patch).eq("id", data.userId);
+      const { error } = await (supabaseAdmin as unknown as {
+        from: (t: string) => any;
+      })
+        .from("profiles")
+        .update(patch)
+        .eq("id", data.userId);
       if (error) throw error;
     }
 
