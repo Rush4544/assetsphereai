@@ -12,7 +12,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
 import { useCurrentUser } from "@/lib/auth";
 import { useRows } from "@/lib/crud";
-import type { Row } from "@/lib/resource";
+import type { Row as DataRow } from "@/lib/resource";
 
 const db = supabase as unknown as { from: (t: string) => any };
 
@@ -57,7 +57,7 @@ function SettingsPage() {
   }, [user?.profile]);
 
   const myOrg = (orgs.data ?? []).find(
-    (o: Row) => String(o["id"]) === String(user?.profile?.organization_id ?? ""),
+    (o: DataRow) => String(o["id"]) === String(user?.profile?.organization_id ?? ""),
   );
 
   useEffect(() => {
