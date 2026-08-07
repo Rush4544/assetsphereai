@@ -130,6 +130,11 @@ export function AppSidebar({ user }: { user: CurrentUser }) {
             <p className="truncate text-[11px] capitalize text-sidebar-foreground/50">
               {user.role.replace("_", " ")}
             </p>
+            {user.previewOwner && (
+              <p className="mt-1 rounded bg-sidebar-accent px-1.5 py-1 text-[10px] leading-snug text-sidebar-foreground/70">
+                Owner preview — sign in to load company data.
+              </p>
+            )}
           </div>
         )}
         <div className="flex items-center gap-1">

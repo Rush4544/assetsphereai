@@ -1,6 +1,7 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { isOwnerPreview } from "./preview";
 
 export type AppRole = "super_admin" | "admin" | "technician" | "user";
 
@@ -23,6 +24,8 @@ export type CurrentUser = {
   profile: Profile | null;
   roles: AppRole[];
   role: AppRole;
+  /** True when browsing the editor preview without a signed-in account. */
+  previewOwner?: boolean;
 };
 
 const ROLE_RANK: AppRole[] = ["user", "technician", "admin", "super_admin"];
@@ -37,7 +40,28 @@ export function highestRole(roles: AppRole[]): AppRole {
 export async function fetchCurrentUser(): Promise<CurrentUser | null> {
   const { data: userData } = await supabase.auth.getUser();
   const user = userData.user;
-  if (!user) return null;
+  if (!user) {
+    if (!isOwnerPreview()) return null;
+    return {
+      userId: "preview-owner",
+      email: "owner@preview",
+      profile: {
+        id: "preview-owner",
+        email: "owner@preview",
+        full_name: "Software Owner",
+        avatar_url: null,
+        department: null,
+        job_title: "Owner",
+        organization_id: null,
+        organization_name: "Preview mode",
+        status: "active",
+        page_permissions: {},
+      },
+      roles: ["super_admin"],
+      role: "super_admin",
+      previewOwner: true,
+    };
+  }
 
   const [{ data: profile }, { data: roleRows }] = await Promise.all([
     supabase.from("profiles").select("*").eq("id", user.id).maybeSingle(),
