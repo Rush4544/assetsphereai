@@ -132,7 +132,7 @@ export function AppSidebar({ user }: { user: CurrentUser }) {
             </p>
             {user.previewOwner && (
               <p className="mt-1 rounded bg-sidebar-accent px-1.5 py-1 text-[10px] leading-snug text-sidebar-foreground/70">
-                Owner preview — sign in to load company data.
+                Owner preview — showing the Northbridge demo company data.
               </p>
             )}
           </div>
