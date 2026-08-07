@@ -45,7 +45,7 @@ function step(lat: number, lng: number, heading: number, km: number) {
 }
 
 export default function FleetMapCanvas({ focusGeofences = false }: { focusGeofences?: boolean }) {
-  const { data: dbVehicles = [] } = useRows("vehicles", { orderBy: { column: "name", ascending: true } });
+  const { data: dbVehicles } = useRows("vehicles", { orderBy: { column: "name", ascending: true } });
   const { data: fences = [] } = useRows("geofences", { orderBy: { column: "name", ascending: true } });
 
   const [live, setLive] = useState<Vehicle[]>([]);
@@ -53,6 +53,7 @@ export default function FleetMapCanvas({ focusGeofences = false }: { focusGeofen
   const timer = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
+    if (!dbVehicles) return;
     setLive(dbVehicles.filter((v) => num(v["gps_lat"]) !== null && num(v["gps_lng"]) !== null) as Vehicle[]);
   }, [dbVehicles]);
 
