@@ -14,7 +14,7 @@ import { Button } from "@/components/ui/button";
 function NavLink({ item, collapsed }: { item: NavItem; collapsed: boolean }) {
   return (
     <Link
-      to={item.url as LinkProps["to"]}
+      to={item.url as NonNullable<LinkProps["to"]>}
       className="group flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-sidebar-foreground/75 transition-colors hover:bg-sidebar-accent hover:text-sidebar-foreground"
       activeProps={{ className: "bg-sidebar-accent text-sidebar-foreground font-medium" }}
       title={item.label}
@@ -132,7 +132,7 @@ export function AppSidebar({ user }: { user: CurrentUser }) {
             </p>
             {user.previewOwner && (
               <p className="mt-1 rounded bg-sidebar-accent px-1.5 py-1 text-[10px] leading-snug text-sidebar-foreground/70">
-                Owner preview — sign in to load company data.
+                Owner preview — showing the Northbridge demo company data.
               </p>
             )}
           </div>

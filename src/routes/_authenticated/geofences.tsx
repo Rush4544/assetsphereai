@@ -1,6 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 import { ResourcePage } from "@/components/app/ResourcePage";
+import { FleetMap } from "@/components/app/FleetMap";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { geofencesConfig } from "@/lib/resources";
 
 export const Route = createFileRoute("/_authenticated/geofences")({
@@ -18,5 +20,18 @@ export const Route = createFileRoute("/_authenticated/geofences")({
 });
 
 function GeofencesPage() {
-  return <ResourcePage config={geofencesConfig} />;
+  return (
+    <Tabs defaultValue="map" className="space-y-6">
+      <TabsList>
+        <TabsTrigger value="map">Live tracking</TabsTrigger>
+        <TabsTrigger value="table">Geofence list</TabsTrigger>
+      </TabsList>
+      <TabsContent value="map" className="mt-0">
+        <FleetMap focusGeofences />
+      </TabsContent>
+      <TabsContent value="table" className="mt-0">
+        <ResourcePage config={geofencesConfig} />
+      </TabsContent>
+    </Tabs>
+  );
 }
