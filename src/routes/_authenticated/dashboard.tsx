@@ -141,30 +141,59 @@ function Dashboard() {
     .slice(0, 5)
     .map(([name, value]) => ({ name, value }));
 
-  const alerts = [
+  const alerts: Array<{
+    id: string;
+    severity: "info" | "warning" | "critical";
+    message: string;
+    to: string;
+    search?: Record<string, string> | undefined;
+  }> = [
     ...expiringWarranties.slice(0, 4).map((a) => ({
       id: `w-${a.id}`,
       severity: "warning" as const,
       message: `Warranty for ${a.name} expires ${a.warranty_end}`,
       to: "/warranties",
+      search: kpiSearch("warranties", {
+        label: "Expiring warranties",
+        value: 0,
+        filter: { field: "warranty_end", op: "next_days", value: 30 },
+      }),
     })),
     ...expiringLicenses.slice(0, 3).map((l) => ({
       id: `l-${l.id}`,
       severity: "warning" as const,
       message: `Licence ${l.software_name} expires ${l.expiration_date}`,
       to: "/software",
+      search: kpiSearch("software", {
+        label: "Expiring (30d)",
+        value: 0,
+        filter: { field: "expiration_date", op: "next_days", value: 30 },
+      }),
     })),
     ...overdue.slice(0, 3).map((m) => ({
       id: `m-${m.id}`,
       severity: "critical" as const,
       message: `Overdue maintenance: ${m.title}${m.asset_name ? ` (${m.asset_name})` : ""}`,
       to: "/maintenance",
+      search: kpiSearch("maintenance", {
+        label: "Overdue",
+        value: 0,
+        filter: [
+          { field: "status", op: "nin", value: ["completed", "cancelled"] },
+          { field: "scheduled_date", op: "past" },
+        ],
+      }),
     })),
     ...rfidAlerts.map((a) => ({
       id: `r-${a.id}`,
       severity: (a.severity ?? "info") as "info" | "warning" | "critical",
       message: a.message,
       to: "/rfid/alerts",
+      search: kpiSearch("rfid-alerts", {
+        label: "Open alerts",
+        value: 0,
+        filter: { field: "status", op: "eq", value: "active" },
+      }),
     })),
   ];
 
