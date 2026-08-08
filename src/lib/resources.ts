@@ -46,14 +46,14 @@ export const assetsConfig: ResourceConfig = {
   ],
   kpis: (rows) => [
     { label: "Total assets", value: rows.length, icon: "Boxes" },
-    { label: "Inventory value", value: currency(sum(rows, "current_value")), icon: "DollarSign" },
-    { label: "In use", value: countWhere(rows, (r) => r["lifecycle_status"] === "in_use"), icon: "CheckCircle2", tone: "success" },
+    { label: "Inventory value", value: currency(sum(rows, "current_value")), icon: "DollarSign", filter: { field: "current_value", op: "set" } },
+    { label: "In use", value: countWhere(rows, (r) => r["lifecycle_status"] === "in_use"), icon: "CheckCircle2", tone: "success", filter: { field: "lifecycle_status", op: "eq", value: "in_use" } },
     {
       label: "Warranty expiring",
       value: countWhere(rows, (r) => isExpiring(r["warranty_end"])),
       icon: "ShieldAlert",
       tone: "warning",
-      to: "/warranties",
+      filter: { field: "warranty_end", op: "next_days", value: 30 },
     },
   ],
   fields: [
@@ -180,9 +180,9 @@ export const vehiclesConfig: ResourceConfig = {
   ],
   kpis: (rows) => [
     { label: "Fleet size", value: rows.length, icon: "Truck" },
-    { label: "Active", value: countWhere(rows, (r) => r["status"] === "active"), icon: "CheckCircle2" },
-    { label: "Geofence breaches", value: countWhere(rows, (r) => !!r["geofence_breach"]), icon: "AlertTriangle" },
-    { label: "Service due (30d)", value: countWhere(rows, (r) => isExpiring(r["next_service_date"])), icon: "Wrench" },
+    { label: "Active", value: countWhere(rows, (r) => r["status"] === "active"), icon: "CheckCircle2", tone: "success", filter: { field: "status", op: "eq", value: "active" } },
+    { label: "Geofence breaches", value: countWhere(rows, (r) => !!r["geofence_breach"]), icon: "AlertTriangle", tone: "destructive", filter: { field: "geofence_breach", op: "truthy" } },
+    { label: "Service due (30d)", value: countWhere(rows, (r) => isExpiring(r["next_service_date"])), icon: "Wrench", tone: "warning", filter: { field: "next_service_date", op: "next_days", value: 30 } },
   ],
   fields: [
     { name: "name", label: "Vehicle name", required: true, group: "Vehicle" },
@@ -280,10 +280,10 @@ export const maintenanceConfig: ResourceConfig = {
     { name: "status", label: "Status", kind: "badge" },
   ],
   kpis: (rows) => [
-    { label: "Open work orders", value: countWhere(rows, (r) => r["status"] !== "completed" && r["status"] !== "cancelled"), icon: "Wrench" },
-    { label: "Overdue", value: countWhere(rows, (r) => r["status"] !== "completed" && isExpired(r["scheduled_date"])), icon: "AlertTriangle" },
-    { label: "Completed", value: countWhere(rows, (r) => r["status"] === "completed"), icon: "CheckCircle2" },
-    { label: "Total spend", value: currency(sum(rows, "cost")), icon: "DollarSign" },
+    { label: "Open work orders", value: countWhere(rows, (r) => r["status"] !== "completed" && r["status"] !== "cancelled"), icon: "Wrench", filter: { field: "status", op: "nin", value: ["completed", "cancelled"] } },
+    { label: "Overdue", value: countWhere(rows, (r) => r["status"] !== "completed" && isExpired(r["scheduled_date"])), icon: "AlertTriangle", tone: "destructive", filter: [{ field: "status", op: "nin", value: ["completed", "cancelled"] }, { field: "scheduled_date", op: "past" }] },
+    { label: "Completed", value: countWhere(rows, (r) => r["status"] === "completed"), icon: "CheckCircle2", tone: "success", filter: { field: "status", op: "eq", value: "completed" } },
+    { label: "Total spend", value: currency(sum(rows, "cost")), icon: "DollarSign", filter: { field: "cost", op: "gt", value: 0 } },
   ],
   fields: [
     { name: "title", label: "Title", required: true },
@@ -328,9 +328,9 @@ export const softwareConfig: ResourceConfig = {
   ],
   kpis: (rows) => [
     { label: "Licences", value: rows.length, icon: "AppWindow" },
-    { label: "Seats in use", value: sum(rows, "used_seats"), icon: "Users" },
-    { label: "Expiring (30d)", value: countWhere(rows, (r) => isExpiring(r["expiration_date"])), icon: "CalendarClock" },
-    { label: "Annual spend", value: currency(sum(rows, "total_cost")), icon: "DollarSign" },
+    { label: "Seats in use", value: sum(rows, "used_seats"), icon: "Users", filter: { field: "used_seats", op: "gt", value: 0 } },
+    { label: "Expiring (30d)", value: countWhere(rows, (r) => isExpiring(r["expiration_date"])), icon: "CalendarClock", tone: "warning", filter: { field: "expiration_date", op: "next_days", value: 30 } },
+    { label: "Annual spend", value: currency(sum(rows, "total_cost")), icon: "DollarSign", filter: { field: "total_cost", op: "gt", value: 0 } },
   ],
   fields: [
     { name: "software_name", label: "Software name", required: true },
@@ -526,10 +526,10 @@ export const distributionConfig: ResourceConfig = {
     { name: "status", label: "Status", kind: "badge" },
   ],
   kpis: (rows) => [
-    { label: "Pending", value: countWhere(rows, (r) => r["status"] === "pending"), icon: "Clock" },
-    { label: "Approved", value: countWhere(rows, (r) => r["status"] === "approved"), icon: "CheckCircle2" },
-    { label: "Fulfilled", value: countWhere(rows, (r) => r["status"] === "fulfilled"), icon: "PackageCheck" },
-    { label: "Urgent", value: countWhere(rows, (r) => r["priority"] === "urgent"), icon: "AlertTriangle" },
+    { label: "Pending", value: countWhere(rows, (r) => r["status"] === "pending"), icon: "Clock", tone: "warning", filter: { field: "status", op: "eq", value: "pending" } },
+    { label: "Approved", value: countWhere(rows, (r) => r["status"] === "approved"), icon: "CheckCircle2", tone: "success", filter: { field: "status", op: "eq", value: "approved" } },
+    { label: "Fulfilled", value: countWhere(rows, (r) => r["status"] === "fulfilled"), icon: "PackageCheck", filter: { field: "status", op: "eq", value: "fulfilled" } },
+    { label: "Urgent", value: countWhere(rows, (r) => r["priority"] === "urgent"), icon: "AlertTriangle", tone: "destructive", filter: { field: "priority", op: "eq", value: "urgent" } },
   ],
   fields: [
     { name: "asset_name", label: "Item requested", required: true },
@@ -575,9 +575,9 @@ export const networkConfig: ResourceConfig = {
   ],
   kpis: (rows) => [
     { label: "Discovered devices", value: rows.length, icon: "Network" },
-    { label: "Online", value: countWhere(rows, (r) => r["online_status"] === "online"), icon: "Wifi" },
-    { label: "Offline", value: countWhere(rows, (r) => r["online_status"] === "offline"), icon: "WifiOff" },
-    { label: "Unlinked", value: countWhere(rows, (r) => !r["linked_asset_id"]), icon: "Unlink" },
+    { label: "Online", value: countWhere(rows, (r) => r["online_status"] === "online"), icon: "Wifi", tone: "success", filter: { field: "online_status", op: "eq", value: "online" } },
+    { label: "Offline", value: countWhere(rows, (r) => r["online_status"] === "offline"), icon: "WifiOff", tone: "destructive", filter: { field: "online_status", op: "eq", value: "offline" } },
+    { label: "Unlinked", value: countWhere(rows, (r) => !r["linked_asset_id"]), icon: "Unlink", tone: "warning", filter: { field: "linked_asset_id", op: "unset" } },
   ],
   fields: [
     { name: "hostname", label: "Hostname", group: "Device" },
@@ -669,9 +669,9 @@ export const rfidTagsConfig: ResourceConfig = {
   ],
   kpis: (rows) => [
     { label: "Tags", value: rows.length, icon: "Tags" },
-    { label: "Active", value: countWhere(rows, (r) => r["tag_status"] === "active"), icon: "CheckCircle2" },
-    { label: "Low battery", value: countWhere(rows, (r) => Number(r["battery_level_pct"] ?? 100) < 20), icon: "BatteryLow" },
-    { label: "Lost / damaged", value: countWhere(rows, (r) => r["tag_status"] === "lost" || r["tag_status"] === "damaged"), icon: "AlertTriangle" },
+    { label: "Active", value: countWhere(rows, (r) => r["tag_status"] === "active"), icon: "CheckCircle2", tone: "success", filter: { field: "tag_status", op: "eq", value: "active" } },
+    { label: "Low battery", value: countWhere(rows, (r) => Number(r["battery_level_pct"] ?? 100) < 20), icon: "BatteryLow", tone: "warning", filter: { field: "battery_level_pct", op: "lt", value: 20 } },
+    { label: "Lost / damaged", value: countWhere(rows, (r) => r["tag_status"] === "lost" || r["tag_status"] === "damaged"), icon: "AlertTriangle", tone: "destructive", filter: { field: "tag_status", op: "in", value: ["lost", "damaged"] } },
   ],
   fields: [
     { name: "tag_id", label: "Tag ID", required: true },
@@ -712,9 +712,9 @@ export const rfidReadersConfig: ResourceConfig = {
   ],
   kpis: (rows) => [
     { label: "Readers", value: rows.length, icon: "ScanLine" },
-    { label: "Online", value: countWhere(rows, (r) => r["reader_status"] === "online"), icon: "Wifi" },
-    { label: "Offline", value: countWhere(rows, (r) => r["reader_status"] === "offline"), icon: "WifiOff" },
-    { label: "Needs attention", value: countWhere(rows, (r) => r["reader_health"] === "critical" || r["reader_health"] === "degraded"), icon: "AlertTriangle" },
+    { label: "Online", value: countWhere(rows, (r) => r["reader_status"] === "online"), icon: "Wifi", tone: "success", filter: { field: "reader_status", op: "eq", value: "online" } },
+    { label: "Offline", value: countWhere(rows, (r) => r["reader_status"] === "offline"), icon: "WifiOff", tone: "destructive", filter: { field: "reader_status", op: "eq", value: "offline" } },
+    { label: "Needs attention", value: countWhere(rows, (r) => r["reader_health"] === "critical" || r["reader_health"] === "degraded"), icon: "AlertTriangle", tone: "warning", filter: { field: "reader_health", op: "in", value: ["critical", "degraded"] } },
   ],
   fields: [
     { name: "name", label: "Reader name", required: true, group: "Reader" },
@@ -835,9 +835,9 @@ export const rfidAlertsConfig: ResourceConfig = {
     { name: "status", label: "Status", kind: "badge" },
   ],
   kpis: (rows) => [
-    { label: "Open alerts", value: countWhere(rows, (r) => r["status"] === "active"), icon: "BellRing" },
-    { label: "Critical", value: countWhere(rows, (r) => r["severity"] === "critical"), icon: "AlertTriangle" },
-    { label: "Unacknowledged", value: countWhere(rows, (r) => !r["acknowledged"]), icon: "EyeOff" },
+    { label: "Open alerts", value: countWhere(rows, (r) => r["status"] === "active"), icon: "BellRing", tone: "warning", filter: { field: "status", op: "eq", value: "active" } },
+    { label: "Critical", value: countWhere(rows, (r) => r["severity"] === "critical"), icon: "AlertTriangle", tone: "destructive", filter: { field: "severity", op: "eq", value: "critical" } },
+    { label: "Unacknowledged", value: countWhere(rows, (r) => !r["acknowledged"]), icon: "EyeOff", filter: { field: "acknowledged", op: "falsy" } },
     { label: "Total", value: rows.length, icon: "ListChecks" },
   ],
   fields: [
@@ -955,9 +955,9 @@ export const organizationsConfig: ResourceConfig = {
   ],
   kpis: (rows) => [
     { label: "Organizations", value: rows.length, icon: "Landmark" },
-    { label: "Active", value: countWhere(rows, (r) => r["subscription_status"] === "active"), icon: "CheckCircle2" },
-    { label: "On trial", value: countWhere(rows, (r) => r["subscription_status"] === "trial"), icon: "Clock" },
-    { label: "Past due", value: countWhere(rows, (r) => r["subscription_status"] === "past_due"), icon: "AlertTriangle" },
+    { label: "Active", value: countWhere(rows, (r) => r["subscription_status"] === "active"), icon: "CheckCircle2", tone: "success", filter: { field: "subscription_status", op: "eq", value: "active" } },
+    { label: "On trial", value: countWhere(rows, (r) => r["subscription_status"] === "trial"), icon: "Clock", tone: "warning", filter: { field: "subscription_status", op: "eq", value: "trial" } },
+    { label: "Past due", value: countWhere(rows, (r) => r["subscription_status"] === "past_due"), icon: "AlertTriangle", tone: "destructive", filter: { field: "subscription_status", op: "eq", value: "past_due" } },
   ],
   fields: [
     { name: "name", label: "Organization name", required: true, group: "Company" },
@@ -1079,10 +1079,10 @@ export const warrantiesConfig: ResourceConfig = {
     },
   ],
   kpis: (rows) => [
-    { label: "Under warranty", value: countWhere(rows, (r) => !!r["warranty_end"] && !isExpired(r["warranty_end"])), icon: "ShieldCheck" },
-    { label: "Expiring (90d)", value: countWhere(rows, (r) => isExpiring(r["warranty_end"], 90)), icon: "CalendarClock" },
-    { label: "Expired", value: countWhere(rows, (r) => isExpired(r["warranty_end"])), icon: "ShieldAlert" },
-    { label: "Warranty spend", value: currency(sum(rows, "warranty_cost")), icon: "DollarSign" },
+    { label: "Under warranty", value: countWhere(rows, (r) => !!r["warranty_end"] && !isExpired(r["warranty_end"])), icon: "ShieldCheck", tone: "success", filter: [{ field: "warranty_end", op: "set" }, { field: "warranty_end", op: "next_days", value: 3650 }] },
+    { label: "Expiring (90d)", value: countWhere(rows, (r) => isExpiring(r["warranty_end"], 90)), icon: "CalendarClock", tone: "warning", filter: { field: "warranty_end", op: "next_days", value: 90 } },
+    { label: "Expired", value: countWhere(rows, (r) => isExpired(r["warranty_end"])), icon: "ShieldAlert", tone: "destructive", filter: { field: "warranty_end", op: "past" } },
+    { label: "Warranty spend", value: currency(sum(rows, "warranty_cost")), icon: "DollarSign", filter: { field: "warranty_cost", op: "gt", value: 0 } },
   ],
   fields: [
     { name: "vendor_id", label: "Vendor", ref: { table: "vendors", mirrorTo: "vendor_name" } },

@@ -16,6 +16,7 @@ import { AlertTriangle, ArrowUpRight, Loader2, Sparkles } from "lucide-react";
 
 import { supabase } from "@/integrations/supabase/client";
 import { useCurrentUser } from "@/lib/auth";
+import { kpiSearch } from "@/lib/resource";
 import { KPICard } from "@/components/app/KPICard";
 import { PageHeader } from "@/components/app/PageHeader";
 import { Badge } from "@/components/ui/badge";
@@ -140,30 +141,59 @@ function Dashboard() {
     .slice(0, 5)
     .map(([name, value]) => ({ name, value }));
 
-  const alerts = [
+  const alerts: Array<{
+    id: string;
+    severity: "info" | "warning" | "critical";
+    message: string;
+    to: string;
+    search?: Record<string, string> | undefined;
+  }> = [
     ...expiringWarranties.slice(0, 4).map((a) => ({
       id: `w-${a.id}`,
       severity: "warning" as const,
       message: `Warranty for ${a.name} expires ${a.warranty_end}`,
       to: "/warranties",
+      search: kpiSearch("warranties", {
+        label: "Expiring warranties",
+        value: 0,
+        filter: { field: "warranty_end", op: "next_days", value: 30 },
+      }),
     })),
     ...expiringLicenses.slice(0, 3).map((l) => ({
       id: `l-${l.id}`,
       severity: "warning" as const,
       message: `Licence ${l.software_name} expires ${l.expiration_date}`,
       to: "/software",
+      search: kpiSearch("software", {
+        label: "Expiring (30d)",
+        value: 0,
+        filter: { field: "expiration_date", op: "next_days", value: 30 },
+      }),
     })),
     ...overdue.slice(0, 3).map((m) => ({
       id: `m-${m.id}`,
       severity: "critical" as const,
       message: `Overdue maintenance: ${m.title}${m.asset_name ? ` (${m.asset_name})` : ""}`,
       to: "/maintenance",
+      search: kpiSearch("maintenance", {
+        label: "Overdue",
+        value: 0,
+        filter: [
+          { field: "status", op: "nin", value: ["completed", "cancelled"] },
+          { field: "scheduled_date", op: "past" },
+        ],
+      }),
     })),
     ...rfidAlerts.map((a) => ({
       id: `r-${a.id}`,
       severity: (a.severity ?? "info") as "info" | "warning" | "critical",
       message: a.message,
       to: "/rfid/alerts",
+      search: kpiSearch("rfid-alerts", {
+        label: "Open alerts",
+        value: 0,
+        filter: { field: "status", op: "eq", value: "active" },
+      }),
     })),
   ];
 
@@ -194,6 +224,7 @@ function Dashboard() {
           tone="success"
           hint="Current book value"
           to="/inventory"
+          search={kpiSearch("inventory", { label: "Inventory value", value: 0, tab: "items" })}
         />
         <KPICard
           label="Open maintenance"
@@ -202,6 +233,11 @@ function Dashboard() {
           tone={overdue.length ? "destructive" : "warning"}
           hint={`${overdue.length} overdue · ${inMaintenance} assets in service`}
           to="/maintenance"
+          search={kpiSearch("maintenance", {
+            label: "Open maintenance",
+            value: 0,
+            filter: { field: "status", op: "in", value: ["scheduled", "in_progress"] },
+          })}
         />
         <KPICard
           label="Licence compliance"
@@ -210,6 +246,11 @@ function Dashboard() {
           tone={nonCompliant ? "destructive" : "success"}
           hint={`${expiringLicenses.length} expiring in 30 days`}
           to="/software"
+          search={kpiSearch("software", {
+            label: "Non-compliant licences",
+            value: 0,
+            filter: { field: "compliance_status", op: "eq", value: "non_compliant" },
+          })}
         />
       </div>
 
@@ -220,8 +261,23 @@ function Dashboard() {
           icon="PackageCheck"
           tone="warning"
           to="/service-requests"
+          search={kpiSearch("service-requests", {
+            label: "Open requests",
+            value: 0,
+            filter: { field: "status", op: "nin", value: ["resolved", "closed", "rejected"] },
+          })}
         />
-        <KPICard label="Devices online" value={`${onlineDevices}/${devices.length}`} icon="Network" to="/network" />
+        <KPICard
+          label="Devices online"
+          value={`${onlineDevices}/${devices.length}`}
+          icon="Network"
+          to="/network"
+          search={kpiSearch("network", {
+            label: "Online devices",
+            value: 0,
+            filter: { field: "online_status", op: "eq", value: "online" },
+          })}
+        />
         <KPICard
           label="Fleet vehicles"
           value={vehicles.length}
@@ -229,6 +285,15 @@ function Dashboard() {
           hint={`${breaches} geofence breaches`}
           tone={breaches ? "destructive" : "primary"}
           to="/vehicles"
+          {...(breaches
+            ? {
+                search: kpiSearch("vehicles", {
+                  label: "Geofence breaches",
+                  value: 0,
+                  filter: { field: "geofence_breach", op: "truthy" },
+                }),
+              }
+            : {})}
         />
         <KPICard
           label="Warranties expiring"
@@ -237,6 +302,11 @@ function Dashboard() {
           tone="warning"
           hint="Next 30 days"
           to="/warranties"
+          search={kpiSearch("warranties", {
+            label: "Expiring warranties",
+            value: 0,
+            filter: { field: "warranty_end", op: "next_days", value: 30 },
+          })}
         />
       </div>
 
@@ -255,16 +325,18 @@ function Dashboard() {
                 <BarChart
                   data={lifecycleData}
                   onClick={(entry) => {
-                    if (entry && entry.activePayload && entry.activePayload.length) {
-                      const status = entry.activePayload[0].payload.status;
-                      if (status === "in maintenance") {
-                        navigate({ to: "/maintenance" as any });
-                      } else {
-                        navigate({ to: "/assets" as any });
-                      }
-                    } else {
-                      navigate({ to: "/assets" as any });
-                    }
+                    const label: string | undefined = entry?.activePayload?.[0]?.payload?.status;
+                    const status = label ? label.replace(/ /g, "_") : null;
+                    navigate({
+                      to: "/assets",
+                      search: status
+                        ? kpiSearch("assets", {
+                            label: `Lifecycle: ${label}`,
+                            value: 0,
+                            filter: { field: "lifecycle_status", op: "eq", value: status },
+                          })
+                        : {},
+                    } as never);
                   }}
                 >
                   <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
@@ -299,8 +371,19 @@ function Dashboard() {
             {categoryData.length ? (
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart
-                  onClick={() => {
-                    navigate({ to: "/assets" as any });
+                  onClick={(entry) => {
+                    const name: string | undefined = (entry as { activePayload?: Array<{ name?: string }> })
+                      ?.activePayload?.[0]?.name;
+                    navigate({
+                      to: "/assets",
+                      search: name
+                        ? kpiSearch("assets", {
+                            label: `Category: ${name}`,
+                            value: 0,
+                            filter: { field: "category_name", op: "eq", value: name },
+                          })
+                        : {},
+                    } as never);
                   }}
                 >
                   <Pie data={categoryData} dataKey="value" nameKey="name" innerRadius={50} outerRadius={80}>
@@ -337,7 +420,7 @@ function Dashboard() {
               alerts.slice(0, 8).map((a) => (
                 <li
                   key={a.id}
-                  onClick={() => navigate({ to: a.to as any })}
+                  onClick={() => navigate({ to: a.to, search: a.search ?? {} } as never)}
                   className="flex items-start gap-3 rounded-lg border border-border p-3 transition-colors hover:bg-accent/50 cursor-pointer"
                 >
                   <AlertTriangle
@@ -376,7 +459,7 @@ function Dashboard() {
                 .map((a) => (
                   <li
                     key={a.id}
-                    onClick={() => navigate({ to: "/assets/$id" as any, params: { id: a.id } })}
+                    onClick={() => navigate({ to: "/assets/$id", params: { id: a.id } } as never)}
                     className="flex items-center justify-between gap-3 py-3 transition-colors hover:bg-accent/50 cursor-pointer px-2 rounded-md"
                   >
                     <div className="min-w-0">

@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useRouter, useRouterState } from "@tanstack/react-router";
 
 import { ResourcePage } from "@/components/app/ResourcePage";
 import { IotOverview } from "@/components/app/IotOverview";
@@ -20,8 +20,14 @@ export const Route = createFileRoute("/_authenticated/iot")({
 });
 
 function IotPage() {
+  const router = useRouter();
+  const tab = useRouterState({ select: (s) => String((s.location.search as Record<string, unknown>)?.["tab"] ?? "overview") });
   return (
-    <Tabs defaultValue="overview" className="space-y-6">
+    <Tabs
+      value={tab === "devices" ? "devices" : "overview"}
+      onValueChange={(v) => router.navigate({ search: { tab: v } } as never)}
+      className="space-y-6"
+    >
       <TabsList>
         <TabsTrigger value="overview">Live overview</TabsTrigger>
         <TabsTrigger value="devices">Devices</TabsTrigger>

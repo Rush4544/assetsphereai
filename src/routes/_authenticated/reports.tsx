@@ -18,7 +18,7 @@ import { PageHeader } from "@/components/app/PageHeader";
 import { KPICard } from "@/components/app/KPICard";
 import { Button } from "@/components/ui/button";
 import { useRows } from "@/lib/crud";
-import { currency, sum, type Row } from "@/lib/resource";
+import { currency, kpiSearch, sum, type Row } from "@/lib/resource";
 
 const PALETTE = ["hsl(221 83% 53%)", "hsl(160 84% 39%)", "hsl(38 92% 50%)", "hsl(0 84% 60%)", "hsl(262 83% 58%)", "hsl(199 89% 48%)"];
 
@@ -111,10 +111,53 @@ function ReportsPage() {
       />
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <KPICard label="Total asset value" value={currency(sum(rows, "purchase_price"))} icon="Wallet" />
-        <KPICard label="Current book value" value={currency(sum(rows, "current_value"))} icon="TrendingDown" tone="warning" />
-        <KPICard label="Maintenance spend" value={currency(sum(maintenance.data ?? [], "cost"))} icon="Wrench" tone="destructive" />
-        <KPICard label="Licence spend" value={currency(sum(licences.data ?? [], "total_cost"))} icon="KeyRound" tone="success" />
+        <KPICard
+          label="Total asset value"
+          value={currency(sum(rows, "purchase_price"))}
+          icon="Wallet"
+          to="/assets"
+          search={kpiSearch("assets", {
+            label: "With purchase price",
+            value: 0,
+            filter: { field: "purchase_price", op: "gt", value: 0 },
+          })}
+        />
+        <KPICard
+          label="Current book value"
+          value={currency(sum(rows, "current_value"))}
+          icon="TrendingDown"
+          tone="warning"
+          to="/assets"
+          search={kpiSearch("assets", {
+            label: "With current value",
+            value: 0,
+            filter: { field: "current_value", op: "gt", value: 0 },
+          })}
+        />
+        <KPICard
+          label="Maintenance spend"
+          value={currency(sum(maintenance.data ?? [], "cost"))}
+          icon="Wrench"
+          tone="destructive"
+          to="/maintenance"
+          search={kpiSearch("maintenance", {
+            label: "With cost",
+            value: 0,
+            filter: { field: "cost", op: "gt", value: 0 },
+          })}
+        />
+        <KPICard
+          label="Licence spend"
+          value={currency(sum(licences.data ?? [], "total_cost"))}
+          icon="KeyRound"
+          tone="success"
+          to="/software"
+          search={kpiSearch("software", {
+            label: "With annual cost",
+            value: 0,
+            filter: { field: "total_cost", op: "gt", value: 0 },
+          })}
+        />
       </div>
 
       {isLoading ? (

@@ -38,8 +38,8 @@ export const sitesConfig: ResourceConfig = {
   ],
   kpis: (rows) => [
     { label: "Sites", value: rows.length, icon: "MapPin" },
-    { label: "Active", value: countWhere(rows, (r) => r["status"] === "active"), icon: "CheckCircle2", tone: "success" },
-    { label: "Geolocated", value: countWhere(rows, (r) => r["gps_lat"] !== null && r["gps_lat"] !== undefined), icon: "Globe" },
+    { label: "Active", value: countWhere(rows, (r) => r["status"] === "active"), icon: "CheckCircle2", tone: "success", filter: { field: "status", op: "eq", value: "active" } },
+    { label: "Geolocated", value: countWhere(rows, (r) => r["gps_lat"] !== null && r["gps_lat"] !== undefined), icon: "Globe", filter: { field: "gps_lat", op: "set" } },
     { label: "Buildings", value: "See buildings", icon: "Building", to: "/buildings" },
   ],
   fields: [
@@ -76,8 +76,8 @@ export const assetTypesConfig: ResourceConfig = {
   ],
   kpis: (rows) => [
     { label: "Asset types", value: rows.length, icon: "Shapes" },
-    { label: "With custom fields", value: countWhere(rows, (r) => Array.isArray(r["field_definitions"]) && (r["field_definitions"] as unknown[]).length > 0), icon: "ListChecks" },
-    { label: "With default PM", value: countWhere(rows, (r) => !!r["default_maintenance_interval_days"]), icon: "CalendarClock" },
+    { label: "With custom fields", value: countWhere(rows, (r) => Array.isArray(r["field_definitions"]) && (r["field_definitions"] as unknown[]).length > 0), icon: "ListChecks", filter: { field: "field_definitions", op: "set" } },
+    { label: "With default PM", value: countWhere(rows, (r) => !!r["default_maintenance_interval_days"]), icon: "CalendarClock", filter: { field: "default_maintenance_interval_days", op: "set" } },
     { label: "Assets", value: "Open registry", icon: "Boxes", to: "/assets" },
   ],
   fields: [
@@ -114,9 +114,9 @@ export const serviceRequestsConfig: ResourceConfig = {
     { name: "sla_due_date", label: "SLA due", kind: "datetime" },
   ],
   kpis: (rows) => [
-    { label: "Open requests", value: countWhere(rows, (r) => !["resolved", "closed", "rejected"].includes(String(r["status"]))), icon: "Inbox" },
-    { label: "SLA breached", value: countWhere(rows, (r) => !!r["sla_due_date"] && new Date(String(r["sla_due_date"])).getTime() < Date.now() && !["resolved", "closed"].includes(String(r["status"]))), icon: "AlarmClock", tone: "destructive" },
-    { label: "Urgent", value: countWhere(rows, (r) => r["priority"] === "urgent"), icon: "Flame", tone: "warning" },
+    { label: "Open requests", value: countWhere(rows, (r) => !["resolved", "closed", "rejected"].includes(String(r["status"]))), icon: "Inbox", filter: { field: "status", op: "nin", value: ["resolved", "closed", "rejected"] } },
+    { label: "SLA breached", value: countWhere(rows, (r) => !!r["sla_due_date"] && new Date(String(r["sla_due_date"])).getTime() < Date.now() && !["resolved", "closed"].includes(String(r["status"]))), icon: "AlarmClock", tone: "destructive", filter: [{ field: "sla_due_date", op: "past" }, { field: "status", op: "nin", value: ["resolved", "closed"] }] },
+    { label: "Urgent", value: countWhere(rows, (r) => r["priority"] === "urgent"), icon: "Flame", tone: "warning", filter: { field: "priority", op: "eq", value: "urgent" } },
     { label: "Work orders", value: "Open board", icon: "ClipboardList", to: "/work-orders" },
   ],
   fields: [
@@ -171,10 +171,10 @@ export const workOrdersConfig: ResourceConfig = {
     { name: "total_cost", label: "Cost", kind: "currency" },
   ],
   kpis: (rows) => [
-    { label: "Open work orders", value: countWhere(rows, (r) => !["completed", "cancelled"].includes(String(r["status"]))), icon: "ClipboardList" },
-    { label: "Overdue", value: countWhere(rows, (r) => !!r["due_date"] && new Date(String(r["due_date"])).getTime() < Date.now() && !["completed", "cancelled"].includes(String(r["status"]))), icon: "AlarmClock", tone: "destructive" },
-    { label: "Preventive share", value: `${rows.length ? Math.round((countWhere(rows, (r) => r["work_type"] === "preventive") / rows.length) * 100) : 0}%`, icon: "CalendarCheck", tone: "success" },
-    { label: "Total cost", value: currency(sum(rows, "total_cost")), icon: "DollarSign" },
+    { label: "Open work orders", value: countWhere(rows, (r) => !["completed", "cancelled"].includes(String(r["status"]))), icon: "ClipboardList", filter: { field: "status", op: "nin", value: ["completed", "cancelled"] }, tab: "table" },
+    { label: "Overdue", value: countWhere(rows, (r) => !!r["due_date"] && new Date(String(r["due_date"])).getTime() < Date.now() && !["completed", "cancelled"].includes(String(r["status"]))), icon: "AlarmClock", tone: "destructive", filter: [{ field: "due_date", op: "past" }, { field: "status", op: "nin", value: ["completed", "cancelled"] }], tab: "table" },
+    { label: "Preventive share", value: `${rows.length ? Math.round((countWhere(rows, (r) => r["work_type"] === "preventive") / rows.length) * 100) : 0}%`, icon: "CalendarCheck", tone: "success", filter: { field: "work_type", op: "eq", value: "preventive" }, tab: "table" },
+    { label: "Total cost", value: currency(sum(rows, "total_cost")), icon: "DollarSign", filter: { field: "total_cost", op: "gt", value: 0 }, tab: "table" },
   ],
   fields: [
     { name: "title", label: "Work order title", required: true, group: "Work" },
@@ -242,9 +242,9 @@ export const maintenancePlansConfig: ResourceConfig = {
   ],
   kpis: (rows) => [
     { label: "Plans", value: rows.length, icon: "CalendarClock" },
-    { label: "Active", value: countWhere(rows, (r) => r["active"] === true), icon: "CheckCircle2", tone: "success" },
-    { label: "Due in 30 days", value: countWhere(rows, (r) => !!r["next_due_date"] && new Date(String(r["next_due_date"])).getTime() < Date.now() + 30 * 86_400_000), icon: "AlarmClock", tone: "warning" },
-    { label: "Sensor driven", value: countWhere(rows, (r) => r["trigger_type"] === "sensor"), icon: "Radio", to: "/iot" },
+    { label: "Active", value: countWhere(rows, (r) => r["active"] === true), icon: "CheckCircle2", tone: "success", filter: { field: "active", op: "truthy" } },
+    { label: "Due in 30 days", value: countWhere(rows, (r) => !!r["next_due_date"] && new Date(String(r["next_due_date"])).getTime() < Date.now() + 30 * 86_400_000), icon: "AlarmClock", tone: "warning", filter: { field: "next_due_date", op: "next_days", value: 30 } },
+    { label: "Sensor driven", value: countWhere(rows, (r) => r["trigger_type"] === "sensor"), icon: "Radio", filter: { field: "trigger_type", op: "eq", value: "sensor" } },
   ],
   fields: [
     { name: "name", label: "Plan name", required: true, group: "Plan" },
@@ -308,8 +308,9 @@ export const inventoryConfig: ResourceConfig = {
       value: countWhere(rows, (r) => r["reorder_point"] != null && Number(r["quantity_on_hand"] ?? 0) <= Number(r["reorder_point"])),
       icon: "TrendingDown",
       tone: "destructive",
+      filter: [{ field: "reorder_point", op: "set" }, { field: "quantity_on_hand", op: "lte_field", value: "reorder_point" }],
     },
-    { label: "Out of stock", value: countWhere(rows, (r) => Number(r["quantity_on_hand"] ?? 0) <= 0), icon: "PackageX", tone: "warning" },
+    { label: "Out of stock", value: countWhere(rows, (r) => Number(r["quantity_on_hand"] ?? 0) <= 0), icon: "PackageX", tone: "warning", filter: { field: "quantity_on_hand", op: "lte", value: 0 } },
   ],
   fields: [
     { name: "name", label: "Item name", required: true, group: "Item" },
@@ -446,9 +447,9 @@ export const automationConfig: ResourceConfig = {
   ],
   kpis: (rows) => [
     { label: "Rules", value: rows.length, icon: "Workflow" },
-    { label: "Active", value: countWhere(rows, (r) => r["active"] === true), icon: "Zap", tone: "success" },
+    { label: "Active", value: countWhere(rows, (r) => r["active"] === true), icon: "Zap", tone: "success", filter: { field: "active", op: "truthy" } },
     { label: "Create work orders", value: countWhere(rows, (r) => r["action_type"] === "create_work_order"), icon: "ClipboardList", to: "/work-orders" },
-    { label: "Notify only", value: countWhere(rows, (r) => r["action_type"] === "notify"), icon: "BellRing" },
+    { label: "Notify only", value: countWhere(rows, (r) => r["action_type"] === "notify"), icon: "BellRing", filter: { field: "action_type", op: "eq", value: "notify" } },
   ],
   fields: [
     { name: "name", label: "Rule name", required: true, group: "Rule" },

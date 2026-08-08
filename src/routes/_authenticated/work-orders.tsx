@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useRouter, useRouterState } from "@tanstack/react-router";
 
 import { ResourcePage } from "@/components/app/ResourcePage";
 import { WorkOrderBoard } from "@/components/app/WorkOrderBoard";
@@ -20,8 +20,14 @@ export const Route = createFileRoute("/_authenticated/work-orders")({
 });
 
 function WorkOrdersPage() {
+  const router = useRouter();
+  const tab = useRouterState({ select: (s) => String((s.location.search as Record<string, unknown>)?.["tab"] ?? "board") });
   return (
-    <Tabs defaultValue="board" className="space-y-6">
+    <Tabs
+      value={tab === "table" ? "table" : "board"}
+      onValueChange={(v) => router.navigate({ search: { tab: v } } as never)}
+      className="space-y-6"
+    >
       <TabsList>
         <TabsTrigger value="board">Board</TabsTrigger>
         <TabsTrigger value="table">Table</TabsTrigger>
