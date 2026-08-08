@@ -5,7 +5,7 @@ import { PageHeader } from "@/components/app/PageHeader";
 import { KPICard } from "@/components/app/KPICard";
 import { StatusBadge } from "@/components/app/StatusBadge";
 import { useRows } from "@/lib/crud";
-import { countWhere, fmtDateTime, type Row } from "@/lib/resource";
+import { countWhere, fmtDateTime, kpiSearch, type Row } from "@/lib/resource";
 
 export const Route = createFileRoute("/_authenticated/rfid/dashboard")({
   head: () => ({
@@ -44,25 +44,54 @@ function RfidDashboardPage() {
       <PageHeader title="RFID Dashboard" description="Tag, reader, gateway and zone health at a glance." />
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <KPICard label="Active tags" value={countWhere(tagRows, (r) => r["tag_status"] === "active")} icon="Tag" hint={`${tagRows.length} total`} />
+        <KPICard
+          label="Active tags"
+          value={countWhere(tagRows, (r) => r["tag_status"] === "active")}
+          icon="Tag"
+          hint={`${tagRows.length} total`}
+          to="/rfid/assets"
+          search={kpiSearch("rfid-assets", {
+            label: "Active tags",
+            value: 0,
+            filter: { field: "tag_status", op: "eq", value: "active" },
+          })}
+        />
         <KPICard
           label="Readers online"
           value={countWhere(readerRows, (r) => r["reader_status"] === "online")}
           icon="Radio"
           tone="success"
           hint={`${readerRows.length} deployed`}
+          to="/rfid/readers"
+          search={kpiSearch("rfid-readers", {
+            label: "Online",
+            value: 0,
+            filter: { field: "reader_status", op: "eq", value: "online" },
+          })}
         />
         <KPICard
           label="Low battery tags"
           value={countWhere(tagRows, (r) => typeof r["battery_level_pct"] === "number" && (r["battery_level_pct"] as number) < 20)}
           icon="BatteryLow"
           tone="warning"
+          to="/rfid/assets"
+          search={kpiSearch("rfid-assets", {
+            label: "Low battery",
+            value: 0,
+            filter: { field: "battery_level_pct", op: "lt", value: 20 },
+          })}
         />
         <KPICard
           label="Unacknowledged alerts"
           value={countWhere(alerts.data ?? [], (r) => r["acknowledged"] !== true)}
           icon="BellRing"
           tone="destructive"
+          to="/rfid/alerts"
+          search={kpiSearch("rfid-alerts", {
+            label: "Unacknowledged",
+            value: 0,
+            filter: { field: "acknowledged", op: "falsy" },
+          })}
         />
       </div>
 
