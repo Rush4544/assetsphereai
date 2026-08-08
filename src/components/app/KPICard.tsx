@@ -1,4 +1,4 @@
-import { useNavigate } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
 import { Icon } from "./icon";
 
@@ -20,8 +20,6 @@ const toneRing: Record<NonNullable<KPICardProps["tone"]>, string> = {
 };
 
 export function KPICard({ label, value, icon, hint, tone = "primary", to }: KPICardProps) {
-  const navigate = useNavigate();
-
   const body = (
     <div className="flex items-start justify-between gap-3">
       <div>
@@ -37,12 +35,12 @@ export function KPICard({ label, value, icon, hint, tone = "primary", to }: KPIC
 
   if (to) {
     return (
-      <div
-        onClick={() => navigate({ to })}
-        className="glass-card block p-5 transition-shadow hover:shadow-lg cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      <Link
+        to={to as any}
+        className="glass-card block p-5 transition-shadow hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring cursor-pointer"
       >
         {body}
-      </div>
+      </Link>
     );
   }
 
