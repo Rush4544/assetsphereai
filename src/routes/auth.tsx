@@ -242,6 +242,55 @@ function AuthPage() {
                 </p>
                 <form className="mt-6 space-y-4" onSubmit={signUp}>
                   <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <Label>Choose your plan</Label>
+                      <div className="inline-flex rounded-full border border-border p-0.5 text-[11px]">
+                        {(["monthly", "yearly"] as const).map((c) => (
+                          <button
+                            key={c}
+                            type="button"
+                            onClick={() => setCycle(c)}
+                            className={cn(
+                              "rounded-full px-2 py-0.5 capitalize",
+                              cycle === c ? "bg-primary text-primary-foreground" : "text-muted-foreground",
+                            )}
+                          >
+                            {c}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      {plans.map((p) => {
+                        const selected = planId === p.id;
+                        const price = cycle === "monthly" ? p.monthly : Math.round(p.yearly / 12);
+                        return (
+                          <button
+                            key={p.id}
+                            type="button"
+                            onClick={() => setPlanId(p.id)}
+                            className={cn(
+                              "flex w-full items-center justify-between rounded-lg border p-3 text-left transition-colors",
+                              selected ? "border-primary bg-primary/5" : "border-border hover:bg-accent",
+                            )}
+                          >
+                            <span>
+                              <span className="flex items-center gap-2 text-sm font-medium">
+                                {p.name}
+                                {selected && <Check className="size-3.5 text-primary" />}
+                              </span>
+                              <span className="text-xs text-muted-foreground">{p.assets}</span>
+                            </span>
+                            <span className="text-sm font-semibold">
+                              ${price}
+                              <span className="text-xs font-normal text-muted-foreground">/mo</span>
+                            </span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                  <div className="space-y-2">
                     <Label htmlFor="name">Full name</Label>
                     <Input id="name" required value={fullName} onChange={(e) => setFullName(e.target.value)} />
                   </div>
@@ -315,8 +364,17 @@ function AuthPage() {
                     />
                   </div>
                   <Button type="submit" className="w-full" disabled={busy}>
-                    {busy && <Loader2 className="mr-2 size-4 animate-spin" />} Create account
+                    {busy && <Loader2 className="mr-2 size-4 animate-spin" />} Start {TRIAL_DAYS}-day free trial
                   </Button>
+                  <p className="flex items-start gap-2 text-xs text-muted-foreground">
+                    <CreditCard className="mt-0.5 size-3.5 shrink-0" />
+                    <span>
+                      After you confirm your email you'll add a card to activate the{" "}
+                      {getPlan(planId).name} plan. Nothing is charged for {TRIAL_DAYS} days; after the
+                      trial ${cycle === "monthly" ? getPlan(planId).monthly : getPlan(planId).yearly} is
+                      billed {cycle} automatically until you cancel.
+                    </span>
+                  </p>
                 </form>
               </TabsContent>
             </Tabs>
