@@ -40,13 +40,7 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
   component: Dashboard,
 });
 
-const CHART_COLORS = [
-  "var(--chart-1)",
-  "var(--chart-2)",
-  "var(--chart-3)",
-  "var(--chart-4)",
-  "var(--chart-5)",
-];
+const CHART_COLORS = ["var(--chart-1)", "var(--chart-2)", "var(--chart-3)", "var(--chart-4)", "var(--chart-5)"];
 
 const currency = (n: number) =>
   new Intl.NumberFormat("en-CA", { style: "currency", currency: "CAD", maximumFractionDigits: 0 }).format(n);
@@ -60,25 +54,26 @@ function useDashboardData() {
       const soonISO = soon.toISOString().slice(0, 10);
       const today = new Date().toISOString().slice(0, 10);
 
-      const [assets, maintenance, licenses, distribution, vehicles, devices, alerts] =
-        await Promise.all([
-          supabase
-            .from("assets")
-            .select(
-              "id, name, asset_tag, category_name, lifecycle_status, condition, purchase_price, current_value, warranty_end, assigned_user_name, created_at",
-            ),
-          supabase.from("maintenance_records").select("id, title, status, priority, scheduled_date, asset_name"),
-          supabase.from("software_licenses").select("id, software_name, compliance_status, expiration_date, total_seats, used_seats"),
-          supabase.from("distribution_requests").select("id, status, priority, asset_name, assigned_to_name"),
-          supabase.from("vehicles").select("id, status, geofence_breach"),
-          supabase.from("network_devices").select("id, online_status"),
-          supabase
-            .from("rfid_alerts")
-            .select("id, message, severity, detected_at, status")
-            .eq("status", "active")
-            .order("detected_at", { ascending: false })
-            .limit(5),
-        ]);
+      const [assets, maintenance, licenses, distribution, vehicles, devices, alerts] = await Promise.all([
+        supabase
+          .from("assets")
+          .select(
+            "id, name, asset_tag, category_name, lifecycle_status, condition, purchase_price, current_value, warranty_end, assigned_user_name, created_at",
+          ),
+        supabase.from("maintenance_records").select("id, title, status, priority, scheduled_date, asset_name"),
+        supabase
+          .from("software_licenses")
+          .select("id, software_name, compliance_status, expiration_date, total_seats, used_seats"),
+        supabase.from("distribution_requests").select("id, status, priority, asset_name, assigned_to_name"),
+        supabase.from("vehicles").select("id, status, geofence_breach"),
+        supabase.from("network_devices").select("id, online_status"),
+        supabase
+          .from("rfid_alerts")
+          .select("id, message, severity, detected_at, status")
+          .eq("status", "active")
+          .order("detected_at", { ascending: false })
+          .limit(5),
+      ]);
 
       return {
         assets: assets.data ?? [],
@@ -107,8 +102,7 @@ function Dashboard() {
     );
   }
 
-  const { assets, maintenance, licenses, distribution, vehicles, devices, rfidAlerts, soonISO, today } =
-    data;
+  const { assets, maintenance, licenses, distribution, vehicles, devices, rfidAlerts, soonISO, today } = data;
 
   const totalValue = assets.reduce((sum, a) => sum + Number(a.current_value ?? a.purchase_price ?? 0), 0);
   const deployed = assets.filter((a) => a.lifecycle_status === "deployed").length;
@@ -187,13 +181,14 @@ function Dashboard() {
       />
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <KPICard label="Total assets" value={assets.length} icon="Boxes" hint={`${deployed} deployed`} />
+        <KPICard label="Total assets" value={assets.length} icon="Boxes" hint={`${deployed} deployed`} to="/assets" />
         <KPICard
           label="Inventory value"
           value={currency(totalValue)}
           icon="Wallet"
           tone="success"
           hint="Current book value"
+          to="/inventory"
         />
         <KPICard
           label="Open maintenance"
@@ -201,6 +196,7 @@ function Dashboard() {
           icon="Wrench"
           tone={overdue.length ? "destructive" : "warning"}
           hint={`${overdue.length} overdue · ${inMaintenance} assets in service`}
+          to="/maintenance"
         />
         <KPICard
           label="Licence compliance"
@@ -208,14 +204,35 @@ function Dashboard() {
           icon="ShieldCheck"
           tone={nonCompliant ? "destructive" : "success"}
           hint={`${expiringLicenses.length} expiring in 30 days`}
+          to="/software"
         />
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <KPICard label="Pending requests" value={pendingRequests} icon="PackageCheck" tone="warning" />
-        <KPICard label="Devices online" value={`${onlineDevices}/${devices.length}`} icon="Network" />
-        <KPICard label="Fleet vehicles" value={vehicles.length} icon="Truck" hint={`${breaches} geofence breaches`} tone={breaches ? "destructive" : "primary"} />
-        <KPICard label="Warranties expiring" value={expiringWarranties.length} icon="ShieldAlert" tone="warning" hint="Next 30 days" />
+        <KPICard
+          label="Pending requests"
+          value={pendingRequests}
+          icon="PackageCheck"
+          tone="warning"
+          to="/service-requests"
+        />
+        <KPICard label="Devices online" value={`${onlineDevices}/${devices.length}`} icon="Network" to="/network" />
+        <KPICard
+          label="Fleet vehicles"
+          value={vehicles.length}
+          icon="Truck"
+          hint={`${breaches} geofence breaches`}
+          tone={breaches ? "destructive" : "primary"}
+          to="/vehicles"
+        />
+        <KPICard
+          label="Warranties expiring"
+          value={expiringWarranties.length}
+          icon="ShieldAlert"
+          tone="warning"
+          hint="Next 30 days"
+          to="/warranties"
+        />
       </div>
 
       <div className="grid gap-4 lg:grid-cols-3">
