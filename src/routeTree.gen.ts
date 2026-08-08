@@ -22,6 +22,7 @@ import { Route as AuthenticatedAssignmentsRouteImport } from './routes/_authenti
 import { Route as AuthenticatedAuditLogRouteImport } from './routes/_authenticated/audit-log'
 import { Route as AuthenticatedAutomationRouteImport } from './routes/_authenticated/automation'
 import { Route as AuthenticatedBuildingsRouteImport } from './routes/_authenticated/buildings'
+import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedDepartmentsRouteImport } from './routes/_authenticated/departments'
 import { Route as AuthenticatedDistributionRouteImport } from './routes/_authenticated/distribution'
 import { Route as AuthenticatedDocumentsRouteImport } from './routes/_authenticated/documents'
@@ -131,6 +132,11 @@ const AuthenticatedAutomationRoute = AuthenticatedAutomationRouteImport.update({
 const AuthenticatedBuildingsRoute = AuthenticatedBuildingsRouteImport.update({
   id: '/buildings',
   path: '/buildings',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedDepartmentsRoute =
@@ -381,6 +387,7 @@ export interface FileRoutesByFullPath {
   '/audit-log': typeof AuthenticatedAuditLogRoute
   '/automation': typeof AuthenticatedAutomationRoute
   '/buildings': typeof AuthenticatedBuildingsRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
   '/departments': typeof AuthenticatedDepartmentsRoute
   '/distribution': typeof AuthenticatedDistributionRoute
   '/documents': typeof AuthenticatedDocumentsRoute
@@ -438,6 +445,7 @@ export interface FileRoutesByTo {
   '/audit-log': typeof AuthenticatedAuditLogRoute
   '/automation': typeof AuthenticatedAutomationRoute
   '/buildings': typeof AuthenticatedBuildingsRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
   '/departments': typeof AuthenticatedDepartmentsRoute
   '/distribution': typeof AuthenticatedDistributionRoute
   '/documents': typeof AuthenticatedDocumentsRoute
@@ -497,6 +505,7 @@ export interface FileRoutesById {
   '/_authenticated/audit-log': typeof AuthenticatedAuditLogRoute
   '/_authenticated/automation': typeof AuthenticatedAutomationRoute
   '/_authenticated/buildings': typeof AuthenticatedBuildingsRoute
+  '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/departments': typeof AuthenticatedDepartmentsRoute
   '/_authenticated/distribution': typeof AuthenticatedDistributionRoute
   '/_authenticated/documents': typeof AuthenticatedDocumentsRoute
@@ -556,6 +565,7 @@ export interface FileRouteTypes {
     | '/audit-log'
     | '/automation'
     | '/buildings'
+    | '/dashboard'
     | '/departments'
     | '/distribution'
     | '/documents'
@@ -613,6 +623,7 @@ export interface FileRouteTypes {
     | '/audit-log'
     | '/automation'
     | '/buildings'
+    | '/dashboard'
     | '/departments'
     | '/distribution'
     | '/documents'
@@ -671,6 +682,7 @@ export interface FileRouteTypes {
     | '/_authenticated/audit-log'
     | '/_authenticated/automation'
     | '/_authenticated/buildings'
+    | '/_authenticated/dashboard'
     | '/_authenticated/departments'
     | '/_authenticated/distribution'
     | '/_authenticated/documents'
@@ -814,6 +826,13 @@ declare module '@tanstack/react-router' {
       path: '/buildings'
       fullPath: '/buildings'
       preLoaderRoute: typeof AuthenticatedBuildingsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/dashboard': {
+      id: '/_authenticated/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/departments': {
@@ -1130,6 +1149,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedAuditLogRoute: typeof AuthenticatedAuditLogRoute
   AuthenticatedAutomationRoute: typeof AuthenticatedAutomationRoute
   AuthenticatedBuildingsRoute: typeof AuthenticatedBuildingsRoute
+  AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedDepartmentsRoute: typeof AuthenticatedDepartmentsRoute
   AuthenticatedDistributionRoute: typeof AuthenticatedDistributionRoute
   AuthenticatedDocumentsRoute: typeof AuthenticatedDocumentsRoute
@@ -1185,6 +1205,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAuditLogRoute: AuthenticatedAuditLogRoute,
   AuthenticatedAutomationRoute: AuthenticatedAutomationRoute,
   AuthenticatedBuildingsRoute: AuthenticatedBuildingsRoute,
+  AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedDepartmentsRoute: AuthenticatedDepartmentsRoute,
   AuthenticatedDistributionRoute: AuthenticatedDistributionRoute,
   AuthenticatedDocumentsRoute: AuthenticatedDocumentsRoute,

@@ -1,4 +1,3 @@
-import { Link } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
 import { Icon } from "./icon";
 
@@ -20,29 +19,30 @@ const toneRing: Record<NonNullable<KPICardProps["tone"]>, string> = {
 };
 
 export function KPICard({ label, value, icon, hint, tone = "primary", to }: KPICardProps) {
-  const body = (
-    <div className="flex items-start justify-between gap-3">
-      <div>
-        <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">{label}</p>
-        <p className="mt-2 text-3xl font-semibold tracking-tight">{value}</p>
-        {hint ? <p className="mt-1 text-xs text-muted-foreground">{hint}</p> : null}
+  const handleClick = () => {
+    if (to) {
+      window.location.href = to;
+    }
+  };
+
+  return (
+    <div
+      onClick={handleClick}
+      className={cn(
+        "glass-card p-5 transition-all select-none",
+        to && "cursor-pointer hover:shadow-lg hover:border-primary active:scale-[0.98]",
+      )}
+    >
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">{label}</p>
+          <p className="mt-2 text-3xl font-semibold tracking-tight">{value}</p>
+          {hint ? <p className="mt-1 text-xs text-muted-foreground">{hint}</p> : null}
+        </div>
+        <span className={cn("flex size-10 items-center justify-center rounded-lg pointer-events-none", toneRing[tone])}>
+          <Icon name={icon} className="size-5" />
+        </span>
       </div>
-      <span className={cn("flex size-10 items-center justify-center rounded-lg", toneRing[tone])}>
-        <Icon name={icon} className="size-5" />
-      </span>
     </div>
   );
-
-  if (to) {
-    return (
-      <Link
-        to={to as any}
-        className="glass-card block p-5 transition-shadow hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring cursor-pointer"
-      >
-        {body}
-      </Link>
-    );
-  }
-
-  return <div className="glass-card p-5">{body}</div>;
 }
