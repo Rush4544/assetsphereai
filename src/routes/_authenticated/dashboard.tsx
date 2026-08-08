@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import {
   Bar,
@@ -91,6 +91,7 @@ function useDashboardData() {
 }
 
 function Dashboard() {
+  const navigate = useNavigate();
   const { data: user } = useCurrentUser();
   const { data, isLoading } = useDashboardData();
 
@@ -144,21 +145,25 @@ function Dashboard() {
       id: `w-${a.id}`,
       severity: "warning" as const,
       message: `Warranty for ${a.name} expires ${a.warranty_end}`,
+      to: "/warranties",
     })),
     ...expiringLicenses.slice(0, 3).map((l) => ({
       id: `l-${l.id}`,
       severity: "warning" as const,
       message: `Licence ${l.software_name} expires ${l.expiration_date}`,
+      to: "/software",
     })),
     ...overdue.slice(0, 3).map((m) => ({
       id: `m-${m.id}`,
       severity: "critical" as const,
       message: `Overdue maintenance: ${m.title}${m.asset_name ? ` (${m.asset_name})` : ""}`,
+      to: "/maintenance",
     })),
     ...rfidAlerts.map((a) => ({
       id: `r-${a.id}`,
       severity: (a.severity ?? "info") as "info" | "warning" | "critical",
       message: a.message,
+      to: "/rfid/alerts",
     })),
   ];
 
@@ -236,12 +241,32 @@ function Dashboard() {
       </div>
 
       <div className="grid gap-4 lg:grid-cols-3">
+        {/* Assets by Lifecycle Status Chart */}
         <div className="glass-card p-5 lg:col-span-2">
-          <h2 className="text-sm font-semibold">Assets by lifecycle status</h2>
-          <div className="mt-4 h-64">
+          <div className="flex items-center justify-between">
+            <h2 className="text-sm font-semibold">Assets by lifecycle status</h2>
+            <Link to="/assets" className="inline-flex items-center text-xs text-primary hover:underline">
+              View assets <ArrowUpRight className="ml-1 size-3" />
+            </Link>
+          </div>
+          <div className="mt-4 h-64 cursor-pointer">
             {lifecycleData.length ? (
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={lifecycleData}>
+                <BarChart
+                  data={lifecycleData}
+                  onClick={(entry) => {
+                    if (entry && entry.activePayload && entry.activePayload.length) {
+                      const status = entry.activePayload[0].payload.status;
+                      if (status === "in maintenance") {
+                        navigate({ to: "/maintenance" as any });
+                      } else {
+                        navigate({ to: "/assets" as any });
+                      }
+                    } else {
+                      navigate({ to: "/assets" as any });
+                    }
+                  }}
+                >
                   <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
                   <XAxis dataKey="status" stroke="var(--muted-foreground)" fontSize={12} />
                   <YAxis stroke="var(--muted-foreground)" fontSize={12} allowDecimals={false} />
@@ -262,12 +287,22 @@ function Dashboard() {
           </div>
         </div>
 
+        {/* Top Categories Pie Chart */}
         <div className="glass-card p-5">
-          <h2 className="text-sm font-semibold">Top categories</h2>
-          <div className="mt-4 h-64">
+          <div className="flex items-center justify-between">
+            <h2 className="text-sm font-semibold">Top categories</h2>
+            <Link to="/asset-categories" className="inline-flex items-center text-xs text-primary hover:underline">
+              Categories <ArrowUpRight className="ml-1 size-3" />
+            </Link>
+          </div>
+          <div className="mt-4 h-64 cursor-pointer">
             {categoryData.length ? (
               <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
+                <PieChart
+                  onClick={() => {
+                    navigate({ to: "/assets" as any });
+                  }}
+                >
                   <Pie data={categoryData} dataKey="value" nameKey="name" innerRadius={50} outerRadius={80}>
                     {categoryData.map((_, i) => (
                       <Cell key={i} fill={CHART_COLORS[i % CHART_COLORS.length]} />
@@ -291,6 +326,7 @@ function Dashboard() {
       </div>
 
       <div className="grid gap-4 lg:grid-cols-2">
+        {/* Alerts & Expiries List */}
         <div className="glass-card p-5">
           <div className="flex items-center justify-between">
             <h2 className="text-sm font-semibold">Alerts &amp; expiries</h2>
@@ -299,7 +335,11 @@ function Dashboard() {
           <ul className="mt-4 space-y-2">
             {alerts.length ? (
               alerts.slice(0, 8).map((a) => (
-                <li key={a.id} className="flex items-start gap-3 rounded-lg border border-border p-3">
+                <li
+                  key={a.id}
+                  onClick={() => navigate({ to: a.to as any })}
+                  className="flex items-start gap-3 rounded-lg border border-border p-3 transition-colors hover:bg-accent/50 cursor-pointer"
+                >
                   <AlertTriangle
                     className={
                       a.severity === "critical"
@@ -309,7 +349,7 @@ function Dashboard() {
                           : "mt-0.5 size-4 shrink-0 text-muted-foreground"
                     }
                   />
-                  <span className="text-sm">{a.message}</span>
+                  <span className="text-sm font-medium">{a.message}</span>
                 </li>
               ))
             ) : (
@@ -320,6 +360,7 @@ function Dashboard() {
           </ul>
         </div>
 
+        {/* Recently Added Assets List */}
         <div className="glass-card p-5">
           <div className="flex items-center justify-between">
             <h2 className="text-sm font-semibold">Recently added assets</h2>
@@ -333,7 +374,11 @@ function Dashboard() {
                 .sort((a, b) => (a.created_at < b.created_at ? 1 : -1))
                 .slice(0, 6)
                 .map((a) => (
-                  <li key={a.id} className="flex items-center justify-between gap-3 py-3">
+                  <li
+                    key={a.id}
+                    onClick={() => navigate({ to: "/assets/$id" as any, params: { id: a.id } })}
+                    className="flex items-center justify-between gap-3 py-3 transition-colors hover:bg-accent/50 cursor-pointer px-2 rounded-md"
+                  >
                     <div className="min-w-0">
                       <p className="truncate text-sm font-medium">{a.name}</p>
                       <p className="truncate text-xs text-muted-foreground">
