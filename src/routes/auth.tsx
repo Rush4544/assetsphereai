@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Loader2, Radio } from "lucide-react";
+import { Check, CreditCard, Loader2, Radio } from "lucide-react";
 import { toast } from "sonner";
 
 import { supabase } from "@/integrations/supabase/client";
@@ -11,8 +11,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { getPlan, plans, TRIAL_DAYS } from "@/lib/plans";
+import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/auth")({
+  validateSearch: (search: Record<string, unknown>) => ({
+    plan: typeof search["plan"] === "string" ? (search["plan"] as string) : undefined,
+    cycle: search["cycle"] === "yearly" ? ("yearly" as const) : ("monthly" as const),
+  }),
   head: () => ({
     meta: [
       { title: "Sign in — AssetSphere AI" },
@@ -41,7 +47,10 @@ function GoogleIcon() {
 
 function AuthPage() {
   const navigate = useNavigate();
-  const [mode, setMode] = useState("signin");
+  const search = Route.useSearch();
+  const [mode, setMode] = useState(search.plan ? "signup" : "signin");
+  const [planId, setPlanId] = useState<string>(search.plan ?? "growth");
+  const [cycle, setCycle] = useState<"monthly" | "yearly">(search.cycle);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
@@ -102,8 +111,8 @@ function AuthPage() {
       options: {
         emailRedirectTo: window.location.origin,
         data: mustCreate
-          ? { full_name: fullName, new_organization_name: newOrgName.trim() }
-          : { full_name: fullName, organization_id: orgId },
+          ? { full_name: fullName, new_organization_name: newOrgName.trim(), plan: planId, billing_cycle: cycle }
+          : { full_name: fullName, organization_id: orgId, plan: planId, billing_cycle: cycle },
       },
     });
     setBusy(false);
