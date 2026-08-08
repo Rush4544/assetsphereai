@@ -10,6 +10,8 @@ export type KPICardProps = {
   tone?: "primary" | "success" | "warning" | "destructive";
   /** When set the whole card links to this route. */
   to?: string;
+  /** Search params applied on navigation (used for KPI-driven filtering). */
+  search?: Record<string, string>;
 };
 
 const toneRing: Record<NonNullable<KPICardProps["tone"]>, string> = {
@@ -19,30 +21,37 @@ const toneRing: Record<NonNullable<KPICardProps["tone"]>, string> = {
   destructive: "bg-destructive/10 text-destructive",
 };
 
-export function KPICard({ label, value, icon, hint, tone = "primary", to }: KPICardProps) {
+export function KPICard({ label, value, icon, hint, tone = "primary", to, search }: KPICardProps) {
   const router = useRouter();
+  const clickable = !!to || !!search;
+
+  const go = () => {
+    if (!clickable) return;
+    const opts: Record<string, unknown> = {};
+    if (to) opts["to"] = to;
+    opts["search"] = search ?? {};
+    router.navigate(opts as never);
+  };
 
   const handleClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (to) {
-      router.navigate({ to: to as any });
-    }
+    go();
   };
 
   return (
     <div
       onClick={handleClick}
-      role={to ? "button" : undefined}
-      tabIndex={to ? 0 : undefined}
+      role={clickable ? "button" : undefined}
+      tabIndex={clickable ? 0 : undefined}
       onKeyDown={(e) => {
-        if (to && (e.key === "Enter" || e.key === " ")) {
+        if (clickable && (e.key === "Enter" || e.key === " ")) {
           e.preventDefault();
-          router.navigate({ to: to as any });
+          go();
         }
       }}
       className={cn(
         "glass-card p-5 transition-all select-none relative z-10",
-        to && "cursor-pointer hover:shadow-lg hover:border-primary active:scale-[0.98]",
+        clickable && "cursor-pointer hover:shadow-lg hover:border-primary active:scale-[0.98]",
       )}
     >
       <div className="flex items-start justify-between gap-3 pointer-events-none">
