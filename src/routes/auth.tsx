@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Loader2, Radio } from "lucide-react";
+import { Check, CreditCard, Loader2, Radio } from "lucide-react";
 import { toast } from "sonner";
 
 import { supabase } from "@/integrations/supabase/client";
@@ -11,8 +11,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { getPlan, plans, TRIAL_DAYS } from "@/lib/plans";
+import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/auth")({
+  validateSearch: (search: Record<string, unknown>) => ({
+    plan: typeof search["plan"] === "string" ? (search["plan"] as string) : undefined,
+    cycle: search["cycle"] === "yearly" ? ("yearly" as const) : ("monthly" as const),
+  }),
   head: () => ({
     meta: [
       { title: "Sign in — AssetSphere AI" },
@@ -41,7 +47,10 @@ function GoogleIcon() {
 
 function AuthPage() {
   const navigate = useNavigate();
-  const [mode, setMode] = useState("signin");
+  const search = Route.useSearch();
+  const [mode, setMode] = useState(search.plan ? "signup" : "signin");
+  const [planId, setPlanId] = useState<string>(search.plan ?? "growth");
+  const [cycle, setCycle] = useState<"monthly" | "yearly">(search.cycle);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
@@ -102,8 +111,8 @@ function AuthPage() {
       options: {
         emailRedirectTo: window.location.origin,
         data: mustCreate
-          ? { full_name: fullName, new_organization_name: newOrgName.trim() }
-          : { full_name: fullName, organization_id: orgId },
+          ? { full_name: fullName, new_organization_name: newOrgName.trim(), plan: planId, billing_cycle: cycle }
+          : { full_name: fullName, organization_id: orgId, plan: planId, billing_cycle: cycle },
       },
     });
     setBusy(false);
@@ -149,22 +158,22 @@ function AuthPage() {
   return (
     <div className="grid min-h-screen lg:grid-cols-2">
       <div className="gradient-hero hidden flex-col justify-between p-12 lg:flex">
-        <Link to="/" className="flex items-center gap-2 text-white">
-          <span className="flex size-9 items-center justify-center rounded-lg bg-primary">
+        <Link to="/" className="flex items-center gap-2 text-hero-foreground">
+          <span className="flex size-9 items-center justify-center rounded-lg bg-primary text-primary-foreground">
             <Radio className="size-5" />
           </span>
           <span className="text-lg font-semibold">AssetSphere AI</span>
         </Link>
-        <div className="max-w-md text-white">
+        <div className="max-w-md text-hero-foreground">
           <h2 className="text-3xl font-semibold leading-tight">
             Enterprise asset intelligence for every site, device and vehicle.
           </h2>
-          <p className="mt-4 text-sm text-white/70">
-            Multi-tenant asset tracking with network discovery, RFID zones, fleet geofencing,
+          <p className="mt-4 text-sm text-hero-muted">
+            Assets, maintenance, inventory, fleet, RFID, IoT and AI analytics in one platform. Start with a 7-day free trial. Network discovery, RFID zones, fleet geofencing,
             maintenance scheduling and financial depreciation — in one platform.
           </p>
         </div>
-        <p className="text-xs text-white/40">Multi-tenant · Role based access · Audit logged</p>
+        <p className="text-xs text-hero-muted">Multi-tenant · Role based access · Audit logged</p>
       </div>
 
       <div className="flex items-center justify-center px-6 py-12">
@@ -232,6 +241,55 @@ function AuthPage() {
                     : "Joining an existing company keeps your account pending until an administrator approves it."}
                 </p>
                 <form className="mt-6 space-y-4" onSubmit={signUp}>
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <Label>Choose your plan</Label>
+                      <div className="inline-flex rounded-full border border-border p-0.5 text-[11px]">
+                        {(["monthly", "yearly"] as const).map((c) => (
+                          <button
+                            key={c}
+                            type="button"
+                            onClick={() => setCycle(c)}
+                            className={cn(
+                              "rounded-full px-2 py-0.5 capitalize",
+                              cycle === c ? "bg-primary text-primary-foreground" : "text-muted-foreground",
+                            )}
+                          >
+                            {c}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      {plans.map((p) => {
+                        const selected = planId === p.id;
+                        const price = cycle === "monthly" ? p.monthly : Math.round(p.yearly / 12);
+                        return (
+                          <button
+                            key={p.id}
+                            type="button"
+                            onClick={() => setPlanId(p.id)}
+                            className={cn(
+                              "flex w-full items-center justify-between rounded-lg border p-3 text-left transition-colors",
+                              selected ? "border-primary bg-primary/5" : "border-border hover:bg-accent",
+                            )}
+                          >
+                            <span>
+                              <span className="flex items-center gap-2 text-sm font-medium">
+                                {p.name}
+                                {selected && <Check className="size-3.5 text-primary" />}
+                              </span>
+                              <span className="text-xs text-muted-foreground">{p.assets}</span>
+                            </span>
+                            <span className="text-sm font-semibold">
+                              ${price}
+                              <span className="text-xs font-normal text-muted-foreground">/mo</span>
+                            </span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
                   <div className="space-y-2">
                     <Label htmlFor="name">Full name</Label>
                     <Input id="name" required value={fullName} onChange={(e) => setFullName(e.target.value)} />
@@ -306,8 +364,17 @@ function AuthPage() {
                     />
                   </div>
                   <Button type="submit" className="w-full" disabled={busy}>
-                    {busy && <Loader2 className="mr-2 size-4 animate-spin" />} Create account
+                    {busy && <Loader2 className="mr-2 size-4 animate-spin" />} Start {TRIAL_DAYS}-day free trial
                   </Button>
+                  <p className="flex items-start gap-2 text-xs text-muted-foreground">
+                    <CreditCard className="mt-0.5 size-3.5 shrink-0" />
+                    <span>
+                      After you confirm your email you'll add a card to activate the{" "}
+                      {getPlan(planId).name} plan. Nothing is charged for {TRIAL_DAYS} days; after the
+                      trial ${cycle === "monthly" ? getPlan(planId).monthly : getPlan(planId).yearly} is
+                      billed {cycle} automatically until you cancel.
+                    </span>
+                  </p>
                 </form>
               </TabsContent>
             </Tabs>
