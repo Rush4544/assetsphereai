@@ -1,3 +1,4 @@
+import { Link } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
 import { Icon } from "./icon";
 
@@ -7,6 +8,8 @@ export type KPICardProps = {
   icon: string;
   hint?: string;
   tone?: "primary" | "success" | "warning" | "destructive";
+  /** When set the whole card links to this route. */
+  to?: string;
 };
 
 const toneRing: Record<NonNullable<KPICardProps["tone"]>, string> = {
@@ -16,9 +19,9 @@ const toneRing: Record<NonNullable<KPICardProps["tone"]>, string> = {
   destructive: "bg-destructive/10 text-destructive",
 };
 
-export function KPICard({ label, value, icon, hint, tone = "primary" }: KPICardProps) {
-  return (
-    <div className="glass-card p-5">
+export function KPICard({ label, value, icon, hint, tone = "primary", to }: KPICardProps) {
+  const body = (
+    <>
       <div className="flex items-start justify-between gap-3">
         <div>
           <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">{label}</p>
@@ -29,6 +32,18 @@ export function KPICard({ label, value, icon, hint, tone = "primary" }: KPICardP
           <Icon name={icon} className="size-5" />
         </span>
       </div>
-    </div>
+    </>
   );
+
+  if (to) {
+    return (
+      <Link
+        to={to}
+        className="glass-card block p-5 transition-shadow hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      >
+        {body}
+      </Link>
+    );
+  }
+  return <div className="glass-card p-5">{body}</div>;
 }

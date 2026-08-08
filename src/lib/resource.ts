@@ -9,7 +9,8 @@ export type FieldType =
   | "datetime"
   | "select"
   | "switch"
-  | "email";
+  | "email"
+  | "files";
 
 export type Field = {
   name: string;
@@ -22,6 +23,9 @@ export type Field = {
   group?: string;
   /** Reference another table for a picker: { table, labelColumn, mirrorTo } */
   ref?: { table: string; labelColumn?: string; mirrorTo?: string };
+  /** For "files": accept attribute + storage folder. */
+  accept?: string;
+  folder?: string;
 };
 
 export type Column = {
@@ -34,7 +38,14 @@ export type Column = {
 
 export type Row = Record<string, unknown>;
 
-export type Kpi = { label: string; value: string | number; icon?: string; tone?: string };
+export type Kpi = {
+  label: string;
+  value: string | number;
+  icon?: string;
+  tone?: "primary" | "success" | "warning" | "destructive";
+  /** Clicking the card navigates here. */
+  to?: string;
+};
 
 export type ResourceConfig = {
   key: string;
@@ -52,6 +63,8 @@ export type ResourceConfig = {
   orderBy?: { column: string; ascending?: boolean };
   kpis?: (rows: Row[]) => Kpi[];
   readOnly?: boolean;
+  /** When set, each row gets an "Open" link to this route with the row id. */
+  detailRoute?: string;
 };
 
 export const currency = (n: unknown) =>

@@ -10,7 +10,12 @@ export type NavItem = {
 
 export const mainNav: NavItem[] = [
   { key: "dashboard", label: "Dashboard", url: "/dashboard", icon: "LayoutDashboard", roles: ["user", "technician", "admin", "super_admin"] },
+  { key: "service-requests", label: "Service Requests", url: "/service-requests", icon: "Inbox", roles: ["user", "technician", "admin", "super_admin"] },
+  { key: "work-orders", label: "Work Orders", url: "/work-orders", icon: "ClipboardList", roles: ["user", "technician", "admin", "super_admin"] },
+  { key: "maintenance-plans", label: "Maintenance Plans", url: "/maintenance-plans", icon: "CalendarClock", roles: ["technician", "admin", "super_admin"] },
   { key: "assets", label: "Assets", url: "/assets", icon: "Boxes", roles: ["user", "technician", "admin", "super_admin"] },
+  { key: "inventory", label: "Inventory & Parts", url: "/inventory", icon: "PackageSearch", roles: ["technician", "admin", "super_admin"] },
+  { key: "iot", label: "IoT & Sensors", url: "/iot", icon: "Radio", roles: ["technician", "admin", "super_admin"] },
   { key: "network", label: "Network Discovery", url: "/network", icon: "Network", roles: ["technician", "admin", "super_admin"] },
   { key: "floor-plan", label: "Floor Plan", url: "/floor-plan", icon: "Map", roles: ["technician", "admin", "super_admin"] },
   { key: "vehicles", label: "Vehicles", url: "/vehicles", icon: "Truck", roles: ["technician", "admin", "super_admin"] },
@@ -44,13 +49,20 @@ export const toolsNav: NavItem[] = [
   { key: "people-search", label: "People Search", url: "/people-search", icon: "Search", roles: ["user", "technician", "admin", "super_admin"] },
   { key: "technician-portal", label: "Technician Portal", url: "/technician-portal", icon: "HardHat", roles: ["technician", "admin", "super_admin"] },
   { key: "api-docs", label: "API Docs", url: "/api-docs", icon: "Code2", roles: ["admin", "super_admin"] },
+  { key: "documents", label: "Documents", url: "/documents", icon: "FolderOpen", roles: ["user", "technician", "admin", "super_admin"] },
+  { key: "automation", label: "Automation", url: "/automation", icon: "Workflow", roles: ["admin", "super_admin"] },
+  { key: "integrations", label: "Integrations", url: "/integrations", icon: "Plug", roles: ["admin", "super_admin"] },
+  { key: "import", label: "Import Data", url: "/import", icon: "Upload", roles: ["admin", "super_admin"] },
 ];
 
 export const adminNav: NavItem[] = [
+  { key: "sites", label: "Sites", url: "/sites", icon: "MapPin", roles: ["admin", "super_admin"] },
   { key: "departments", label: "Departments", url: "/departments", icon: "Building2", roles: ["admin", "super_admin"] },
   { key: "buildings", label: "Buildings", url: "/buildings", icon: "Building", roles: ["admin", "super_admin"] },
   { key: "rooms", label: "Rooms", url: "/rooms", icon: "DoorOpen", roles: ["admin", "super_admin"] },
   { key: "asset-categories", label: "Asset Categories", url: "/asset-categories", icon: "FolderTree", roles: ["admin", "super_admin"] },
+  { key: "asset-types", label: "Asset Types", url: "/asset-types", icon: "Shapes", roles: ["admin", "super_admin"] },
+  { key: "modules", label: "Modules", url: "/modules", icon: "ToggleRight", roles: ["admin", "super_admin"] },
   { key: "vendors", label: "Vendors", url: "/vendors", icon: "Handshake", roles: ["admin", "super_admin"] },
   { key: "users-management", label: "Users", url: "/users-management", icon: "Users", roles: ["admin", "super_admin"] },
   { key: "audit-log", label: "Audit Log", url: "/audit-log", icon: "ScrollText", roles: ["admin", "super_admin"] },

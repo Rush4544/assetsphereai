@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
-import { Loader2, Plus, Search, Trash2 } from "lucide-react";
+import { Link } from "@tanstack/react-router";
+import { Download, Loader2, Plus, Search, Trash2 } from "lucide-react";
 
 import { PageHeader } from "./PageHeader";
 import { DataTable } from "./DataTable";
@@ -70,9 +71,44 @@ export function ResourcePage({ config }: { config: ResourceConfig }) {
     save.mutate(payload, { onSuccess: () => setDialogOpen(false) });
   }
 
+  function exportCsv() {
+    const cols = config.columns.map((c) => c.name);
+    const escape = (v: unknown) => `"${String(v ?? "").replace(/"/g, '""')}"`;
+    const csv = [
+      cols.join(","),
+      ...filtered.map((r) => cols.map((c) => escape(r[c])).join(",")),
+    ].join("\n");
+    const url = URL.createObjectURL(new Blob([csv], { type: "text/csv" }));
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${config.key}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  const detailColumn = config.detailRoute
+    ? [
+        {
+          name: "__open",
+          label: "",
+          render: (row: Row) => (
+            <Link
+              to={config.detailRoute!}
+              params={{ id: String(row["id"]) }}
+              onClick={(e) => e.stopPropagation()}
+              className="text-xs font-medium text-primary underline"
+            >
+              Open
+            </Link>
+          ),
+        },
+      ]
+    : [];
+
   const columns = canWrite
     ? [
         ...config.columns,
+        ...detailColumn,
         {
           name: "__actions",
           label: "",
@@ -92,7 +128,7 @@ export function ResourcePage({ config }: { config: ResourceConfig }) {
           ),
         },
       ]
-    : config.columns;
+    : [...config.columns, ...detailColumn];
 
   return (
     <div className="space-y-6">
@@ -100,19 +136,32 @@ export function ResourcePage({ config }: { config: ResourceConfig }) {
         title={config.title}
         description={config.description}
         actions={
-          canWrite ? (
-            <Button onClick={openNew}>
-              <Plus className="mr-2 size-4" />
-              New {config.singular}
+          <div className="flex flex-wrap gap-2">
+            <Button variant="outline" onClick={exportCsv}>
+              <Download className="mr-2 size-4" />
+              Export CSV
             </Button>
-          ) : undefined
+            {canWrite ? (
+              <Button onClick={openNew}>
+                <Plus className="mr-2 size-4" />
+                New {config.singular}
+              </Button>
+            ) : null}
+          </div>
         }
       />
 
       {kpis.length > 0 && (
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           {kpis.map((k) => (
-            <KPICard key={k.label} label={k.label} value={k.value} icon={k.icon ?? config.icon} />
+            <KPICard
+              key={k.label}
+              label={k.label}
+              value={k.value}
+              icon={k.icon ?? config.icon}
+              {...(k.tone ? { tone: k.tone } : {})}
+              {...(k.to ? { to: k.to } : {})}
+            />
           ))}
         </div>
       )}

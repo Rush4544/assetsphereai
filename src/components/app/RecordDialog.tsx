@@ -23,6 +23,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { humanize, type Field, type Row } from "@/lib/resource";
 import { useLookup } from "@/lib/crud";
+import { FileField } from "./FileField";
 
 function RefField({
   field,
@@ -85,7 +86,14 @@ export function RecordDialog({
   useEffect(() => {
     if (!open) return;
     const next: Row = {};
-    for (const f of fields) next[f.name] = initial?.[f.name] ?? (f.type === "switch" ? false : "");
+    for (const f of fields) {
+      if (f.type === "files") {
+        const v = initial?.[f.name];
+        next[f.name] = Array.isArray(v) ? (v as string[]) : v ? [String(v)] : [];
+      } else {
+        next[f.name] = initial?.[f.name] ?? (f.type === "switch" ? false : "");
+      }
+    }
     setValues(next);
   }, [open, initial, fields]);
 
@@ -107,6 +115,11 @@ export function RecordDialog({
     for (const f of fields) {
       const v = values[f.name];
       if (f.type === "switch") payload[f.name] = Boolean(v);
+      else if (f.type === "files") {
+        const list = Array.isArray(v) ? (v as string[]) : [];
+        // Columns named *_url hold a single path; *_urls hold an array.
+        payload[f.name] = f.name.endsWith("_urls") ? list : (list[0] ?? null);
+      }
       else if (f.type === "number" || f.type === "currency")
         payload[f.name] = v === "" || v === null || v === undefined ? null : Number(v);
       else payload[f.name] = v === "" ? null : v;
@@ -115,7 +128,10 @@ export function RecordDialog({
   }
 
   const renderField = (f: Field) => (
-    <div key={f.name} className={f.type === "textarea" ? "sm:col-span-2 space-y-2" : "space-y-2"}>
+    <div
+      key={f.name}
+      className={f.type === "textarea" || f.type === "files" ? "sm:col-span-2 space-y-2" : "space-y-2"}
+    >
       <Label htmlFor={f.name}>
         {f.label}
         {f.required && <span className="ml-0.5 text-destructive">*</span>}
@@ -152,6 +168,13 @@ export function RecordDialog({
           rows={3}
           value={String(values[f.name] ?? "")}
           onChange={(e) => set(f.name, e.target.value)}
+        />
+      ) : f.type === "files" ? (
+        <FileField
+          value={Array.isArray(values[f.name]) ? (values[f.name] as string[]) : []}
+          onChange={(next) => set(f.name, next)}
+          folder={f.folder ?? "uploads"}
+          {...(f.accept ? { accept: f.accept } : {})}
         />
       ) : f.type === "switch" ? (
         <div className="flex h-9 items-center">

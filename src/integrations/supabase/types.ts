@@ -119,9 +119,65 @@ export type Database = {
         }
         Relationships: []
       }
+      asset_types: {
+        Row: {
+          created_at: string
+          created_by_id: string | null
+          default_maintenance_interval_days: number | null
+          description: string | null
+          field_definitions: Json
+          icon: string | null
+          id: string
+          module: string
+          name: string
+          organization_id: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by_id?: string | null
+          default_maintenance_interval_days?: number | null
+          description?: string | null
+          field_definitions?: Json
+          icon?: string | null
+          id?: string
+          module?: string
+          name: string
+          organization_id?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by_id?: string | null
+          default_maintenance_interval_days?: number | null
+          description?: string | null
+          field_definitions?: Json
+          icon?: string | null
+          id?: string
+          module?: string
+          name?: string
+          organization_id?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "asset_types_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       assets: {
         Row: {
+          asset_class: string | null
           asset_tag: string | null
+          asset_type_id: string | null
+          asset_type_name: string | null
           assigned_user_email: string | null
           assigned_user_name: string | null
           barcode: string | null
@@ -135,6 +191,7 @@ export type Database = {
           cpu: string | null
           created_at: string
           created_by_id: string | null
+          criticality: string | null
           currency: string | null
           current_value: number | null
           custom_fields: Json
@@ -150,6 +207,7 @@ export type Database = {
           gps_lng: number | null
           hostname: string | null
           id: string
+          installation_date: string | null
           installed_software: string | null
           insurance_value: number | null
           invoice_number: string | null
@@ -159,6 +217,8 @@ export type Database = {
           logged_in_user: string | null
           mac_address: string | null
           manufacturer: string | null
+          meter_reading: number | null
+          meter_unit: string | null
           model: string | null
           name: string
           next_maintenance_date: string | null
@@ -166,16 +226,22 @@ export type Database = {
           online_status: string | null
           organization_id: string | null
           os: string | null
+          parent_asset_id: string | null
+          parent_asset_name: string | null
           photo_urls: string[] | null
           purchase_date: string | null
           purchase_order_number: string | null
           purchase_price: number | null
+          qr_code: string | null
           ram_gb: number | null
+          receipt_urls: string[] | null
           replacement_cost: number | null
           residual_value: number | null
           room_id: string | null
           room_name: string | null
           serial_number: string | null
+          site_id: string | null
+          site_name: string | null
           supplier: string | null
           tax_amount: number | null
           updated_at: string
@@ -187,7 +253,10 @@ export type Database = {
           warranty_start: string | null
         }
         Insert: {
+          asset_class?: string | null
           asset_tag?: string | null
+          asset_type_id?: string | null
+          asset_type_name?: string | null
           assigned_user_email?: string | null
           assigned_user_name?: string | null
           barcode?: string | null
@@ -201,6 +270,7 @@ export type Database = {
           cpu?: string | null
           created_at?: string
           created_by_id?: string | null
+          criticality?: string | null
           currency?: string | null
           current_value?: number | null
           custom_fields?: Json
@@ -216,6 +286,7 @@ export type Database = {
           gps_lng?: number | null
           hostname?: string | null
           id?: string
+          installation_date?: string | null
           installed_software?: string | null
           insurance_value?: number | null
           invoice_number?: string | null
@@ -225,6 +296,8 @@ export type Database = {
           logged_in_user?: string | null
           mac_address?: string | null
           manufacturer?: string | null
+          meter_reading?: number | null
+          meter_unit?: string | null
           model?: string | null
           name: string
           next_maintenance_date?: string | null
@@ -232,16 +305,22 @@ export type Database = {
           online_status?: string | null
           organization_id?: string | null
           os?: string | null
+          parent_asset_id?: string | null
+          parent_asset_name?: string | null
           photo_urls?: string[] | null
           purchase_date?: string | null
           purchase_order_number?: string | null
           purchase_price?: number | null
+          qr_code?: string | null
           ram_gb?: number | null
+          receipt_urls?: string[] | null
           replacement_cost?: number | null
           residual_value?: number | null
           room_id?: string | null
           room_name?: string | null
           serial_number?: string | null
+          site_id?: string | null
+          site_name?: string | null
           supplier?: string | null
           tax_amount?: number | null
           updated_at?: string
@@ -253,7 +332,10 @@ export type Database = {
           warranty_start?: string | null
         }
         Update: {
+          asset_class?: string | null
           asset_tag?: string | null
+          asset_type_id?: string | null
+          asset_type_name?: string | null
           assigned_user_email?: string | null
           assigned_user_name?: string | null
           barcode?: string | null
@@ -267,6 +349,7 @@ export type Database = {
           cpu?: string | null
           created_at?: string
           created_by_id?: string | null
+          criticality?: string | null
           currency?: string | null
           current_value?: number | null
           custom_fields?: Json
@@ -282,6 +365,7 @@ export type Database = {
           gps_lng?: number | null
           hostname?: string | null
           id?: string
+          installation_date?: string | null
           installed_software?: string | null
           insurance_value?: number | null
           invoice_number?: string | null
@@ -291,6 +375,8 @@ export type Database = {
           logged_in_user?: string | null
           mac_address?: string | null
           manufacturer?: string | null
+          meter_reading?: number | null
+          meter_unit?: string | null
           model?: string | null
           name?: string
           next_maintenance_date?: string | null
@@ -298,16 +384,22 @@ export type Database = {
           online_status?: string | null
           organization_id?: string | null
           os?: string | null
+          parent_asset_id?: string | null
+          parent_asset_name?: string | null
           photo_urls?: string[] | null
           purchase_date?: string | null
           purchase_order_number?: string | null
           purchase_price?: number | null
+          qr_code?: string | null
           ram_gb?: number | null
+          receipt_urls?: string[] | null
           replacement_cost?: number | null
           residual_value?: number | null
           room_id?: string | null
           room_name?: string | null
           serial_number?: string | null
+          site_id?: string | null
+          site_name?: string | null
           supplier?: string | null
           tax_amount?: number | null
           updated_at?: string
@@ -318,7 +410,29 @@ export type Database = {
           warranty_end?: string | null
           warranty_start?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "assets_asset_type_id_fkey"
+            columns: ["asset_type_id"]
+            isOneToOne: false
+            referencedRelation: "asset_types"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "assets_parent_asset_id_fkey"
+            columns: ["parent_asset_id"]
+            isOneToOne: false
+            referencedRelation: "assets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "assets_site_id_fkey"
+            columns: ["site_id"]
+            isOneToOne: false
+            referencedRelation: "sites"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       audit_logs: {
         Row: {
@@ -368,6 +482,77 @@ export type Database = {
         }
         Relationships: []
       }
+      automation_rules: {
+        Row: {
+          action_config: Json
+          action_type: string
+          active: boolean
+          condition_field: string | null
+          condition_operator: string | null
+          condition_value: string | null
+          created_at: string
+          created_by_id: string | null
+          description: string | null
+          id: string
+          last_run_at: string | null
+          name: string
+          organization_id: string | null
+          run_count: number
+          status: string
+          trigger_entity: string
+          trigger_event: string
+          updated_at: string
+        }
+        Insert: {
+          action_config?: Json
+          action_type?: string
+          active?: boolean
+          condition_field?: string | null
+          condition_operator?: string | null
+          condition_value?: string | null
+          created_at?: string
+          created_by_id?: string | null
+          description?: string | null
+          id?: string
+          last_run_at?: string | null
+          name: string
+          organization_id?: string | null
+          run_count?: number
+          status?: string
+          trigger_entity?: string
+          trigger_event?: string
+          updated_at?: string
+        }
+        Update: {
+          action_config?: Json
+          action_type?: string
+          active?: boolean
+          condition_field?: string | null
+          condition_operator?: string | null
+          condition_value?: string | null
+          created_at?: string
+          created_by_id?: string | null
+          description?: string | null
+          id?: string
+          last_run_at?: string | null
+          name?: string
+          organization_id?: string | null
+          run_count?: number
+          status?: string
+          trigger_entity?: string
+          trigger_event?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "automation_rules_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       buildings: {
         Row: {
           address: string | null
@@ -379,6 +564,8 @@ export type Database = {
           id: string
           name: string
           organization_id: string | null
+          site_id: string | null
+          site_name: string | null
           state: string | null
           status: string
           updated_at: string
@@ -394,6 +581,8 @@ export type Database = {
           id?: string
           name: string
           organization_id?: string | null
+          site_id?: string | null
+          site_name?: string | null
           state?: string | null
           status?: string
           updated_at?: string
@@ -409,12 +598,22 @@ export type Database = {
           id?: string
           name?: string
           organization_id?: string | null
+          site_id?: string | null
+          site_name?: string | null
           state?: string | null
           status?: string
           updated_at?: string
           zip_code?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "buildings_site_id_fkey"
+            columns: ["site_id"]
+            isOneToOne: false
+            referencedRelation: "sites"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       departments: {
         Row: {
@@ -527,6 +726,74 @@ export type Database = {
         }
         Relationships: []
       }
+      documents: {
+        Row: {
+          created_at: string
+          created_by_id: string | null
+          doc_type: string
+          entity_id: string | null
+          entity_name: string | null
+          entity_type: string
+          file_name: string | null
+          file_url: string
+          id: string
+          mime_type: string | null
+          notes: string | null
+          organization_id: string | null
+          size_bytes: number | null
+          status: string
+          title: string
+          updated_at: string
+          uploaded_by_name: string | null
+        }
+        Insert: {
+          created_at?: string
+          created_by_id?: string | null
+          doc_type?: string
+          entity_id?: string | null
+          entity_name?: string | null
+          entity_type: string
+          file_name?: string | null
+          file_url: string
+          id?: string
+          mime_type?: string | null
+          notes?: string | null
+          organization_id?: string | null
+          size_bytes?: number | null
+          status?: string
+          title: string
+          updated_at?: string
+          uploaded_by_name?: string | null
+        }
+        Update: {
+          created_at?: string
+          created_by_id?: string | null
+          doc_type?: string
+          entity_id?: string | null
+          entity_name?: string | null
+          entity_type?: string
+          file_name?: string | null
+          file_url?: string
+          id?: string
+          mime_type?: string | null
+          notes?: string | null
+          organization_id?: string | null
+          size_bytes?: number | null
+          status?: string
+          title?: string
+          updated_at?: string
+          uploaded_by_name?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "documents_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       geofences: {
         Row: {
           active: boolean
@@ -586,6 +853,257 @@ export type Database = {
           vehicle_ids?: string[] | null
         }
         Relationships: []
+      }
+      integrations: {
+        Row: {
+          availability: string
+          category: string
+          config: Json
+          connection_status: string
+          created_at: string
+          created_by_id: string | null
+          id: string
+          last_error: string | null
+          last_sync_at: string | null
+          notes: string | null
+          organization_id: string | null
+          provider_key: string
+          provider_name: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          availability?: string
+          category?: string
+          config?: Json
+          connection_status?: string
+          created_at?: string
+          created_by_id?: string | null
+          id?: string
+          last_error?: string | null
+          last_sync_at?: string | null
+          notes?: string | null
+          organization_id?: string | null
+          provider_key: string
+          provider_name: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          availability?: string
+          category?: string
+          config?: Json
+          connection_status?: string
+          created_at?: string
+          created_by_id?: string | null
+          id?: string
+          last_error?: string | null
+          last_sync_at?: string | null
+          notes?: string | null
+          organization_id?: string | null
+          provider_key?: string
+          provider_name?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "integrations_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      inventory_items: {
+        Row: {
+          building_name: string | null
+          category: string | null
+          created_at: string
+          created_by_id: string | null
+          description: string | null
+          expiry_date: string | null
+          id: string
+          item_type: string
+          lot_number: string | null
+          manufacturer: string | null
+          max_stock: number | null
+          min_stock: number | null
+          model: string | null
+          name: string
+          notes: string | null
+          organization_id: string | null
+          quantity_on_hand: number
+          quantity_reserved: number
+          reorder_point: number | null
+          serial_number: string | null
+          site_name: string | null
+          sku: string | null
+          status: string
+          storage_location: string | null
+          total_value: number | null
+          unit: string | null
+          unit_cost: number | null
+          updated_at: string
+          vendor_id: string | null
+          vendor_name: string | null
+          warehouse_name: string | null
+        }
+        Insert: {
+          building_name?: string | null
+          category?: string | null
+          created_at?: string
+          created_by_id?: string | null
+          description?: string | null
+          expiry_date?: string | null
+          id?: string
+          item_type?: string
+          lot_number?: string | null
+          manufacturer?: string | null
+          max_stock?: number | null
+          min_stock?: number | null
+          model?: string | null
+          name: string
+          notes?: string | null
+          organization_id?: string | null
+          quantity_on_hand?: number
+          quantity_reserved?: number
+          reorder_point?: number | null
+          serial_number?: string | null
+          site_name?: string | null
+          sku?: string | null
+          status?: string
+          storage_location?: string | null
+          total_value?: number | null
+          unit?: string | null
+          unit_cost?: number | null
+          updated_at?: string
+          vendor_id?: string | null
+          vendor_name?: string | null
+          warehouse_name?: string | null
+        }
+        Update: {
+          building_name?: string | null
+          category?: string | null
+          created_at?: string
+          created_by_id?: string | null
+          description?: string | null
+          expiry_date?: string | null
+          id?: string
+          item_type?: string
+          lot_number?: string | null
+          manufacturer?: string | null
+          max_stock?: number | null
+          min_stock?: number | null
+          model?: string | null
+          name?: string
+          notes?: string | null
+          organization_id?: string | null
+          quantity_on_hand?: number
+          quantity_reserved?: number
+          reorder_point?: number | null
+          serial_number?: string | null
+          site_name?: string | null
+          sku?: string | null
+          status?: string
+          storage_location?: string | null
+          total_value?: number | null
+          unit?: string | null
+          unit_cost?: number | null
+          updated_at?: string
+          vendor_id?: string | null
+          vendor_name?: string | null
+          warehouse_name?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "inventory_items_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      inventory_transactions: {
+        Row: {
+          created_at: string
+          created_by_id: string | null
+          from_location: string | null
+          id: string
+          item_id: string | null
+          item_name: string | null
+          notes: string | null
+          organization_id: string | null
+          performed_by_name: string | null
+          quantity: number
+          status: string
+          to_location: string | null
+          transaction_type: string
+          unit_cost: number | null
+          work_order_id: string | null
+          work_order_number: string | null
+        }
+        Insert: {
+          created_at?: string
+          created_by_id?: string | null
+          from_location?: string | null
+          id?: string
+          item_id?: string | null
+          item_name?: string | null
+          notes?: string | null
+          organization_id?: string | null
+          performed_by_name?: string | null
+          quantity?: number
+          status?: string
+          to_location?: string | null
+          transaction_type?: string
+          unit_cost?: number | null
+          work_order_id?: string | null
+          work_order_number?: string | null
+        }
+        Update: {
+          created_at?: string
+          created_by_id?: string | null
+          from_location?: string | null
+          id?: string
+          item_id?: string | null
+          item_name?: string | null
+          notes?: string | null
+          organization_id?: string | null
+          performed_by_name?: string | null
+          quantity?: number
+          status?: string
+          to_location?: string | null
+          transaction_type?: string
+          unit_cost?: number | null
+          work_order_id?: string | null
+          work_order_number?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "inventory_transactions_item_id_fkey"
+            columns: ["item_id"]
+            isOneToOne: false
+            referencedRelation: "inventory_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "inventory_transactions_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "inventory_transactions_work_order_id_fkey"
+            columns: ["work_order_id"]
+            isOneToOne: false
+            referencedRelation: "work_orders"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       invoices: {
         Row: {
@@ -658,6 +1176,264 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      iot_devices: {
+        Row: {
+          asset_id: string | null
+          asset_name: string | null
+          battery_level_pct: number | null
+          building_name: string | null
+          created_at: string
+          created_by_id: string | null
+          current_value: number | null
+          device_id: string | null
+          device_status: string
+          device_type: string
+          id: string
+          last_reading_at: string | null
+          manufacturer: string | null
+          max_threshold: number | null
+          metric: string
+          min_threshold: number | null
+          model: string | null
+          name: string
+          notes: string | null
+          organization_id: string | null
+          protocol: string | null
+          room_name: string | null
+          site_name: string | null
+          status: string
+          unit: string | null
+          updated_at: string
+        }
+        Insert: {
+          asset_id?: string | null
+          asset_name?: string | null
+          battery_level_pct?: number | null
+          building_name?: string | null
+          created_at?: string
+          created_by_id?: string | null
+          current_value?: number | null
+          device_id?: string | null
+          device_status?: string
+          device_type?: string
+          id?: string
+          last_reading_at?: string | null
+          manufacturer?: string | null
+          max_threshold?: number | null
+          metric?: string
+          min_threshold?: number | null
+          model?: string | null
+          name: string
+          notes?: string | null
+          organization_id?: string | null
+          protocol?: string | null
+          room_name?: string | null
+          site_name?: string | null
+          status?: string
+          unit?: string | null
+          updated_at?: string
+        }
+        Update: {
+          asset_id?: string | null
+          asset_name?: string | null
+          battery_level_pct?: number | null
+          building_name?: string | null
+          created_at?: string
+          created_by_id?: string | null
+          current_value?: number | null
+          device_id?: string | null
+          device_status?: string
+          device_type?: string
+          id?: string
+          last_reading_at?: string | null
+          manufacturer?: string | null
+          max_threshold?: number | null
+          metric?: string
+          min_threshold?: number | null
+          model?: string | null
+          name?: string
+          notes?: string | null
+          organization_id?: string | null
+          protocol?: string | null
+          room_name?: string | null
+          site_name?: string | null
+          status?: string
+          unit?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "iot_devices_asset_id_fkey"
+            columns: ["asset_id"]
+            isOneToOne: false
+            referencedRelation: "assets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "iot_devices_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      iot_readings: {
+        Row: {
+          breached: boolean
+          created_at: string
+          device_id: string | null
+          device_name: string | null
+          id: string
+          metric: string | null
+          organization_id: string | null
+          recorded_at: string
+          unit: string | null
+          value: number | null
+        }
+        Insert: {
+          breached?: boolean
+          created_at?: string
+          device_id?: string | null
+          device_name?: string | null
+          id?: string
+          metric?: string | null
+          organization_id?: string | null
+          recorded_at?: string
+          unit?: string | null
+          value?: number | null
+        }
+        Update: {
+          breached?: boolean
+          created_at?: string
+          device_id?: string | null
+          device_name?: string | null
+          id?: string
+          metric?: string | null
+          organization_id?: string | null
+          recorded_at?: string
+          unit?: string | null
+          value?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "iot_readings_device_id_fkey"
+            columns: ["device_id"]
+            isOneToOne: false
+            referencedRelation: "iot_devices"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "iot_readings_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      maintenance_plans: {
+        Row: {
+          active: boolean
+          asset_id: string | null
+          asset_name: string | null
+          asset_type_name: string | null
+          assigned_to_name: string | null
+          checklist: Json
+          created_at: string
+          created_by_id: string | null
+          description: string | null
+          id: string
+          interval_cycles: number | null
+          interval_days: number | null
+          interval_hours: number | null
+          interval_km: number | null
+          last_generated_at: string | null
+          meter_threshold: number | null
+          name: string
+          next_due_date: string | null
+          organization_id: string | null
+          priority: string
+          sensor_metric: string | null
+          sensor_threshold: number | null
+          status: string
+          trigger_type: string
+          updated_at: string
+          work_type: string
+        }
+        Insert: {
+          active?: boolean
+          asset_id?: string | null
+          asset_name?: string | null
+          asset_type_name?: string | null
+          assigned_to_name?: string | null
+          checklist?: Json
+          created_at?: string
+          created_by_id?: string | null
+          description?: string | null
+          id?: string
+          interval_cycles?: number | null
+          interval_days?: number | null
+          interval_hours?: number | null
+          interval_km?: number | null
+          last_generated_at?: string | null
+          meter_threshold?: number | null
+          name: string
+          next_due_date?: string | null
+          organization_id?: string | null
+          priority?: string
+          sensor_metric?: string | null
+          sensor_threshold?: number | null
+          status?: string
+          trigger_type?: string
+          updated_at?: string
+          work_type?: string
+        }
+        Update: {
+          active?: boolean
+          asset_id?: string | null
+          asset_name?: string | null
+          asset_type_name?: string | null
+          assigned_to_name?: string | null
+          checklist?: Json
+          created_at?: string
+          created_by_id?: string | null
+          description?: string | null
+          id?: string
+          interval_cycles?: number | null
+          interval_days?: number | null
+          interval_hours?: number | null
+          interval_km?: number | null
+          last_generated_at?: string | null
+          meter_threshold?: number | null
+          name?: string
+          next_due_date?: string | null
+          organization_id?: string | null
+          priority?: string
+          sensor_metric?: string | null
+          sensor_threshold?: number | null
+          status?: string
+          trigger_type?: string
+          updated_at?: string
+          work_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "maintenance_plans_asset_id_fkey"
+            columns: ["asset_id"]
+            isOneToOne: false
+            referencedRelation: "assets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "maintenance_plans_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       maintenance_records: {
         Row: {
@@ -856,9 +1632,11 @@ export type Database = {
           country: string | null
           created_at: string
           created_by_id: string | null
+          enabled_modules: Json
           gst_hst_number: string | null
           id: string
           industry: string | null
+          industry_template: string | null
           logo_url: string | null
           max_assets: number | null
           max_users: number | null
@@ -889,9 +1667,11 @@ export type Database = {
           country?: string | null
           created_at?: string
           created_by_id?: string | null
+          enabled_modules?: Json
           gst_hst_number?: string | null
           id?: string
           industry?: string | null
+          industry_template?: string | null
           logo_url?: string | null
           max_assets?: number | null
           max_users?: number | null
@@ -922,9 +1702,11 @@ export type Database = {
           country?: string | null
           created_at?: string
           created_by_id?: string | null
+          enabled_modules?: Json
           gst_hst_number?: string | null
           id?: string
           industry?: string | null
+          industry_template?: string | null
           logo_url?: string | null
           max_assets?: number | null
           max_users?: number | null
@@ -1537,6 +2319,192 @@ export type Database = {
         }
         Relationships: []
       }
+      service_requests: {
+        Row: {
+          asset_id: string | null
+          asset_name: string | null
+          assigned_to_name: string | null
+          building_name: string | null
+          category: string | null
+          closed_at: string | null
+          created_at: string
+          created_by_id: string | null
+          department_id: string | null
+          department_name: string | null
+          description: string | null
+          document_urls: string[] | null
+          id: string
+          location_notes: string | null
+          organization_id: string | null
+          photo_urls: string[] | null
+          priority: string
+          request_number: string | null
+          requester_email: string | null
+          requester_name: string | null
+          requester_phone: string | null
+          resolution_notes: string | null
+          room_name: string | null
+          site_name: string | null
+          sla_due_date: string | null
+          source: string
+          status: string
+          submitted_at: string
+          title: string
+          updated_at: string
+          work_order_id: string | null
+        }
+        Insert: {
+          asset_id?: string | null
+          asset_name?: string | null
+          assigned_to_name?: string | null
+          building_name?: string | null
+          category?: string | null
+          closed_at?: string | null
+          created_at?: string
+          created_by_id?: string | null
+          department_id?: string | null
+          department_name?: string | null
+          description?: string | null
+          document_urls?: string[] | null
+          id?: string
+          location_notes?: string | null
+          organization_id?: string | null
+          photo_urls?: string[] | null
+          priority?: string
+          request_number?: string | null
+          requester_email?: string | null
+          requester_name?: string | null
+          requester_phone?: string | null
+          resolution_notes?: string | null
+          room_name?: string | null
+          site_name?: string | null
+          sla_due_date?: string | null
+          source?: string
+          status?: string
+          submitted_at?: string
+          title: string
+          updated_at?: string
+          work_order_id?: string | null
+        }
+        Update: {
+          asset_id?: string | null
+          asset_name?: string | null
+          assigned_to_name?: string | null
+          building_name?: string | null
+          category?: string | null
+          closed_at?: string | null
+          created_at?: string
+          created_by_id?: string | null
+          department_id?: string | null
+          department_name?: string | null
+          description?: string | null
+          document_urls?: string[] | null
+          id?: string
+          location_notes?: string | null
+          organization_id?: string | null
+          photo_urls?: string[] | null
+          priority?: string
+          request_number?: string | null
+          requester_email?: string | null
+          requester_name?: string | null
+          requester_phone?: string | null
+          resolution_notes?: string | null
+          room_name?: string | null
+          site_name?: string | null
+          sla_due_date?: string | null
+          source?: string
+          status?: string
+          submitted_at?: string
+          title?: string
+          updated_at?: string
+          work_order_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "service_requests_asset_id_fkey"
+            columns: ["asset_id"]
+            isOneToOne: false
+            referencedRelation: "assets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "service_requests_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "service_requests_work_order_fk"
+            columns: ["work_order_id"]
+            isOneToOne: false
+            referencedRelation: "work_orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sites: {
+        Row: {
+          address: string | null
+          city: string | null
+          country: string | null
+          created_at: string
+          created_by_id: string | null
+          gps_lat: number | null
+          gps_lng: number | null
+          id: string
+          name: string
+          notes: string | null
+          organization_id: string | null
+          province_state: string | null
+          site_type: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          address?: string | null
+          city?: string | null
+          country?: string | null
+          created_at?: string
+          created_by_id?: string | null
+          gps_lat?: number | null
+          gps_lng?: number | null
+          id?: string
+          name: string
+          notes?: string | null
+          organization_id?: string | null
+          province_state?: string | null
+          site_type?: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          address?: string | null
+          city?: string | null
+          country?: string | null
+          created_at?: string
+          created_by_id?: string | null
+          gps_lat?: number | null
+          gps_lng?: number | null
+          id?: string
+          name?: string
+          notes?: string | null
+          organization_id?: string | null
+          province_state?: string | null
+          site_type?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sites_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       software_licenses: {
         Row: {
           compliance_status: string
@@ -1881,6 +2849,179 @@ export type Database = {
           website?: string | null
         }
         Relationships: []
+      }
+      work_orders: {
+        Row: {
+          approval_status: string
+          asset_id: string | null
+          asset_name: string | null
+          assigned_to_email: string | null
+          assigned_to_name: string | null
+          building_name: string | null
+          checklist: Json
+          completed_date: string | null
+          contractor_name: string | null
+          created_at: string
+          created_by_id: string | null
+          crew_name: string | null
+          department_name: string | null
+          description: string | null
+          document_urls: string[] | null
+          downtime_hours: number | null
+          due_date: string | null
+          id: string
+          labour_cost: number | null
+          labour_hours: number | null
+          meter_reading: number | null
+          mileage_km: number | null
+          notes: string | null
+          organization_id: string | null
+          parts_cost: number | null
+          parts_used: string | null
+          photo_urls: string[] | null
+          priority: string
+          room_name: string | null
+          scheduled_date: string | null
+          service_request_id: string | null
+          signature_name: string | null
+          signed_at: string | null
+          site_name: string | null
+          status: string
+          title: string
+          total_cost: number | null
+          trigger_type: string
+          updated_at: string
+          vehicle_id: string | null
+          vehicle_name: string | null
+          vendor_id: string | null
+          vendor_name: string | null
+          work_order_number: string | null
+          work_type: string
+        }
+        Insert: {
+          approval_status?: string
+          asset_id?: string | null
+          asset_name?: string | null
+          assigned_to_email?: string | null
+          assigned_to_name?: string | null
+          building_name?: string | null
+          checklist?: Json
+          completed_date?: string | null
+          contractor_name?: string | null
+          created_at?: string
+          created_by_id?: string | null
+          crew_name?: string | null
+          department_name?: string | null
+          description?: string | null
+          document_urls?: string[] | null
+          downtime_hours?: number | null
+          due_date?: string | null
+          id?: string
+          labour_cost?: number | null
+          labour_hours?: number | null
+          meter_reading?: number | null
+          mileage_km?: number | null
+          notes?: string | null
+          organization_id?: string | null
+          parts_cost?: number | null
+          parts_used?: string | null
+          photo_urls?: string[] | null
+          priority?: string
+          room_name?: string | null
+          scheduled_date?: string | null
+          service_request_id?: string | null
+          signature_name?: string | null
+          signed_at?: string | null
+          site_name?: string | null
+          status?: string
+          title: string
+          total_cost?: number | null
+          trigger_type?: string
+          updated_at?: string
+          vehicle_id?: string | null
+          vehicle_name?: string | null
+          vendor_id?: string | null
+          vendor_name?: string | null
+          work_order_number?: string | null
+          work_type?: string
+        }
+        Update: {
+          approval_status?: string
+          asset_id?: string | null
+          asset_name?: string | null
+          assigned_to_email?: string | null
+          assigned_to_name?: string | null
+          building_name?: string | null
+          checklist?: Json
+          completed_date?: string | null
+          contractor_name?: string | null
+          created_at?: string
+          created_by_id?: string | null
+          crew_name?: string | null
+          department_name?: string | null
+          description?: string | null
+          document_urls?: string[] | null
+          downtime_hours?: number | null
+          due_date?: string | null
+          id?: string
+          labour_cost?: number | null
+          labour_hours?: number | null
+          meter_reading?: number | null
+          mileage_km?: number | null
+          notes?: string | null
+          organization_id?: string | null
+          parts_cost?: number | null
+          parts_used?: string | null
+          photo_urls?: string[] | null
+          priority?: string
+          room_name?: string | null
+          scheduled_date?: string | null
+          service_request_id?: string | null
+          signature_name?: string | null
+          signed_at?: string | null
+          site_name?: string | null
+          status?: string
+          title?: string
+          total_cost?: number | null
+          trigger_type?: string
+          updated_at?: string
+          vehicle_id?: string | null
+          vehicle_name?: string | null
+          vendor_id?: string | null
+          vendor_name?: string | null
+          work_order_number?: string | null
+          work_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "work_orders_asset_id_fkey"
+            columns: ["asset_id"]
+            isOneToOne: false
+            referencedRelation: "assets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "work_orders_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "work_orders_service_request_id_fkey"
+            columns: ["service_request_id"]
+            isOneToOne: false
+            referencedRelation: "service_requests"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "work_orders_vehicle_id_fkey"
+            columns: ["vehicle_id"]
+            isOneToOne: false
+            referencedRelation: "vehicles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
