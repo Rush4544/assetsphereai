@@ -158,22 +158,22 @@ function AuthPage() {
   return (
     <div className="grid min-h-screen lg:grid-cols-2">
       <div className="gradient-hero hidden flex-col justify-between p-12 lg:flex">
-        <Link to="/" className="flex items-center gap-2 text-white">
-          <span className="flex size-9 items-center justify-center rounded-lg bg-primary">
+        <Link to="/" className="flex items-center gap-2 text-hero-foreground">
+          <span className="flex size-9 items-center justify-center rounded-lg bg-primary text-primary-foreground">
             <Radio className="size-5" />
           </span>
           <span className="text-lg font-semibold">AssetSphere AI</span>
         </Link>
-        <div className="max-w-md text-white">
+        <div className="max-w-md text-hero-foreground">
           <h2 className="text-3xl font-semibold leading-tight">
             Enterprise asset intelligence for every site, device and vehicle.
           </h2>
-          <p className="mt-4 text-sm text-white/70">
-            Multi-tenant asset tracking with network discovery, RFID zones, fleet geofencing,
+          <p className="mt-4 text-sm text-hero-muted">
+            Assets, maintenance, inventory, fleet, RFID, IoT and AI analytics in one platform. Start with a 7-day free trial. Network discovery, RFID zones, fleet geofencing,
             maintenance scheduling and financial depreciation — in one platform.
           </p>
         </div>
-        <p className="text-xs text-white/40">Multi-tenant · Role based access · Audit logged</p>
+        <p className="text-xs text-hero-muted">Multi-tenant · Role based access · Audit logged</p>
       </div>
 
       <div className="flex items-center justify-center px-6 py-12">
