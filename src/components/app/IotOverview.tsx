@@ -5,7 +5,7 @@ import { PageHeader } from "@/components/app/PageHeader";
 import { StatusBadge } from "@/components/app/StatusBadge";
 import { Progress } from "@/components/ui/progress";
 import { useRows } from "@/lib/crud";
-import { countWhere, fmtDateTime, humanize, type Row } from "@/lib/resource";
+import { countWhere, fmtDateTime, humanize, kpiSearch, type Row } from "@/lib/resource";
 
 function breached(row: Row) {
   const v = row["current_value"];
@@ -30,19 +30,47 @@ export function IotOverview() {
       />
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <KPICard label="Devices" value={devices.length} icon="Radio" />
+        <KPICard
+          label="Devices"
+          value={devices.length}
+          icon="Radio"
+          search={kpiSearch("iot", { label: "Devices", value: 0, tab: "devices" })}
+        />
         <KPICard
           label="Connected"
           value={countWhere(devices, (d) => d["device_status"] === "connected")}
           icon="Wifi"
           tone="success"
+          search={kpiSearch("iot", {
+            label: "Connected",
+            value: 0,
+            tab: "devices",
+            filter: { field: "device_status", op: "eq", value: "connected" },
+          })}
         />
-        <KPICard label="Threshold breaches" value={countWhere(devices, breached)} icon="TriangleAlert" tone="destructive" />
+        <KPICard
+          label="Threshold breaches"
+          value={countWhere(devices, breached)}
+          icon="TriangleAlert"
+          tone="destructive"
+          search={kpiSearch("iot", {
+            label: "Threshold breaches",
+            value: 0,
+            tab: "devices",
+            filter: { field: "current_value", op: "outside_thresholds" },
+          })}
+        />
         <KPICard
           label="Low battery"
           value={countWhere(devices, (d) => typeof d["battery_level_pct"] === "number" && (d["battery_level_pct"] as number) < 20)}
           icon="BatteryLow"
           tone="warning"
+          search={kpiSearch("iot", {
+            label: "Low battery",
+            value: 0,
+            tab: "devices",
+            filter: { field: "battery_level_pct", op: "lt", value: 20 },
+          })}
         />
       </div>
 
