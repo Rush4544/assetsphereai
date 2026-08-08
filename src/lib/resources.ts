@@ -46,13 +46,14 @@ export const assetsConfig: ResourceConfig = {
   ],
   kpis: (rows) => [
     { label: "Total assets", value: rows.length, icon: "Boxes" },
-    { label: "Inventory value", value: currency(sum(rows, "current_value")), icon: "DollarSign" },
-    { label: "In use", value: countWhere(rows, (r) => r["lifecycle_status"] === "in_use"), icon: "CheckCircle2", tone: "success" },
+    { label: "Inventory value", value: currency(sum(rows, "current_value")), icon: "DollarSign", filter: { field: "current_value", op: "set" } },
+    { label: "In use", value: countWhere(rows, (r) => r["lifecycle_status"] === "in_use"), icon: "CheckCircle2", tone: "success", filter: { field: "lifecycle_status", op: "eq", value: "in_use" } },
     {
       label: "Warranty expiring",
       value: countWhere(rows, (r) => isExpiring(r["warranty_end"])),
       icon: "ShieldAlert",
       tone: "warning",
+      filter: { field: "warranty_end", op: "next_days", value: 30 },
       to: "/warranties",
     },
   ],
