@@ -11,7 +11,7 @@ export type KPICardProps = {
   /** When set the whole card links to this route. */
   to?: string;
   /** Search params applied on navigation (used for KPI-driven filtering). */
-  search?: Record<string, string>;
+  search?: Record<string, string> | undefined;
 };
 
 const toneRing: Record<NonNullable<KPICardProps["tone"]>, string> = {
