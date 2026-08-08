@@ -16,6 +16,7 @@ import { AlertTriangle, ArrowUpRight, Loader2, Sparkles } from "lucide-react";
 
 import { supabase } from "@/integrations/supabase/client";
 import { useCurrentUser } from "@/lib/auth";
+import { kpiSearch } from "@/lib/resource";
 import { KPICard } from "@/components/app/KPICard";
 import { PageHeader } from "@/components/app/PageHeader";
 import { Badge } from "@/components/ui/badge";
@@ -194,6 +195,7 @@ function Dashboard() {
           tone="success"
           hint="Current book value"
           to="/inventory"
+          search={kpiSearch("inventory", { label: "Inventory value", value: 0, tab: "items" })}
         />
         <KPICard
           label="Open maintenance"
@@ -202,6 +204,11 @@ function Dashboard() {
           tone={overdue.length ? "destructive" : "warning"}
           hint={`${overdue.length} overdue · ${inMaintenance} assets in service`}
           to="/maintenance"
+          search={kpiSearch("maintenance", {
+            label: "Open maintenance",
+            value: 0,
+            filter: { field: "status", op: "in", value: ["scheduled", "in_progress"] },
+          })}
         />
         <KPICard
           label="Licence compliance"
@@ -210,6 +217,11 @@ function Dashboard() {
           tone={nonCompliant ? "destructive" : "success"}
           hint={`${expiringLicenses.length} expiring in 30 days`}
           to="/software"
+          search={kpiSearch("software", {
+            label: "Non-compliant licences",
+            value: 0,
+            filter: { field: "compliance_status", op: "eq", value: "non_compliant" },
+          })}
         />
       </div>
 
@@ -220,8 +232,23 @@ function Dashboard() {
           icon="PackageCheck"
           tone="warning"
           to="/service-requests"
+          search={kpiSearch("service-requests", {
+            label: "Open requests",
+            value: 0,
+            filter: { field: "status", op: "nin", value: ["resolved", "closed", "rejected"] },
+          })}
         />
-        <KPICard label="Devices online" value={`${onlineDevices}/${devices.length}`} icon="Network" to="/network" />
+        <KPICard
+          label="Devices online"
+          value={`${onlineDevices}/${devices.length}`}
+          icon="Network"
+          to="/network"
+          search={kpiSearch("network", {
+            label: "Online devices",
+            value: 0,
+            filter: { field: "online_status", op: "eq", value: "online" },
+          })}
+        />
         <KPICard
           label="Fleet vehicles"
           value={vehicles.length}
@@ -229,6 +256,15 @@ function Dashboard() {
           hint={`${breaches} geofence breaches`}
           tone={breaches ? "destructive" : "primary"}
           to="/vehicles"
+          {...(breaches
+            ? {
+                search: kpiSearch("vehicles", {
+                  label: "Geofence breaches",
+                  value: 0,
+                  filter: { field: "geofence_breach", op: "truthy" },
+                }),
+              }
+            : {})}
         />
         <KPICard
           label="Warranties expiring"
@@ -237,6 +273,11 @@ function Dashboard() {
           tone="warning"
           hint="Next 30 days"
           to="/warranties"
+          search={kpiSearch("warranties", {
+            label: "Expiring warranties",
+            value: 0,
+            filter: { field: "warranty_end", op: "next_days", value: 30 },
+          })}
         />
       </div>
 
