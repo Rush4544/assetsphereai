@@ -296,16 +296,18 @@ function Dashboard() {
                 <BarChart
                   data={lifecycleData}
                   onClick={(entry) => {
-                    if (entry && entry.activePayload && entry.activePayload.length) {
-                      const status = entry.activePayload[0].payload.status;
-                      if (status === "in maintenance") {
-                        navigate({ to: "/maintenance" as any });
-                      } else {
-                        navigate({ to: "/assets" as any });
-                      }
-                    } else {
-                      navigate({ to: "/assets" as any });
-                    }
+                    const label: string | undefined = entry?.activePayload?.[0]?.payload?.status;
+                    const status = label ? label.replace(/ /g, "_") : null;
+                    navigate({
+                      to: "/assets",
+                      search: status
+                        ? kpiSearch("assets", {
+                            label: `Lifecycle: ${label}`,
+                            value: 0,
+                            filter: { field: "lifecycle_status", op: "eq", value: status },
+                          })
+                        : {},
+                    } as never);
                   }}
                 >
                   <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
@@ -340,8 +342,19 @@ function Dashboard() {
             {categoryData.length ? (
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart
-                  onClick={() => {
-                    navigate({ to: "/assets" as any });
+                  onClick={(entry) => {
+                    const name: string | undefined = (entry as { activePayload?: Array<{ name?: string }> })
+                      ?.activePayload?.[0]?.name;
+                    navigate({
+                      to: "/assets",
+                      search: name
+                        ? kpiSearch("assets", {
+                            label: `Category: ${name}`,
+                            value: 0,
+                            filter: { field: "category_name", op: "eq", value: name },
+                          })
+                        : {},
+                    } as never);
                   }}
                 >
                   <Pie data={categoryData} dataKey="value" nameKey="name" innerRadius={50} outerRadius={80}>
@@ -378,7 +391,7 @@ function Dashboard() {
               alerts.slice(0, 8).map((a) => (
                 <li
                   key={a.id}
-                  onClick={() => navigate({ to: a.to as any })}
+                  onClick={() => navigate({ to: a.to, search: a.search ?? {} } as never)}
                   className="flex items-start gap-3 rounded-lg border border-border p-3 transition-colors hover:bg-accent/50 cursor-pointer"
                 >
                   <AlertTriangle
@@ -417,7 +430,7 @@ function Dashboard() {
                 .map((a) => (
                   <li
                     key={a.id}
-                    onClick={() => navigate({ to: "/assets/$id" as any, params: { id: a.id } })}
+                    onClick={() => navigate({ to: "/assets/$id", params: { id: a.id } } as never)}
                     className="flex items-center justify-between gap-3 py-3 transition-colors hover:bg-accent/50 cursor-pointer px-2 rounded-md"
                   >
                     <div className="min-w-0">
