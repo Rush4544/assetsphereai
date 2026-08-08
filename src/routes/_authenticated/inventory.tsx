@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useRouter, useRouterState } from "@tanstack/react-router";
 
 import { ResourcePage } from "@/components/app/ResourcePage";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -19,8 +19,14 @@ export const Route = createFileRoute("/_authenticated/inventory")({
 });
 
 function InventoryPage() {
+  const router = useRouter();
+  const tab = useRouterState({ select: (s) => String((s.location.search as Record<string, unknown>)?.["tab"] ?? "items") });
   return (
-    <Tabs defaultValue="items" className="space-y-6">
+    <Tabs
+      value={tab === "movements" ? "movements" : "items"}
+      onValueChange={(v) => router.navigate({ search: { tab: v } } as never)}
+      className="space-y-6"
+    >
       <TabsList>
         <TabsTrigger value="items">Items</TabsTrigger>
         <TabsTrigger value="movements">Stock movements</TabsTrigger>
