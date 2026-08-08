@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useCurrentUser } from "@/lib/auth";
 import { isOwnerPreview } from "@/lib/preview";
 import { AppSidebar } from "@/components/app/AppSidebar";
+import { CommandPalette } from "@/components/app/CommandPalette";
 import { PendingApproval } from "@/components/app/PendingApproval";
 import { Loader2 } from "lucide-react";
 
@@ -37,6 +38,7 @@ function AppLayout() {
   return (
     <div className="flex min-h-screen bg-background">
       <AppSidebar user={user} />
+      <CommandPalette user={user} />
       <main className="min-w-0 flex-1 px-6 py-6 lg:px-10">
         <Outlet />
       </main>

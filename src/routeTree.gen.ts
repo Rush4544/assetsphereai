@@ -16,24 +16,35 @@ import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as AuthenticatedAiAssistantRouteImport } from './routes/_authenticated/ai-assistant'
 import { Route as AuthenticatedApiDocsRouteImport } from './routes/_authenticated/api-docs'
 import { Route as AuthenticatedAssetCategoriesRouteImport } from './routes/_authenticated/asset-categories'
+import { Route as AuthenticatedAssetTypesRouteImport } from './routes/_authenticated/asset-types'
 import { Route as AuthenticatedAssetsRouteImport } from './routes/_authenticated/assets'
 import { Route as AuthenticatedAssignmentsRouteImport } from './routes/_authenticated/assignments'
 import { Route as AuthenticatedAuditLogRouteImport } from './routes/_authenticated/audit-log'
+import { Route as AuthenticatedAutomationRouteImport } from './routes/_authenticated/automation'
 import { Route as AuthenticatedBuildingsRouteImport } from './routes/_authenticated/buildings'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedDepartmentsRouteImport } from './routes/_authenticated/departments'
 import { Route as AuthenticatedDistributionRouteImport } from './routes/_authenticated/distribution'
+import { Route as AuthenticatedDocumentsRouteImport } from './routes/_authenticated/documents'
 import { Route as AuthenticatedFloorPlanRouteImport } from './routes/_authenticated/floor-plan'
 import { Route as AuthenticatedGeofencesRouteImport } from './routes/_authenticated/geofences'
+import { Route as AuthenticatedImportRouteImport } from './routes/_authenticated/import'
+import { Route as AuthenticatedIntegrationsRouteImport } from './routes/_authenticated/integrations'
+import { Route as AuthenticatedInventoryRouteImport } from './routes/_authenticated/inventory'
 import { Route as AuthenticatedInvoicesRouteImport } from './routes/_authenticated/invoices'
+import { Route as AuthenticatedIotRouteImport } from './routes/_authenticated/iot'
 import { Route as AuthenticatedMaintenanceRouteImport } from './routes/_authenticated/maintenance'
 import { Route as AuthenticatedMaintenanceCalendarRouteImport } from './routes/_authenticated/maintenance-calendar'
+import { Route as AuthenticatedMaintenancePlansRouteImport } from './routes/_authenticated/maintenance-plans'
+import { Route as AuthenticatedModulesRouteImport } from './routes/_authenticated/modules'
 import { Route as AuthenticatedNetworkRouteImport } from './routes/_authenticated/network'
 import { Route as AuthenticatedOrganizationsRouteImport } from './routes/_authenticated/organizations'
 import { Route as AuthenticatedPeopleSearchRouteImport } from './routes/_authenticated/people-search'
 import { Route as AuthenticatedReportsRouteImport } from './routes/_authenticated/reports'
 import { Route as AuthenticatedRoomsRouteImport } from './routes/_authenticated/rooms'
+import { Route as AuthenticatedServiceRequestsRouteImport } from './routes/_authenticated/service-requests'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
+import { Route as AuthenticatedSitesRouteImport } from './routes/_authenticated/sites'
 import { Route as AuthenticatedSoftwareRouteImport } from './routes/_authenticated/software'
 import { Route as AuthenticatedSuperAdminRouteImport } from './routes/_authenticated/super-admin'
 import { Route as AuthenticatedTechnicianPortalRouteImport } from './routes/_authenticated/technician-portal'
@@ -42,6 +53,8 @@ import { Route as AuthenticatedVehicleServiceRouteImport } from './routes/_authe
 import { Route as AuthenticatedVehiclesRouteImport } from './routes/_authenticated/vehicles'
 import { Route as AuthenticatedVendorsRouteImport } from './routes/_authenticated/vendors'
 import { Route as AuthenticatedWarrantiesRouteImport } from './routes/_authenticated/warranties'
+import { Route as AuthenticatedWorkOrdersRouteImport } from './routes/_authenticated/work-orders'
+import { Route as AuthenticatedAssetsIdRouteImport } from './routes/_authenticated/assets_.$id'
 import { Route as AuthenticatedRfidAlertsRouteImport } from './routes/_authenticated/rfid.alerts'
 import { Route as AuthenticatedRfidAssetsRouteImport } from './routes/_authenticated/rfid.assets'
 import { Route as AuthenticatedRfidDashboardRouteImport } from './routes/_authenticated/rfid.dashboard'
@@ -90,6 +103,11 @@ const AuthenticatedAssetCategoriesRoute =
     path: '/asset-categories',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedAssetTypesRoute = AuthenticatedAssetTypesRouteImport.update({
+  id: '/asset-types',
+  path: '/asset-types',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedAssetsRoute = AuthenticatedAssetsRouteImport.update({
   id: '/assets',
   path: '/assets',
@@ -104,6 +122,11 @@ const AuthenticatedAssignmentsRoute =
 const AuthenticatedAuditLogRoute = AuthenticatedAuditLogRouteImport.update({
   id: '/audit-log',
   path: '/audit-log',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedAutomationRoute = AuthenticatedAutomationRouteImport.update({
+  id: '/automation',
+  path: '/automation',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedBuildingsRoute = AuthenticatedBuildingsRouteImport.update({
@@ -128,6 +151,11 @@ const AuthenticatedDistributionRoute =
     path: '/distribution',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedDocumentsRoute = AuthenticatedDocumentsRouteImport.update({
+  id: '/documents',
+  path: '/documents',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedFloorPlanRoute = AuthenticatedFloorPlanRouteImport.update({
   id: '/floor-plan',
   path: '/floor-plan',
@@ -138,9 +166,30 @@ const AuthenticatedGeofencesRoute = AuthenticatedGeofencesRouteImport.update({
   path: '/geofences',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedImportRoute = AuthenticatedImportRouteImport.update({
+  id: '/import',
+  path: '/import',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedIntegrationsRoute =
+  AuthenticatedIntegrationsRouteImport.update({
+    id: '/integrations',
+    path: '/integrations',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedInventoryRoute = AuthenticatedInventoryRouteImport.update({
+  id: '/inventory',
+  path: '/inventory',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedInvoicesRoute = AuthenticatedInvoicesRouteImport.update({
   id: '/invoices',
   path: '/invoices',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedIotRoute = AuthenticatedIotRouteImport.update({
+  id: '/iot',
+  path: '/iot',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedMaintenanceRoute =
@@ -155,6 +204,17 @@ const AuthenticatedMaintenanceCalendarRoute =
     path: '/maintenance-calendar',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedMaintenancePlansRoute =
+  AuthenticatedMaintenancePlansRouteImport.update({
+    id: '/maintenance-plans',
+    path: '/maintenance-plans',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedModulesRoute = AuthenticatedModulesRouteImport.update({
+  id: '/modules',
+  path: '/modules',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedNetworkRoute = AuthenticatedNetworkRouteImport.update({
   id: '/network',
   path: '/network',
@@ -182,9 +242,20 @@ const AuthenticatedRoomsRoute = AuthenticatedRoomsRouteImport.update({
   path: '/rooms',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedServiceRequestsRoute =
+  AuthenticatedServiceRequestsRouteImport.update({
+    id: '/service-requests',
+    path: '/service-requests',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedSitesRoute = AuthenticatedSitesRouteImport.update({
+  id: '/sites',
+  path: '/sites',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedSoftwareRoute = AuthenticatedSoftwareRouteImport.update({
@@ -228,6 +299,16 @@ const AuthenticatedVendorsRoute = AuthenticatedVendorsRouteImport.update({
 const AuthenticatedWarrantiesRoute = AuthenticatedWarrantiesRouteImport.update({
   id: '/warranties',
   path: '/warranties',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedWorkOrdersRoute = AuthenticatedWorkOrdersRouteImport.update({
+  id: '/work-orders',
+  path: '/work-orders',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedAssetsIdRoute = AuthenticatedAssetsIdRouteImport.update({
+  id: '/assets_/$id',
+  path: '/assets/$id',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedRfidAlertsRoute = AuthenticatedRfidAlertsRouteImport.update({
@@ -300,24 +381,35 @@ export interface FileRoutesByFullPath {
   '/ai-assistant': typeof AuthenticatedAiAssistantRoute
   '/api-docs': typeof AuthenticatedApiDocsRoute
   '/asset-categories': typeof AuthenticatedAssetCategoriesRoute
+  '/asset-types': typeof AuthenticatedAssetTypesRoute
   '/assets': typeof AuthenticatedAssetsRoute
   '/assignments': typeof AuthenticatedAssignmentsRoute
   '/audit-log': typeof AuthenticatedAuditLogRoute
+  '/automation': typeof AuthenticatedAutomationRoute
   '/buildings': typeof AuthenticatedBuildingsRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/departments': typeof AuthenticatedDepartmentsRoute
   '/distribution': typeof AuthenticatedDistributionRoute
+  '/documents': typeof AuthenticatedDocumentsRoute
   '/floor-plan': typeof AuthenticatedFloorPlanRoute
   '/geofences': typeof AuthenticatedGeofencesRoute
+  '/import': typeof AuthenticatedImportRoute
+  '/integrations': typeof AuthenticatedIntegrationsRoute
+  '/inventory': typeof AuthenticatedInventoryRoute
   '/invoices': typeof AuthenticatedInvoicesRoute
+  '/iot': typeof AuthenticatedIotRoute
   '/maintenance': typeof AuthenticatedMaintenanceRoute
   '/maintenance-calendar': typeof AuthenticatedMaintenanceCalendarRoute
+  '/maintenance-plans': typeof AuthenticatedMaintenancePlansRoute
+  '/modules': typeof AuthenticatedModulesRoute
   '/network': typeof AuthenticatedNetworkRoute
   '/organizations': typeof AuthenticatedOrganizationsRoute
   '/people-search': typeof AuthenticatedPeopleSearchRoute
   '/reports': typeof AuthenticatedReportsRoute
   '/rooms': typeof AuthenticatedRoomsRoute
+  '/service-requests': typeof AuthenticatedServiceRequestsRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/sites': typeof AuthenticatedSitesRoute
   '/software': typeof AuthenticatedSoftwareRoute
   '/super-admin': typeof AuthenticatedSuperAdminRoute
   '/technician-portal': typeof AuthenticatedTechnicianPortalRoute
@@ -326,6 +418,8 @@ export interface FileRoutesByFullPath {
   '/vehicles': typeof AuthenticatedVehiclesRoute
   '/vendors': typeof AuthenticatedVendorsRoute
   '/warranties': typeof AuthenticatedWarrantiesRoute
+  '/work-orders': typeof AuthenticatedWorkOrdersRoute
+  '/assets/$id': typeof AuthenticatedAssetsIdRoute
   '/rfid/alerts': typeof AuthenticatedRfidAlertsRoute
   '/rfid/assets': typeof AuthenticatedRfidAssetsRoute
   '/rfid/dashboard': typeof AuthenticatedRfidDashboardRoute
@@ -345,24 +439,35 @@ export interface FileRoutesByTo {
   '/ai-assistant': typeof AuthenticatedAiAssistantRoute
   '/api-docs': typeof AuthenticatedApiDocsRoute
   '/asset-categories': typeof AuthenticatedAssetCategoriesRoute
+  '/asset-types': typeof AuthenticatedAssetTypesRoute
   '/assets': typeof AuthenticatedAssetsRoute
   '/assignments': typeof AuthenticatedAssignmentsRoute
   '/audit-log': typeof AuthenticatedAuditLogRoute
+  '/automation': typeof AuthenticatedAutomationRoute
   '/buildings': typeof AuthenticatedBuildingsRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/departments': typeof AuthenticatedDepartmentsRoute
   '/distribution': typeof AuthenticatedDistributionRoute
+  '/documents': typeof AuthenticatedDocumentsRoute
   '/floor-plan': typeof AuthenticatedFloorPlanRoute
   '/geofences': typeof AuthenticatedGeofencesRoute
+  '/import': typeof AuthenticatedImportRoute
+  '/integrations': typeof AuthenticatedIntegrationsRoute
+  '/inventory': typeof AuthenticatedInventoryRoute
   '/invoices': typeof AuthenticatedInvoicesRoute
+  '/iot': typeof AuthenticatedIotRoute
   '/maintenance': typeof AuthenticatedMaintenanceRoute
   '/maintenance-calendar': typeof AuthenticatedMaintenanceCalendarRoute
+  '/maintenance-plans': typeof AuthenticatedMaintenancePlansRoute
+  '/modules': typeof AuthenticatedModulesRoute
   '/network': typeof AuthenticatedNetworkRoute
   '/organizations': typeof AuthenticatedOrganizationsRoute
   '/people-search': typeof AuthenticatedPeopleSearchRoute
   '/reports': typeof AuthenticatedReportsRoute
   '/rooms': typeof AuthenticatedRoomsRoute
+  '/service-requests': typeof AuthenticatedServiceRequestsRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/sites': typeof AuthenticatedSitesRoute
   '/software': typeof AuthenticatedSoftwareRoute
   '/super-admin': typeof AuthenticatedSuperAdminRoute
   '/technician-portal': typeof AuthenticatedTechnicianPortalRoute
@@ -371,6 +476,8 @@ export interface FileRoutesByTo {
   '/vehicles': typeof AuthenticatedVehiclesRoute
   '/vendors': typeof AuthenticatedVendorsRoute
   '/warranties': typeof AuthenticatedWarrantiesRoute
+  '/work-orders': typeof AuthenticatedWorkOrdersRoute
+  '/assets/$id': typeof AuthenticatedAssetsIdRoute
   '/rfid/alerts': typeof AuthenticatedRfidAlertsRoute
   '/rfid/assets': typeof AuthenticatedRfidAssetsRoute
   '/rfid/dashboard': typeof AuthenticatedRfidDashboardRoute
@@ -392,24 +499,35 @@ export interface FileRoutesById {
   '/_authenticated/ai-assistant': typeof AuthenticatedAiAssistantRoute
   '/_authenticated/api-docs': typeof AuthenticatedApiDocsRoute
   '/_authenticated/asset-categories': typeof AuthenticatedAssetCategoriesRoute
+  '/_authenticated/asset-types': typeof AuthenticatedAssetTypesRoute
   '/_authenticated/assets': typeof AuthenticatedAssetsRoute
   '/_authenticated/assignments': typeof AuthenticatedAssignmentsRoute
   '/_authenticated/audit-log': typeof AuthenticatedAuditLogRoute
+  '/_authenticated/automation': typeof AuthenticatedAutomationRoute
   '/_authenticated/buildings': typeof AuthenticatedBuildingsRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/departments': typeof AuthenticatedDepartmentsRoute
   '/_authenticated/distribution': typeof AuthenticatedDistributionRoute
+  '/_authenticated/documents': typeof AuthenticatedDocumentsRoute
   '/_authenticated/floor-plan': typeof AuthenticatedFloorPlanRoute
   '/_authenticated/geofences': typeof AuthenticatedGeofencesRoute
+  '/_authenticated/import': typeof AuthenticatedImportRoute
+  '/_authenticated/integrations': typeof AuthenticatedIntegrationsRoute
+  '/_authenticated/inventory': typeof AuthenticatedInventoryRoute
   '/_authenticated/invoices': typeof AuthenticatedInvoicesRoute
+  '/_authenticated/iot': typeof AuthenticatedIotRoute
   '/_authenticated/maintenance': typeof AuthenticatedMaintenanceRoute
   '/_authenticated/maintenance-calendar': typeof AuthenticatedMaintenanceCalendarRoute
+  '/_authenticated/maintenance-plans': typeof AuthenticatedMaintenancePlansRoute
+  '/_authenticated/modules': typeof AuthenticatedModulesRoute
   '/_authenticated/network': typeof AuthenticatedNetworkRoute
   '/_authenticated/organizations': typeof AuthenticatedOrganizationsRoute
   '/_authenticated/people-search': typeof AuthenticatedPeopleSearchRoute
   '/_authenticated/reports': typeof AuthenticatedReportsRoute
   '/_authenticated/rooms': typeof AuthenticatedRoomsRoute
+  '/_authenticated/service-requests': typeof AuthenticatedServiceRequestsRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
+  '/_authenticated/sites': typeof AuthenticatedSitesRoute
   '/_authenticated/software': typeof AuthenticatedSoftwareRoute
   '/_authenticated/super-admin': typeof AuthenticatedSuperAdminRoute
   '/_authenticated/technician-portal': typeof AuthenticatedTechnicianPortalRoute
@@ -418,6 +536,8 @@ export interface FileRoutesById {
   '/_authenticated/vehicles': typeof AuthenticatedVehiclesRoute
   '/_authenticated/vendors': typeof AuthenticatedVendorsRoute
   '/_authenticated/warranties': typeof AuthenticatedWarrantiesRoute
+  '/_authenticated/work-orders': typeof AuthenticatedWorkOrdersRoute
+  '/_authenticated/assets_/$id': typeof AuthenticatedAssetsIdRoute
   '/_authenticated/rfid/alerts': typeof AuthenticatedRfidAlertsRoute
   '/_authenticated/rfid/assets': typeof AuthenticatedRfidAssetsRoute
   '/_authenticated/rfid/dashboard': typeof AuthenticatedRfidDashboardRoute
@@ -439,24 +559,35 @@ export interface FileRouteTypes {
     | '/ai-assistant'
     | '/api-docs'
     | '/asset-categories'
+    | '/asset-types'
     | '/assets'
     | '/assignments'
     | '/audit-log'
+    | '/automation'
     | '/buildings'
     | '/dashboard'
     | '/departments'
     | '/distribution'
+    | '/documents'
     | '/floor-plan'
     | '/geofences'
+    | '/import'
+    | '/integrations'
+    | '/inventory'
     | '/invoices'
+    | '/iot'
     | '/maintenance'
     | '/maintenance-calendar'
+    | '/maintenance-plans'
+    | '/modules'
     | '/network'
     | '/organizations'
     | '/people-search'
     | '/reports'
     | '/rooms'
+    | '/service-requests'
     | '/settings'
+    | '/sites'
     | '/software'
     | '/super-admin'
     | '/technician-portal'
@@ -465,6 +596,8 @@ export interface FileRouteTypes {
     | '/vehicles'
     | '/vendors'
     | '/warranties'
+    | '/work-orders'
+    | '/assets/$id'
     | '/rfid/alerts'
     | '/rfid/assets'
     | '/rfid/dashboard'
@@ -484,24 +617,35 @@ export interface FileRouteTypes {
     | '/ai-assistant'
     | '/api-docs'
     | '/asset-categories'
+    | '/asset-types'
     | '/assets'
     | '/assignments'
     | '/audit-log'
+    | '/automation'
     | '/buildings'
     | '/dashboard'
     | '/departments'
     | '/distribution'
+    | '/documents'
     | '/floor-plan'
     | '/geofences'
+    | '/import'
+    | '/integrations'
+    | '/inventory'
     | '/invoices'
+    | '/iot'
     | '/maintenance'
     | '/maintenance-calendar'
+    | '/maintenance-plans'
+    | '/modules'
     | '/network'
     | '/organizations'
     | '/people-search'
     | '/reports'
     | '/rooms'
+    | '/service-requests'
     | '/settings'
+    | '/sites'
     | '/software'
     | '/super-admin'
     | '/technician-portal'
@@ -510,6 +654,8 @@ export interface FileRouteTypes {
     | '/vehicles'
     | '/vendors'
     | '/warranties'
+    | '/work-orders'
+    | '/assets/$id'
     | '/rfid/alerts'
     | '/rfid/assets'
     | '/rfid/dashboard'
@@ -530,24 +676,35 @@ export interface FileRouteTypes {
     | '/_authenticated/ai-assistant'
     | '/_authenticated/api-docs'
     | '/_authenticated/asset-categories'
+    | '/_authenticated/asset-types'
     | '/_authenticated/assets'
     | '/_authenticated/assignments'
     | '/_authenticated/audit-log'
+    | '/_authenticated/automation'
     | '/_authenticated/buildings'
     | '/_authenticated/dashboard'
     | '/_authenticated/departments'
     | '/_authenticated/distribution'
+    | '/_authenticated/documents'
     | '/_authenticated/floor-plan'
     | '/_authenticated/geofences'
+    | '/_authenticated/import'
+    | '/_authenticated/integrations'
+    | '/_authenticated/inventory'
     | '/_authenticated/invoices'
+    | '/_authenticated/iot'
     | '/_authenticated/maintenance'
     | '/_authenticated/maintenance-calendar'
+    | '/_authenticated/maintenance-plans'
+    | '/_authenticated/modules'
     | '/_authenticated/network'
     | '/_authenticated/organizations'
     | '/_authenticated/people-search'
     | '/_authenticated/reports'
     | '/_authenticated/rooms'
+    | '/_authenticated/service-requests'
     | '/_authenticated/settings'
+    | '/_authenticated/sites'
     | '/_authenticated/software'
     | '/_authenticated/super-admin'
     | '/_authenticated/technician-portal'
@@ -556,6 +713,8 @@ export interface FileRouteTypes {
     | '/_authenticated/vehicles'
     | '/_authenticated/vendors'
     | '/_authenticated/warranties'
+    | '/_authenticated/work-orders'
+    | '/_authenticated/assets_/$id'
     | '/_authenticated/rfid/alerts'
     | '/_authenticated/rfid/assets'
     | '/_authenticated/rfid/dashboard'
@@ -627,6 +786,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAssetCategoriesRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/asset-types': {
+      id: '/_authenticated/asset-types'
+      path: '/asset-types'
+      fullPath: '/asset-types'
+      preLoaderRoute: typeof AuthenticatedAssetTypesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/assets': {
       id: '/_authenticated/assets'
       path: '/assets'
@@ -646,6 +812,13 @@ declare module '@tanstack/react-router' {
       path: '/audit-log'
       fullPath: '/audit-log'
       preLoaderRoute: typeof AuthenticatedAuditLogRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/automation': {
+      id: '/_authenticated/automation'
+      path: '/automation'
+      fullPath: '/automation'
+      preLoaderRoute: typeof AuthenticatedAutomationRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/buildings': {
@@ -676,6 +849,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDistributionRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/documents': {
+      id: '/_authenticated/documents'
+      path: '/documents'
+      fullPath: '/documents'
+      preLoaderRoute: typeof AuthenticatedDocumentsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/floor-plan': {
       id: '/_authenticated/floor-plan'
       path: '/floor-plan'
@@ -690,11 +870,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedGeofencesRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/import': {
+      id: '/_authenticated/import'
+      path: '/import'
+      fullPath: '/import'
+      preLoaderRoute: typeof AuthenticatedImportRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/integrations': {
+      id: '/_authenticated/integrations'
+      path: '/integrations'
+      fullPath: '/integrations'
+      preLoaderRoute: typeof AuthenticatedIntegrationsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/inventory': {
+      id: '/_authenticated/inventory'
+      path: '/inventory'
+      fullPath: '/inventory'
+      preLoaderRoute: typeof AuthenticatedInventoryRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/invoices': {
       id: '/_authenticated/invoices'
       path: '/invoices'
       fullPath: '/invoices'
       preLoaderRoute: typeof AuthenticatedInvoicesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/iot': {
+      id: '/_authenticated/iot'
+      path: '/iot'
+      fullPath: '/iot'
+      preLoaderRoute: typeof AuthenticatedIotRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/maintenance': {
@@ -709,6 +917,20 @@ declare module '@tanstack/react-router' {
       path: '/maintenance-calendar'
       fullPath: '/maintenance-calendar'
       preLoaderRoute: typeof AuthenticatedMaintenanceCalendarRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/maintenance-plans': {
+      id: '/_authenticated/maintenance-plans'
+      path: '/maintenance-plans'
+      fullPath: '/maintenance-plans'
+      preLoaderRoute: typeof AuthenticatedMaintenancePlansRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/modules': {
+      id: '/_authenticated/modules'
+      path: '/modules'
+      fullPath: '/modules'
+      preLoaderRoute: typeof AuthenticatedModulesRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/network': {
@@ -746,11 +968,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedRoomsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/service-requests': {
+      id: '/_authenticated/service-requests'
+      path: '/service-requests'
+      fullPath: '/service-requests'
+      preLoaderRoute: typeof AuthenticatedServiceRequestsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/settings': {
       id: '/_authenticated/settings'
       path: '/settings'
       fullPath: '/settings'
       preLoaderRoute: typeof AuthenticatedSettingsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/sites': {
+      id: '/_authenticated/sites'
+      path: '/sites'
+      fullPath: '/sites'
+      preLoaderRoute: typeof AuthenticatedSitesRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/software': {
@@ -807,6 +1043,20 @@ declare module '@tanstack/react-router' {
       path: '/warranties'
       fullPath: '/warranties'
       preLoaderRoute: typeof AuthenticatedWarrantiesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/work-orders': {
+      id: '/_authenticated/work-orders'
+      path: '/work-orders'
+      fullPath: '/work-orders'
+      preLoaderRoute: typeof AuthenticatedWorkOrdersRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/assets_/$id': {
+      id: '/_authenticated/assets_/$id'
+      path: '/assets/$id'
+      fullPath: '/assets/$id'
+      preLoaderRoute: typeof AuthenticatedAssetsIdRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/rfid/alerts': {
@@ -893,24 +1143,35 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedAiAssistantRoute: typeof AuthenticatedAiAssistantRoute
   AuthenticatedApiDocsRoute: typeof AuthenticatedApiDocsRoute
   AuthenticatedAssetCategoriesRoute: typeof AuthenticatedAssetCategoriesRoute
+  AuthenticatedAssetTypesRoute: typeof AuthenticatedAssetTypesRoute
   AuthenticatedAssetsRoute: typeof AuthenticatedAssetsRoute
   AuthenticatedAssignmentsRoute: typeof AuthenticatedAssignmentsRoute
   AuthenticatedAuditLogRoute: typeof AuthenticatedAuditLogRoute
+  AuthenticatedAutomationRoute: typeof AuthenticatedAutomationRoute
   AuthenticatedBuildingsRoute: typeof AuthenticatedBuildingsRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedDepartmentsRoute: typeof AuthenticatedDepartmentsRoute
   AuthenticatedDistributionRoute: typeof AuthenticatedDistributionRoute
+  AuthenticatedDocumentsRoute: typeof AuthenticatedDocumentsRoute
   AuthenticatedFloorPlanRoute: typeof AuthenticatedFloorPlanRoute
   AuthenticatedGeofencesRoute: typeof AuthenticatedGeofencesRoute
+  AuthenticatedImportRoute: typeof AuthenticatedImportRoute
+  AuthenticatedIntegrationsRoute: typeof AuthenticatedIntegrationsRoute
+  AuthenticatedInventoryRoute: typeof AuthenticatedInventoryRoute
   AuthenticatedInvoicesRoute: typeof AuthenticatedInvoicesRoute
+  AuthenticatedIotRoute: typeof AuthenticatedIotRoute
   AuthenticatedMaintenanceRoute: typeof AuthenticatedMaintenanceRoute
   AuthenticatedMaintenanceCalendarRoute: typeof AuthenticatedMaintenanceCalendarRoute
+  AuthenticatedMaintenancePlansRoute: typeof AuthenticatedMaintenancePlansRoute
+  AuthenticatedModulesRoute: typeof AuthenticatedModulesRoute
   AuthenticatedNetworkRoute: typeof AuthenticatedNetworkRoute
   AuthenticatedOrganizationsRoute: typeof AuthenticatedOrganizationsRoute
   AuthenticatedPeopleSearchRoute: typeof AuthenticatedPeopleSearchRoute
   AuthenticatedReportsRoute: typeof AuthenticatedReportsRoute
   AuthenticatedRoomsRoute: typeof AuthenticatedRoomsRoute
+  AuthenticatedServiceRequestsRoute: typeof AuthenticatedServiceRequestsRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
+  AuthenticatedSitesRoute: typeof AuthenticatedSitesRoute
   AuthenticatedSoftwareRoute: typeof AuthenticatedSoftwareRoute
   AuthenticatedSuperAdminRoute: typeof AuthenticatedSuperAdminRoute
   AuthenticatedTechnicianPortalRoute: typeof AuthenticatedTechnicianPortalRoute
@@ -919,6 +1180,8 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedVehiclesRoute: typeof AuthenticatedVehiclesRoute
   AuthenticatedVendorsRoute: typeof AuthenticatedVendorsRoute
   AuthenticatedWarrantiesRoute: typeof AuthenticatedWarrantiesRoute
+  AuthenticatedWorkOrdersRoute: typeof AuthenticatedWorkOrdersRoute
+  AuthenticatedAssetsIdRoute: typeof AuthenticatedAssetsIdRoute
   AuthenticatedRfidAlertsRoute: typeof AuthenticatedRfidAlertsRoute
   AuthenticatedRfidAssetsRoute: typeof AuthenticatedRfidAssetsRoute
   AuthenticatedRfidDashboardRoute: typeof AuthenticatedRfidDashboardRoute
@@ -936,24 +1199,35 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAiAssistantRoute: AuthenticatedAiAssistantRoute,
   AuthenticatedApiDocsRoute: AuthenticatedApiDocsRoute,
   AuthenticatedAssetCategoriesRoute: AuthenticatedAssetCategoriesRoute,
+  AuthenticatedAssetTypesRoute: AuthenticatedAssetTypesRoute,
   AuthenticatedAssetsRoute: AuthenticatedAssetsRoute,
   AuthenticatedAssignmentsRoute: AuthenticatedAssignmentsRoute,
   AuthenticatedAuditLogRoute: AuthenticatedAuditLogRoute,
+  AuthenticatedAutomationRoute: AuthenticatedAutomationRoute,
   AuthenticatedBuildingsRoute: AuthenticatedBuildingsRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedDepartmentsRoute: AuthenticatedDepartmentsRoute,
   AuthenticatedDistributionRoute: AuthenticatedDistributionRoute,
+  AuthenticatedDocumentsRoute: AuthenticatedDocumentsRoute,
   AuthenticatedFloorPlanRoute: AuthenticatedFloorPlanRoute,
   AuthenticatedGeofencesRoute: AuthenticatedGeofencesRoute,
+  AuthenticatedImportRoute: AuthenticatedImportRoute,
+  AuthenticatedIntegrationsRoute: AuthenticatedIntegrationsRoute,
+  AuthenticatedInventoryRoute: AuthenticatedInventoryRoute,
   AuthenticatedInvoicesRoute: AuthenticatedInvoicesRoute,
+  AuthenticatedIotRoute: AuthenticatedIotRoute,
   AuthenticatedMaintenanceRoute: AuthenticatedMaintenanceRoute,
   AuthenticatedMaintenanceCalendarRoute: AuthenticatedMaintenanceCalendarRoute,
+  AuthenticatedMaintenancePlansRoute: AuthenticatedMaintenancePlansRoute,
+  AuthenticatedModulesRoute: AuthenticatedModulesRoute,
   AuthenticatedNetworkRoute: AuthenticatedNetworkRoute,
   AuthenticatedOrganizationsRoute: AuthenticatedOrganizationsRoute,
   AuthenticatedPeopleSearchRoute: AuthenticatedPeopleSearchRoute,
   AuthenticatedReportsRoute: AuthenticatedReportsRoute,
   AuthenticatedRoomsRoute: AuthenticatedRoomsRoute,
+  AuthenticatedServiceRequestsRoute: AuthenticatedServiceRequestsRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
+  AuthenticatedSitesRoute: AuthenticatedSitesRoute,
   AuthenticatedSoftwareRoute: AuthenticatedSoftwareRoute,
   AuthenticatedSuperAdminRoute: AuthenticatedSuperAdminRoute,
   AuthenticatedTechnicianPortalRoute: AuthenticatedTechnicianPortalRoute,
@@ -962,6 +1236,8 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedVehiclesRoute: AuthenticatedVehiclesRoute,
   AuthenticatedVendorsRoute: AuthenticatedVendorsRoute,
   AuthenticatedWarrantiesRoute: AuthenticatedWarrantiesRoute,
+  AuthenticatedWorkOrdersRoute: AuthenticatedWorkOrdersRoute,
+  AuthenticatedAssetsIdRoute: AuthenticatedAssetsIdRoute,
   AuthenticatedRfidAlertsRoute: AuthenticatedRfidAlertsRoute,
   AuthenticatedRfidAssetsRoute: AuthenticatedRfidAssetsRoute,
   AuthenticatedRfidDashboardRoute: AuthenticatedRfidDashboardRoute,
