@@ -15,9 +15,11 @@ import { getPlan, plans, TRIAL_DAYS } from "@/lib/plans";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/auth")({
-  validateSearch: (search: Record<string, unknown>) => ({
+  validateSearch: (
+    search: Record<string, unknown>,
+  ): { plan?: string | undefined; cycle?: "monthly" | "yearly" | undefined } => ({
     plan: typeof search["plan"] === "string" ? (search["plan"] as string) : undefined,
-    cycle: search["cycle"] === "yearly" ? ("yearly" as const) : ("monthly" as const),
+    cycle: search["cycle"] === "yearly" ? "yearly" : search["cycle"] === "monthly" ? "monthly" : undefined,
   }),
   head: () => ({
     meta: [
@@ -50,7 +52,7 @@ function AuthPage() {
   const search = Route.useSearch();
   const [mode, setMode] = useState(search.plan ? "signup" : "signin");
   const [planId, setPlanId] = useState<string>(search.plan ?? "growth");
-  const [cycle, setCycle] = useState<"monthly" | "yearly">(search.cycle);
+  const [cycle, setCycle] = useState<"monthly" | "yearly">(search.cycle ?? "monthly");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
