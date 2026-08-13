@@ -1,10 +1,12 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Check, CreditCard, Loader2, Radio } from "lucide-react";
 import { toast } from "sonner";
 
 import { supabase } from "@/integrations/supabase/client";
+import { listPublicOrganizations } from "@/lib/organizations.functions";
 import { lovable } from "@/integrations/lovable/index";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -62,15 +64,10 @@ function AuthPage() {
   const [busy, setBusy] = useState(false);
   const [sent, setSent] = useState(false);
 
+  const fetchOrgs = useServerFn(listPublicOrganizations);
   const orgs = useQuery({
     queryKey: ["public-organizations"],
-    queryFn: async () => {
-      const { data, error } = await (supabase as unknown as {
-        rpc: (fn: string) => Promise<{ data: Array<{ id: string; name: string }> | null; error: unknown }>;
-      }).rpc("list_organizations");
-      if (error) throw error;
-      return data ?? [];
-    },
+    queryFn: async () => (await fetchOrgs()).organizations,
     staleTime: 60_000,
   });
 
