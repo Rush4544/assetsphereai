@@ -1,10 +1,12 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Check, CreditCard, Loader2, Radio } from "lucide-react";
 import { toast } from "sonner";
 
 import { supabase } from "@/integrations/supabase/client";
+import { listPublicOrganizations } from "@/lib/organizations.functions";
 import { lovable } from "@/integrations/lovable/index";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,9 +17,11 @@ import { getPlan, plans, TRIAL_DAYS } from "@/lib/plans";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/auth")({
-  validateSearch: (search: Record<string, unknown>) => ({
+  validateSearch: (
+    search: Record<string, unknown>,
+  ): { plan?: string | undefined; cycle?: "monthly" | "yearly" | undefined } => ({
     plan: typeof search["plan"] === "string" ? (search["plan"] as string) : undefined,
-    cycle: search["cycle"] === "yearly" ? ("yearly" as const) : ("monthly" as const),
+    cycle: search["cycle"] === "yearly" ? "yearly" : search["cycle"] === "monthly" ? "monthly" : undefined,
   }),
   head: () => ({
     meta: [
@@ -50,7 +54,7 @@ function AuthPage() {
   const search = Route.useSearch();
   const [mode, setMode] = useState(search.plan ? "signup" : "signin");
   const [planId, setPlanId] = useState<string>(search.plan ?? "growth");
-  const [cycle, setCycle] = useState<"monthly" | "yearly">(search.cycle);
+  const [cycle, setCycle] = useState<"monthly" | "yearly">(search.cycle ?? "monthly");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
@@ -60,15 +64,10 @@ function AuthPage() {
   const [busy, setBusy] = useState(false);
   const [sent, setSent] = useState(false);
 
+  const fetchOrgs = useServerFn(listPublicOrganizations);
   const orgs = useQuery({
     queryKey: ["public-organizations"],
-    queryFn: async () => {
-      const { data, error } = await (supabase as unknown as {
-        rpc: (fn: string) => Promise<{ data: Array<{ id: string; name: string }> | null; error: unknown }>;
-      }).rpc("list_organizations");
-      if (error) throw error;
-      return data ?? [];
-    },
+    queryFn: async () => (await fetchOrgs()).organizations,
     staleTime: 60_000,
   });
 
