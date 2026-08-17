@@ -1,39 +1,51 @@
-# Real GPS tracking for vehicles
+# Plug-in vehicle tracker integration (OBD-II telematics)
 
-Yes — both hardware trackers and driver phones can feed the live map. The map already redraws whenever a vehicle row's position changes, so all we need is a way for real devices to write those positions.
+Yes — a device plugged into the car's OBD-II port can send location plus real engine data (speed, fuel level, odometer, engine hours, fault codes), and we can show all of it live on your dashboard. You assign a device to a vehicle once, and everything after that is automatic.
 
-## 1. Device tokens per vehicle
+## Which device to use
 
-Each vehicle gets a tracking token you can copy from its row ("Tracking" panel: token, device endpoint URL, and a phone driver link/QR). Tokens can be regenerated if a device is lost or reassigned.
+All of these plug into the OBD-II port (under the dash) and can push data to a URL we own, so no dealer or hardware integration work is needed.
 
-## 2. Hardware tracker ingest endpoint
+- **Teltonika FMC003 / FMC130** (recommended). OBD-II plug-in, reads fuel level, odometer, RPM, coolant temp, fault codes, plus GPS. Sends over cellular to any HTTP/TCP endpoint. Widely available, works on Canadian LTE, roughly $70-120 per unit plus a SIM/data plan (~$5-10/month).
+- **Queclink GV500MAP** — similar OBD-II unit, good North American carrier support.
+- **Fleet platform route instead of raw devices**: Samsara, Geotab, or Motive give you a plug-in device plus their own API. More expensive per vehicle per month, but no SIM management. We read from their API instead of a direct device feed.
 
-A public ingest endpoint that GPS/telematics devices (Teltonika, Queclink, Samsara, Geotab, or any tracker that can POST HTTP JSON) call with the token:
+Recommendation: start with Teltonika FMC003 + a data SIM. One device per vehicle, no wiring, driver just plugs it in.
 
-- Accepts latitude, longitude, and optionally speed, heading, odometer, fuel level, and timestamp.
-- Validates the token, rejects bad coordinates, then updates that vehicle's position, speed, heading, mileage and last-update time.
-- Recomputes whether the vehicle is inside its assigned geofence, so breaches light up on the map automatically.
-- Rejects anything without a valid token; no user login required, and one token can only ever move one vehicle.
+## What the dashboard will show per vehicle
 
-## 3. Phone driver mode
+Live from the device, no manual entry:
+- Location on the fleet map, heading, current speed, ignition on/off, trip in progress
+- Fuel level %, fuel consumed, odometer (total km) and daily km
+- Engine hours, battery voltage, coolant temperature
+- Diagnostic fault codes (check engine), surfaced as an alert
+- Service due status calculated from real odometer/engine hours instead of guessed dates
+- Harsh braking / acceleration / speeding and geofence entry/exit events
 
-A "Driver mode" page a driver opens on their phone (from the vehicle's tracking link, no app install):
+## How the assignment works
 
-- Big Start/Stop tracking button; shows current position accuracy, speed and last upload time.
-- While active, the browser's GPS reports position and it posts to the same ingest endpoint every ~10 seconds (or when the vehicle has moved enough), so the pin moves on the fleet map in real time.
-- Handles permission denied, no signal, and backgrounding gracefully with a clear status message, and warns that the screen must stay awake for continuous tracking.
+A "Devices" section under Fleet:
+1. Add a device: enter its IMEI/serial and pick a make (Teltonika, Queclink, other).
+2. Assign it to a vehicle from a dropdown. One device, one vehicle; reassigning moves the feed instantly.
+3. Status column shows Online / Last seen / signal so you know a unit stopped reporting.
 
-## 4. Map and vehicle page changes
+Once assigned, every incoming message from that IMEI updates that vehicle automatically.
 
-- The existing "Start demo motion" toggle is relabelled as clearly simulated and hidden once a vehicle has reported a real position in the last hour.
-- Each vehicle shows its live source (hardware device, phone, or no data) plus the age of its last position; stale positions (over 15 minutes) render dimmed.
+## Ingest endpoint
 
-Latest position only — no history table or trip replay, per your choice.
+A single public endpoint devices post to (configured once in the device with your project URL and a shared token):
+- Accepts JSON payloads with IMEI, position, speed, heading, and any of the OBD values above.
+- Rejects unknown IMEIs and bad tokens; validates ranges (lat/lng, fuel 0-100, non-decreasing odometer) so a glitching unit can't corrupt your data.
+- Updates the vehicle row, recomputes geofence breach, and writes fault codes and threshold breaches as alerts.
+- Latest position only (no route history/replay), per your earlier choice.
+
+## Fallback: driver phone
+
+Keeps the phone "Driver mode" page as a backup for vehicles without a device — it reports location only (a phone can't read fuel or odometer).
 
 ## Technical notes
 
-- Migration: add `tracking_token` (unique) and `tracking_source` to `public.vehicles`; token stays admin-visible only through existing org-scoped policies.
-- Ingest lives at `src/routes/api/public/vehicle-ping.ts` (TanStack server route) so external devices get a stable URL that bypasses site auth; token verified in-handler against a service-role lookup, Zod-validated body, no PII returned in the response.
-- Driver mode is a public route `src/routes/track.$token.tsx` using the browser Geolocation API inside `useEffect`, posting to the ingest endpoint — no Supabase session needed.
-- Geofence containment computed server-side with a haversine distance check against the assigned geofence radius.
-- `FleetMapCanvas` keeps its existing realtime subscription; only marker styling and the demo toggle change.
+- New table `public.telematics_devices` (imei unique, provider, vehicle_id, last_seen_at, token hash, org-scoped RLS + grants). New columns on `vehicles` for engine_hours, battery_voltage, coolant_temp, ignition_on, fuel_consumed_l, fault_codes.
+- Ingest at `src/routes/api/public/telematics.ts` (TanStack server route, Zod-validated, bearer/shared-token verified in-handler, `supabaseAdmin` imported inside the handler). Devices are pointed at the stable `project--<id>.lovable.app` URL.
+- Teltonika/Queclink speak binary Codec8 over TCP natively; we use their HTTP/JSON forwarding mode (or a small vendor cloud "data push" webhook) so the endpoint stays a plain HTTPS POST.
+- Vehicles page gains a "Telematics" tab with the device register and live telemetry cards; `FleetMapCanvas` keeps its existing realtime subscription and gains the extra popup fields. Demo motion toggle hidden for vehicles reporting real data.
