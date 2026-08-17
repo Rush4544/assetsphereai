@@ -6,7 +6,15 @@ import {
   type Row,
 } from "./resource";
 
-const LIFECYCLE = ["in_use", "in_storage", "under_repair", "retired", "disposed", "lost"];
+const LIFECYCLE = [
+  "new",
+  "deployed",
+  "in_maintenance",
+  "retired",
+  "disposed",
+  "lost",
+  "stolen",
+];
 const CONDITION = ["excellent", "good", "fair", "poor", "damaged"];
 const STATUS = ["active", "inactive"];
 const PRIORITY = ["low", "medium", "high", "urgent"];
@@ -47,7 +55,7 @@ export const assetsConfig: ResourceConfig = {
   kpis: (rows) => [
     { label: "Total assets", value: rows.length, icon: "Boxes" },
     { label: "Inventory value", value: currency(sum(rows, "current_value")), icon: "DollarSign", filter: { field: "current_value", op: "set" } },
-    { label: "In use", value: countWhere(rows, (r) => r["lifecycle_status"] === "in_use"), icon: "CheckCircle2", tone: "success", filter: { field: "lifecycle_status", op: "eq", value: "in_use" } },
+    { label: "Deployed", value: countWhere(rows, (r) => r["lifecycle_status"] === "deployed"), icon: "CheckCircle2", tone: "success", filter: { field: "lifecycle_status", op: "eq", value: "deployed" } },
     {
       label: "Warranty expiring",
       value: countWhere(rows, (r) => isExpiring(r["warranty_end"])),
