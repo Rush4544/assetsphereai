@@ -39,7 +39,7 @@ function AppLayout() {
     <div className="flex min-h-screen bg-background">
       <AppSidebar user={user} />
       <CommandPalette user={user} />
-      <main className="min-w-0 flex-1 px-6 py-6 lg:px-10">
+      <main className="min-w-0 flex-1 px-4 pb-10 pt-16 sm:px-6 lg:px-10 lg:py-6">
         <Outlet />
       </main>
     </div>
