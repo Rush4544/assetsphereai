@@ -1,6 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 import { ResourcePage } from "@/components/app/ResourcePage";
+import { NetworkDiscoveryPanel } from "@/components/app/NetworkDiscovery";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { networkConfig } from "@/lib/resources";
 
 export const Route = createFileRoute("/_authenticated/network")({
@@ -18,5 +20,18 @@ export const Route = createFileRoute("/_authenticated/network")({
 });
 
 function NetworkPage() {
-  return <ResourcePage config={networkConfig} />;
+  return (
+    <Tabs defaultValue="discovery" className="space-y-6">
+      <TabsList>
+        <TabsTrigger value="discovery">Discovery</TabsTrigger>
+        <TabsTrigger value="devices">All devices</TabsTrigger>
+      </TabsList>
+      <TabsContent value="discovery">
+        <NetworkDiscoveryPanel />
+      </TabsContent>
+      <TabsContent value="devices">
+        <ResourcePage config={networkConfig} />
+      </TabsContent>
+    </Tabs>
+  );
 }
