@@ -3,18 +3,15 @@
  * business user, while keeping the technical detail in the console for debugging.
  */
 export function friendlyError(error: unknown, action = "complete that action"): string {
-  const raw = error as { code?: string; message?: string; details?: string } | null;
+  const raw = error as { code?: string; message?: string } | null;
   const code = raw?.code ?? "";
   const message = raw?.message ?? "";
 
   if (typeof console !== "undefined") console.error("[AssetSphere]", error);
 
-  if (code === "23505" || code === "23505".slice(0) || code === "23505") {
-    /* fallthrough handled below */
-  }
-
   switch (code) {
     case "23505":
+      return "A record with those details already exists.";
     case "23514":
       return "Some values are not valid. Please review the highlighted fields.";
     case "23503":
@@ -33,7 +30,7 @@ export function friendlyError(error: unknown, action = "complete that action"): 
   if (/duplicate key/i.test(message)) return "A record with those details already exists.";
   if (/row-level security|permission denied/i.test(message))
     return "You do not have permission to do that in this organization.";
-  if (/Failed to fetch|NetworkError|network/i.test(message))
+  if (/failed to fetch|networkerror|network/i.test(message))
     return "Connection problem. Check your internet connection and try again.";
 
   return `Unable to ${action}. Please try again.`;
