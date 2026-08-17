@@ -94,7 +94,22 @@ function useDashboardData() {
 function Dashboard() {
   const navigate = useNavigate();
   const { data: user } = useCurrentUser();
-  const { data, isLoading } = useDashboardData();
+  const { data, isLoading, isError, isFetching, refetch } = useDashboardData();
+
+  if (isError) {
+    return (
+      <div className="glass-card mx-auto mt-10 flex max-w-md flex-col items-center gap-3 px-6 py-14 text-center">
+        <AlertTriangle className="size-6 text-destructive" />
+        <p className="text-sm font-medium">We couldn't load your dashboard.</p>
+        <p className="text-xs text-muted-foreground">
+          Your session may have expired, or the connection dropped.
+        </p>
+        <Button variant="outline" onClick={() => void refetch()} disabled={isFetching}>
+          Try again
+        </Button>
+      </div>
+    );
+  }
 
   if (isLoading || !data) {
     return (
@@ -214,6 +229,29 @@ function Dashboard() {
           </Button>
         }
       />
+
+      {assets.length === 0 && devices.length === 0 && (
+        <div className="glass-card flex flex-col gap-3 p-6 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p className="text-sm font-medium text-foreground">No assets yet</p>
+            <p className="mt-1 text-xs text-muted-foreground">
+              Add your first asset, import a spreadsheet, or review discovered network devices to get
+              started.
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <Button asChild>
+              <Link to="/assets">Add an asset</Link>
+            </Button>
+            <Button asChild variant="outline">
+              <Link to="/import">Import data</Link>
+            </Button>
+            <Button asChild variant="outline">
+              <Link to="/network">Network discovery</Link>
+            </Button>
+          </div>
+        </div>
+      )}
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <KPICard label="Total assets" value={assets.length} icon="Boxes" hint={`${deployed} deployed`} to="/assets" />
