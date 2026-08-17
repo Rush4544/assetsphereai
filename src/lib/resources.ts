@@ -488,7 +488,7 @@ export const assignmentsConfig: ResourceConfig = {
   description: "Who holds which asset, and its assignment history.",
   icon: "UserCheck",
   statusField: "status",
-  statusOptions: ["active", "returned", "overdue"],
+  statusOptions: ["active", "returned", "transferred"],
   searchFields: ["asset_name", "assigned_to_name", "assigned_to_email", "assigned_by_name"],
   columns: [
     { name: "asset_name", label: "Asset", className: "font-medium" },
@@ -507,7 +507,7 @@ export const assignmentsConfig: ResourceConfig = {
     { name: "assignment_date", label: "Assignment date", type: "date" },
     { name: "return_date", label: "Return date", type: "date" },
     { name: "previous_owner_name", label: "Previous owner" },
-    { name: "status", label: "Status", type: "select", options: ["active", "returned", "overdue"] },
+    { name: "status", label: "Status", type: "select", options: ["active", "returned", "transferred"] },
     { name: "reason", label: "Reason" },
     { name: "notes", label: "Notes", type: "textarea" },
   ],
@@ -554,7 +554,7 @@ export const distributionConfig: ResourceConfig = {
     { name: "request_date", label: "Request date", type: "date" },
     { name: "fulfilled_date", label: "Fulfilled date", type: "date" },
     { name: "return_date", label: "Return date", type: "date" },
-    { name: "item_condition", label: "Condition", type: "select", options: CONDITION },
+    { name: "item_condition", label: "Condition", type: "select", options: ITEM_CONDITION },
     { name: "notes", label: "Notes", type: "textarea" },
   ],
 };
