@@ -2,12 +2,21 @@ import { Link, useNavigate } from "@tanstack/react-router";
 import type { LinkProps } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { ChevronDown, LogOut, PanelLeftClose, PanelLeftOpen, Radio } from "lucide-react";
+import { ChevronDown, LogOut, Menu, PanelLeftClose, PanelLeftOpen, Radio, X } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import type { CurrentUser } from "@/lib/auth";
-import { adminNav, canSee, mainNav, rfidNav, superAdminNav, toolsNav, type NavItem } from "@/lib/nav";
+import {
+  adminNav,
+  canSee,
+  groupBySection,
+  mainNav,
+  rfidNav,
+  superAdminNav,
+  toolsNav,
+  type NavItem,
+} from "@/lib/nav";
 import { Icon } from "./icon";
 import { Button } from "@/components/ui/button";
 
@@ -54,12 +63,14 @@ function Section({
 export function AppSidebar({ user }: { user: CurrentUser }) {
   const [collapsed, setCollapsed] = useState(false);
   const [rfidOpen, setRfidOpen] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
   const perms = user.profile?.page_permissions ?? {};
   const visible = (items: NavItem[]) => items.filter((i) => canSee(i, user.role, perms));
   const rfidItems = visible(rfidNav);
+  const mainSections = groupBySection(visible(mainNav));
 
   async function signOut() {
     await queryClient.cancelQueries();
@@ -68,10 +79,11 @@ export function AppSidebar({ user }: { user: CurrentUser }) {
     navigate({ to: "/auth", replace: true });
   }
 
-  return (
+  const sidebar = (
     <aside
       className={cn(
-        "sticky top-0 flex h-screen shrink-0 flex-col border-r border-sidebar-border bg-sidebar transition-all",
+        "flex h-screen shrink-0 flex-col border-r border-sidebar-border bg-sidebar transition-all",
+        "lg:sticky lg:top-0",
         collapsed ? "w-[68px]" : "w-64",
       )}
     >
@@ -89,8 +101,10 @@ export function AppSidebar({ user }: { user: CurrentUser }) {
         )}
       </div>
 
-      <nav className="flex-1 overflow-y-auto px-2 pb-4">
-        <Section title="Main" items={visible(mainNav)} collapsed={collapsed} />
+      <nav className="flex-1 overflow-y-auto px-2 pb-4" onClick={() => setMobileOpen(false)}>
+        {mainSections.map(([title, items]) => (
+          <Section key={title} title={title} items={items} collapsed={collapsed} />
+        ))}
 
         {rfidItems.length > 0 && (
           <div className="mt-5">
@@ -150,7 +164,7 @@ export function AppSidebar({ user }: { user: CurrentUser }) {
           <Button
             variant="ghost"
             size="icon"
-            className="text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground"
+            className="hidden text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground lg:inline-flex"
             onClick={() => setCollapsed((v) => !v)}
             aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
           >
@@ -159,5 +173,41 @@ export function AppSidebar({ user }: { user: CurrentUser }) {
         </div>
       </div>
     </aside>
+  );
+
+  return (
+    <>
+      {/* Mobile top bar */}
+      <div className="fixed inset-x-0 top-0 z-40 flex items-center gap-2 border-b border-border bg-background/95 px-3 py-2 backdrop-blur lg:hidden">
+        <Button variant="ghost" size="icon" onClick={() => setMobileOpen(true)} aria-label="Open navigation">
+          <Menu className="size-5" />
+        </Button>
+        <span className="truncate text-sm font-semibold">AssetSphere AI</span>
+      </div>
+
+      {mobileOpen && (
+        <div className="fixed inset-0 z-50 flex lg:hidden">
+          <div
+            className="absolute inset-0 bg-black/50"
+            onClick={() => setMobileOpen(false)}
+            aria-hidden="true"
+          />
+          <div className="relative">
+            {sidebar}
+            <Button
+              variant="ghost"
+              size="icon"
+              className="absolute right-2 top-2 text-sidebar-foreground/70"
+              onClick={() => setMobileOpen(false)}
+              aria-label="Close navigation"
+            >
+              <X className="size-4" />
+            </Button>
+          </div>
+        </div>
+      )}
+
+      <div className="hidden lg:flex">{sidebar}</div>
+    </>
   );
 }
