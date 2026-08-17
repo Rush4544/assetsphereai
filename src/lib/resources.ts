@@ -15,10 +15,11 @@ const LIFECYCLE = [
   "lost",
   "stolen",
 ];
-const CONDITION = ["excellent", "good", "fair", "poor", "damaged"];
+const CONDITION = ["new", "good", "fair", "poor", "broken"];
+const ITEM_CONDITION = ["new", "good", "fair", "broken", "lost"];
 const STATUS = ["active", "inactive"];
 const PRIORITY = ["low", "medium", "high", "urgent"];
-const WORK_STATUS = ["scheduled", "in_progress", "completed", "overdue", "cancelled"];
+const WORK_STATUS = ["scheduled", "in_progress", "completed", "cancelled"];
 
 const isExpiring = (v: unknown, days = 30) => {
   if (!v) return false;
