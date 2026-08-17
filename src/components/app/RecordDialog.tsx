@@ -275,7 +275,7 @@ export function RecordDialog({
               Cancel
             </Button>
             <Button type="submit" disabled={saving}>
-              Save
+              {saving ? "Saving…" : "Save"}
             </Button>
           </DialogFooter>
         </form>
