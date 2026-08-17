@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { Link, useRouter, useRouterState } from "@tanstack/react-router";
-import { Download, Loader2, Plus, Search, Trash2, X } from "lucide-react";
+import { AlertTriangle, Download, Loader2, Plus, Search, Trash2, X } from "lucide-react";
 
 import { PageHeader } from "./PageHeader";
 import { DataTable } from "./DataTable";
@@ -33,7 +33,13 @@ import { useCurrentUser } from "@/lib/auth";
 
 export function ResourcePage({ config }: { config: ResourceConfig }) {
   const { data: user } = useCurrentUser();
-  const { data: rows = [], isLoading } = useRows(config.table, { orderBy: config.orderBy });
+  const {
+    data: rows = [],
+    isLoading,
+    isError,
+    isFetching,
+    refetch,
+  } = useRows(config.table, { orderBy: config.orderBy });
   const save = useSaveRow(config.table);
   const remove = useDeleteRow(config.table);
   const router = useRouter();
@@ -57,6 +63,9 @@ export function ResourcePage({ config }: { config: ResourceConfig }) {
   const [editing, setEditing] = useState<Row | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [pendingDelete, setPendingDelete] = useState<Row | null>(null);
+  const [sort, setSort] = useState<{ column: string; dir: "asc" | "desc" } | null>(null);
+  const [page, setPage] = useState(0);
+  const pageSize = 50;
 
   const canWrite = !config.readOnly && user?.role !== "user";
 
@@ -75,6 +84,40 @@ export function ResourcePage({ config }: { config: ResourceConfig }) {
       );
     });
   }, [rows, query, status, config, kpiFilters]);
+
+  const sorted = useMemo(() => {
+    if (!sort) return filtered;
+    const dir = sort.dir === "asc" ? 1 : -1;
+    return [...filtered].sort((a, b) => {
+      const av = a[sort.column];
+      const bv = b[sort.column];
+      if (av === bv) return 0;
+      if (av === null || av === undefined || av === "") return 1;
+      if (bv === null || bv === undefined || bv === "") return -1;
+      const an = Number(av);
+      const bn = Number(bv);
+      if (!Number.isNaN(an) && !Number.isNaN(bn) && typeof av !== "boolean" && typeof bv !== "boolean") {
+        return (an - bn) * dir;
+      }
+      return String(av).localeCompare(String(bv), undefined, { numeric: true }) * dir;
+    });
+  }, [filtered, sort]);
+
+  const pageCount = Math.max(1, Math.ceil(sorted.length / pageSize));
+  const currentPage = Math.min(page, pageCount - 1);
+  const visibleRows = useMemo(
+    () => sorted.slice(currentPage * pageSize, currentPage * pageSize + pageSize),
+    [sorted, currentPage, pageSize],
+  );
+
+  function toggleSort(column: string) {
+    setPage(0);
+    setSort((prev) =>
+      prev?.column === column
+        ? { column, dir: prev.dir === "asc" ? "desc" : "asc" }
+        : { column, dir: "asc" },
+    );
+  }
 
   const kpis = config.kpis?.(rows) ?? [];
 
@@ -209,7 +252,10 @@ export function ResourcePage({ config }: { config: ResourceConfig }) {
             className="pl-9"
             placeholder={`Search ${config.title.toLowerCase()}…`}
             value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            onChange={(e) => {
+              setQuery(e.target.value);
+              setPage(0);
+            }}
           />
         </div>
         {config.statusField && config.statusOptions?.length ? (
@@ -217,7 +263,10 @@ export function ResourcePage({ config }: { config: ResourceConfig }) {
             {["all", ...config.statusOptions].map((s) => (
               <button
                 key={s}
-                onClick={() => setStatus(s)}
+                onClick={() => {
+                  setStatus(s);
+                  setPage(0);
+                }}
                 className={cn(
                   "rounded-full border border-border px-3 py-1.5 text-xs transition-colors",
                   status === s
@@ -232,7 +281,23 @@ export function ResourcePage({ config }: { config: ResourceConfig }) {
         ) : null}
       </div>
 
-      {isLoading ? (
+      {isError ? (
+        <div className="glass-card flex flex-col items-center gap-3 px-6 py-16 text-center">
+          <AlertTriangle className="size-6 text-destructive" />
+          <div>
+            <p className="text-sm font-medium text-foreground">
+              Unable to load {config.title.toLowerCase()}.
+            </p>
+            <p className="mt-1 text-xs text-muted-foreground">
+              This can happen if your session expired or the connection dropped.
+            </p>
+          </div>
+          <Button variant="outline" onClick={() => void refetch()} disabled={isFetching}>
+            {isFetching ? <Loader2 className="mr-2 size-4 animate-spin" /> : null}
+            Try again
+          </Button>
+        </div>
+      ) : isLoading ? (
         <div className="glass-card flex items-center justify-center py-20">
           <Loader2 className="size-5 animate-spin text-primary" />
         </div>
@@ -240,11 +305,13 @@ export function ResourcePage({ config }: { config: ResourceConfig }) {
         <>
           <div className="flex items-center gap-2 text-xs text-muted-foreground">
             <Icon name={config.icon} className="size-3.5" />
-            {filtered.length} of {rows.length} {config.title.toLowerCase()}
+            {sorted.length} of {rows.length} {config.title.toLowerCase()}
           </div>
           <DataTable
             columns={columns}
-            rows={filtered}
+            rows={visibleRows}
+            {...(sort ? { sort } : {})}
+            onSortChange={toggleSort}
             onRowClick={
               canWrite
                 ? (row) => {
@@ -259,6 +326,31 @@ export function ResourcePage({ config }: { config: ResourceConfig }) {
                 : "No records match your filters."
             }
           />
+          {pageCount > 1 && (
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <p className="text-xs text-muted-foreground">
+                Page {currentPage + 1} of {pageCount}
+              </p>
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  disabled={currentPage === 0}
+                  onClick={() => setPage(currentPage - 1)}
+                >
+                  Previous
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  disabled={currentPage >= pageCount - 1}
+                  onClick={() => setPage(currentPage + 1)}
+                >
+                  Next
+                </Button>
+              </div>
+            </div>
+          )}
         </>
       )}
 

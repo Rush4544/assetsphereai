@@ -82,6 +82,7 @@ export function RecordDialog({
   onSubmit: (values: Row) => void;
 }) {
   const [values, setValues] = useState<Row>({});
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   useEffect(() => {
     if (!open) return;
@@ -95,6 +96,7 @@ export function RecordDialog({
       }
     }
     setValues(next);
+    setErrors({});
   }, [open, initial, fields]);
 
   const groups = useMemo(() => {
@@ -107,10 +109,41 @@ export function RecordDialog({
     return [...map.entries()];
   }, [fields]);
 
-  const set = (name: string, v: unknown) => setValues((p) => ({ ...p, [name]: v }));
+  const set = (name: string, v: unknown) => {
+    setValues((p) => ({ ...p, [name]: v }));
+    setErrors((p) => {
+      if (!p[name]) return p;
+      const next = { ...p };
+      delete next[name];
+      return next;
+    });
+  };
 
   function submit(e: React.FormEvent) {
     e.preventDefault();
+    if (saving) return;
+
+    const nextErrors: Record<string, string> = {};
+    for (const f of fields) {
+      const v = values[f.name];
+      const empty =
+        v === "" || v === null || v === undefined || (Array.isArray(v) && v.length === 0);
+      if (f.required && f.type !== "switch" && empty) {
+        nextErrors[f.name] = `${f.label} is required`;
+        continue;
+      }
+      if (!empty && f.type === "email" && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(v))) {
+        nextErrors[f.name] = "Enter a valid email address";
+      }
+      if (!empty && (f.type === "number" || f.type === "currency") && Number.isNaN(Number(v))) {
+        nextErrors[f.name] = "Enter a number";
+      }
+    }
+    if (Object.keys(nextErrors).length) {
+      setErrors(nextErrors);
+      return;
+    }
+
     const payload: Row = {};
     for (const f of fields) {
       const v = values[f.name];
@@ -185,9 +218,9 @@ export function RecordDialog({
           />
         </div>
       ) : (
-        <Input
+          <Input
           id={f.name}
-          required={f.required}
+            aria-invalid={errors[f.name] ? true : undefined}
           type={
             f.type === "number" || f.type === "currency"
               ? "number"
@@ -205,6 +238,7 @@ export function RecordDialog({
         />
       )}
       {f.help && <p className="text-xs text-muted-foreground">{f.help}</p>}
+      {errors[f.name] && <p className="text-xs font-medium text-destructive">{errors[f.name]}</p>}
     </div>
   );
 
@@ -241,7 +275,7 @@ export function RecordDialog({
               Cancel
             </Button>
             <Button type="submit" disabled={saving}>
-              Save
+              {saving ? "Saving…" : "Save"}
             </Button>
           </DialogFooter>
         </form>

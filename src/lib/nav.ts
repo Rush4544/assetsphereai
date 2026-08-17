@@ -6,28 +6,30 @@ export type NavItem = {
   url: string;
   icon: string;
   roles: AppRole[];
+  /** Sidebar sub-group inside the main navigation. */
+  section?: string;
 };
 
 export const mainNav: NavItem[] = [
-  { key: "dashboard", label: "Dashboard", url: "/dashboard", icon: "LayoutDashboard", roles: ["user", "technician", "admin", "super_admin"] },
-  { key: "service-requests", label: "Service Requests", url: "/service-requests", icon: "Inbox", roles: ["user", "technician", "admin", "super_admin"] },
-  { key: "work-orders", label: "Work Orders", url: "/work-orders", icon: "ClipboardList", roles: ["user", "technician", "admin", "super_admin"] },
-  { key: "maintenance-plans", label: "Maintenance Plans", url: "/maintenance-plans", icon: "CalendarClock", roles: ["technician", "admin", "super_admin"] },
-  { key: "assets", label: "Assets", url: "/assets", icon: "Boxes", roles: ["user", "technician", "admin", "super_admin"] },
-  { key: "inventory", label: "Inventory & Parts", url: "/inventory", icon: "PackageSearch", roles: ["technician", "admin", "super_admin"] },
-  { key: "iot", label: "IoT & Sensors", url: "/iot", icon: "Radio", roles: ["technician", "admin", "super_admin"] },
-  { key: "network", label: "Network Discovery", url: "/network", icon: "Network", roles: ["technician", "admin", "super_admin"] },
-  { key: "floor-plan", label: "Floor Plan", url: "/floor-plan", icon: "Map", roles: ["technician", "admin", "super_admin"] },
-  { key: "vehicles", label: "Vehicles", url: "/vehicles", icon: "Truck", roles: ["technician", "admin", "super_admin"] },
-  { key: "vehicle-service", label: "Vehicle Service", url: "/vehicle-service", icon: "Wrench", roles: ["technician", "admin", "super_admin"] },
-  { key: "geofences", label: "Geofences", url: "/geofences", icon: "MapPinned", roles: ["technician", "admin", "super_admin"] },
-  { key: "maintenance", label: "Maintenance", url: "/maintenance", icon: "Wrench", roles: ["technician", "admin", "super_admin"] },
-  { key: "maintenance-calendar", label: "Maintenance Calendar", url: "/maintenance-calendar", icon: "CalendarDays", roles: ["technician", "admin", "super_admin"] },
-  { key: "distribution", label: "Distribution", url: "/distribution", icon: "PackageCheck", roles: ["technician", "admin", "super_admin"] },
-  { key: "software", label: "Software", url: "/software", icon: "AppWindow", roles: ["technician", "admin", "super_admin"] },
-  { key: "assignments", label: "Assignments", url: "/assignments", icon: "UserCheck", roles: ["technician", "admin", "super_admin"] },
-  { key: "warranties", label: "Warranties", url: "/warranties", icon: "ShieldCheck", roles: ["technician", "admin", "super_admin"] },
-  { key: "reports", label: "Reports", url: "/reports", icon: "BarChart3", roles: ["admin", "super_admin"] },
+  { key: "dashboard", label: "Dashboard", url: "/dashboard", icon: "LayoutDashboard", section: "Overview", roles: ["user", "technician", "admin", "super_admin"] },
+  { key: "assets", label: "Assets", url: "/assets", icon: "Boxes", section: "Asset Management", roles: ["user", "technician", "admin", "super_admin"] },
+  { key: "inventory", label: "Inventory & Parts", url: "/inventory", icon: "PackageSearch", section: "Asset Management", roles: ["technician", "admin", "super_admin"] },
+  { key: "assignments", label: "Assignments", url: "/assignments", icon: "UserCheck", section: "Asset Management", roles: ["technician", "admin", "super_admin"] },
+  { key: "distribution", label: "Distribution", url: "/distribution", icon: "PackageCheck", section: "Asset Management", roles: ["technician", "admin", "super_admin"] },
+  { key: "software", label: "Software", url: "/software", icon: "AppWindow", section: "Asset Management", roles: ["technician", "admin", "super_admin"] },
+  { key: "warranties", label: "Warranties", url: "/warranties", icon: "ShieldCheck", section: "Asset Management", roles: ["technician", "admin", "super_admin"] },
+  { key: "network", label: "Network Discovery", url: "/network", icon: "Network", section: "Discovery", roles: ["technician", "admin", "super_admin"] },
+  { key: "iot", label: "IoT & Sensors", url: "/iot", icon: "Radio", section: "Discovery", roles: ["technician", "admin", "super_admin"] },
+  { key: "service-requests", label: "Service Requests", url: "/service-requests", icon: "Inbox", section: "Operations", roles: ["user", "technician", "admin", "super_admin"] },
+  { key: "work-orders", label: "Work Orders", url: "/work-orders", icon: "ClipboardList", section: "Operations", roles: ["user", "technician", "admin", "super_admin"] },
+  { key: "maintenance", label: "Maintenance", url: "/maintenance", icon: "Wrench", section: "Operations", roles: ["technician", "admin", "super_admin"] },
+  { key: "maintenance-plans", label: "Maintenance Plans", url: "/maintenance-plans", icon: "CalendarClock", section: "Operations", roles: ["technician", "admin", "super_admin"] },
+  { key: "maintenance-calendar", label: "Maintenance Calendar", url: "/maintenance-calendar", icon: "CalendarDays", section: "Operations", roles: ["technician", "admin", "super_admin"] },
+  { key: "vehicles", label: "Vehicles", url: "/vehicles", icon: "Truck", section: "Fleet", roles: ["technician", "admin", "super_admin"] },
+  { key: "vehicle-service", label: "Vehicle Service", url: "/vehicle-service", icon: "Wrench", section: "Fleet", roles: ["technician", "admin", "super_admin"] },
+  { key: "geofences", label: "Geofences", url: "/geofences", icon: "MapPinned", section: "Fleet", roles: ["technician", "admin", "super_admin"] },
+  { key: "floor-plan", label: "Floor Plan", url: "/floor-plan", icon: "Map", section: "Locations", roles: ["technician", "admin", "super_admin"] },
+  { key: "reports", label: "Reports", url: "/reports", icon: "BarChart3", section: "Insights", roles: ["admin", "super_admin"] },
 ];
 
 export const rfidNav: NavItem[] = [
@@ -87,4 +89,15 @@ export function canSee(item: NavItem, role: AppRole, permissions?: Record<string
   const override = permissions?.[item.key];
   if (typeof override === "boolean") return override && item.roles.includes(role);
   return item.roles.includes(role);
+}
+
+/** Groups nav items into their sidebar sub-sections, preserving declaration order. */
+export function groupBySection(items: NavItem[], fallback = "Main"): Array<[string, NavItem[]]> {
+  const map = new Map<string, NavItem[]>();
+  for (const item of items) {
+    const section = item.section ?? fallback;
+    if (!map.has(section)) map.set(section, []);
+    map.get(section)!.push(item);
+  }
+  return [...map.entries()];
 }

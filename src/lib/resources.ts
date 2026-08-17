@@ -6,11 +6,20 @@ import {
   type Row,
 } from "./resource";
 
-const LIFECYCLE = ["in_use", "in_storage", "under_repair", "retired", "disposed", "lost"];
-const CONDITION = ["excellent", "good", "fair", "poor", "damaged"];
+const LIFECYCLE = [
+  "new",
+  "deployed",
+  "in_maintenance",
+  "retired",
+  "disposed",
+  "lost",
+  "stolen",
+];
+const CONDITION = ["new", "good", "fair", "poor", "broken"];
+const ITEM_CONDITION = ["new", "good", "fair", "broken", "lost"];
 const STATUS = ["active", "inactive"];
 const PRIORITY = ["low", "medium", "high", "urgent"];
-const WORK_STATUS = ["scheduled", "in_progress", "completed", "overdue", "cancelled"];
+const WORK_STATUS = ["scheduled", "in_progress", "completed", "cancelled"];
 
 const isExpiring = (v: unknown, days = 30) => {
   if (!v) return false;
@@ -47,7 +56,7 @@ export const assetsConfig: ResourceConfig = {
   kpis: (rows) => [
     { label: "Total assets", value: rows.length, icon: "Boxes" },
     { label: "Inventory value", value: currency(sum(rows, "current_value")), icon: "DollarSign", filter: { field: "current_value", op: "set" } },
-    { label: "In use", value: countWhere(rows, (r) => r["lifecycle_status"] === "in_use"), icon: "CheckCircle2", tone: "success", filter: { field: "lifecycle_status", op: "eq", value: "in_use" } },
+    { label: "Deployed", value: countWhere(rows, (r) => r["lifecycle_status"] === "deployed"), icon: "CheckCircle2", tone: "success", filter: { field: "lifecycle_status", op: "eq", value: "deployed" } },
     {
       label: "Warranty expiring",
       value: countWhere(rows, (r) => isExpiring(r["warranty_end"])),
@@ -479,7 +488,7 @@ export const assignmentsConfig: ResourceConfig = {
   description: "Who holds which asset, and its assignment history.",
   icon: "UserCheck",
   statusField: "status",
-  statusOptions: ["active", "returned", "overdue"],
+  statusOptions: ["active", "returned", "transferred"],
   searchFields: ["asset_name", "assigned_to_name", "assigned_to_email", "assigned_by_name"],
   columns: [
     { name: "asset_name", label: "Asset", className: "font-medium" },
@@ -498,7 +507,7 @@ export const assignmentsConfig: ResourceConfig = {
     { name: "assignment_date", label: "Assignment date", type: "date" },
     { name: "return_date", label: "Return date", type: "date" },
     { name: "previous_owner_name", label: "Previous owner" },
-    { name: "status", label: "Status", type: "select", options: ["active", "returned", "overdue"] },
+    { name: "status", label: "Status", type: "select", options: ["active", "returned", "transferred"] },
     { name: "reason", label: "Reason" },
     { name: "notes", label: "Notes", type: "textarea" },
   ],
@@ -545,7 +554,7 @@ export const distributionConfig: ResourceConfig = {
     { name: "request_date", label: "Request date", type: "date" },
     { name: "fulfilled_date", label: "Fulfilled date", type: "date" },
     { name: "return_date", label: "Return date", type: "date" },
-    { name: "item_condition", label: "Condition", type: "select", options: CONDITION },
+    { name: "item_condition", label: "Condition", type: "select", options: ITEM_CONDITION },
     { name: "notes", label: "Notes", type: "textarea" },
   ],
 };

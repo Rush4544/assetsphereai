@@ -3,6 +3,7 @@ import { toast } from "sonner";
 
 import { supabase } from "@/integrations/supabase/client";
 import type { Row } from "./resource";
+import { friendlyError } from "./errors";
 
 // The generated Supabase types are exhaustive per-table; this framework is
 // intentionally table-generic, so we go through a loosely typed accessor.
@@ -67,7 +68,7 @@ export function useSaveRow(table: string) {
       void qc.invalidateQueries({ queryKey: ["dashboard"] });
       toast.success("Saved");
     },
-    onError: (e: unknown) => toast.error(e instanceof Error ? e.message : "Could not save"),
+    onError: (e: unknown) => toast.error(friendlyError(e, "save this record")),
   });
 }
 
@@ -83,6 +84,6 @@ export function useDeleteRow(table: string) {
       void qc.invalidateQueries({ queryKey: ["dashboard"] });
       toast.success("Deleted");
     },
-    onError: (e: unknown) => toast.error(e instanceof Error ? e.message : "Could not delete"),
+    onError: (e: unknown) => toast.error(friendlyError(e, "delete this record")),
   });
 }
