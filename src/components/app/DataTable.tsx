@@ -1,4 +1,5 @@
 import { Fragment } from "react";
+import { ArrowDown, ArrowUp, ChevronsUpDown } from "lucide-react";
 
 import {
   Table,
@@ -44,22 +45,53 @@ export function DataTable({
   rows,
   onRowClick,
   emptyMessage = "No records yet.",
+  sort,
+  onSortChange,
 }: {
   columns: Column[];
   rows: Row[];
   onRowClick?: ((row: Row) => void) | undefined;
   emptyMessage?: string | undefined;
+  sort?: { column: string; dir: "asc" | "desc" } | undefined;
+  onSortChange?: ((column: string) => void) | undefined;
 }) {
   return (
     <div className="glass-card overflow-x-auto">
       <Table>
         <TableHeader>
           <TableRow className="hover:bg-transparent">
-            {columns.map((c) => (
-              <TableHead key={c.name} className="whitespace-nowrap text-xs uppercase tracking-wide">
-                {c.label}
-              </TableHead>
-            ))}
+            {columns.map((c) => {
+              const sortable = !!onSortChange && !c.name.startsWith("__") && !c.render;
+              const activeSort = sort?.column === c.name;
+              return (
+                <TableHead
+                  key={c.name}
+                  className="whitespace-nowrap text-xs uppercase tracking-wide"
+                  aria-sort={activeSort ? (sort!.dir === "asc" ? "ascending" : "descending") : undefined}
+                >
+                  {sortable ? (
+                    <button
+                      type="button"
+                      onClick={() => onSortChange!(c.name)}
+                      className="inline-flex items-center gap-1 uppercase tracking-wide transition-colors hover:text-foreground"
+                    >
+                      {c.label}
+                      {activeSort ? (
+                        sort!.dir === "asc" ? (
+                          <ArrowUp className="size-3" />
+                        ) : (
+                          <ArrowDown className="size-3" />
+                        )
+                      ) : (
+                        <ChevronsUpDown className="size-3 opacity-40" />
+                      )}
+                    </button>
+                  ) : (
+                    c.label
+                  )}
+                </TableHead>
+              );
+            })}
           </TableRow>
         </TableHeader>
         <TableBody>
